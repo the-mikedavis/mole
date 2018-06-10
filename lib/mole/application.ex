@@ -11,7 +11,7 @@ defmodule Mole.Application do
       # Start the Ecto repository
       Mole.Repo,
       # Start the endpoint when the application starts
-      MoleWeb.Endpoint,
+      MoleWeb.Endpoint
       # Starts a worker by calling: Mole.Worker.start_link(arg)
       # {Mole.Worker, arg},
     ]

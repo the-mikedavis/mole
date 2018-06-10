@@ -14,8 +14,7 @@ config :mole, MoleWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "IV0jX8QHymKlHxwrbZdV3o05C267MRG+M9VbLCzp5x4nXatSp6MFJM60+PY/4idP",
   render_errors: [view: MoleWeb.ErrorView, accepts: ~w(html json)],
-  pubsub: [name: Mole.PubSub,
-           adapter: Phoenix.PubSub.PG2]
+  pubsub: [name: Mole.PubSub, adapter: Phoenix.PubSub.PG2]
 
 # Configures Elixir's Logger
 config :logger, :console,
@@ -28,7 +27,7 @@ config :ecto, :json_library, Jason
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
-import_config "#{Mix.env}.exs"
+import_config "#{Mix.env()}.exs"
 
 config :phoenix, :template_engines,
   slim: PhoenixSlime.Engine,
