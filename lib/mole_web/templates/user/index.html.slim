@@ -1,0 +1,10 @@
+h1 Listing Users
+
+table
+  = for user <- @users do
+    tr
+      td
+        b
+          = first_name(user)
+      td
+        = link("View", to: Routes.user_path(@conn, :show, user.id))

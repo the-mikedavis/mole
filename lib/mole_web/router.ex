@@ -14,14 +14,9 @@ defmodule MoleWeb.Router do
   end
 
   scope "/", MoleWeb do
-    # Use the default browser stack
     pipe_through(:browser)
 
     get("/", PageController, :index)
+    resources("/users", UserController, only: [:show, :new, :create, :index])
   end
-
-  # Other scopes may use custom stacks.
-  # scope "/api", MoleWeb do
-  #   pipe_through :api
-  # end
 end
