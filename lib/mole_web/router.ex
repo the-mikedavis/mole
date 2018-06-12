@@ -7,6 +7,7 @@ defmodule MoleWeb.Router do
     plug(:fetch_flash)
     plug(:protect_from_forgery)
     plug(:put_secure_browser_headers)
+    plug(MoleWeb.Auth)
   end
 
   pipeline :api do
@@ -18,5 +19,6 @@ defmodule MoleWeb.Router do
 
     get("/", PageController, :index)
     resources("/users", UserController, only: [:show, :new, :create, :index])
+    resources("/sessions", SessionController, only: [:new, :create, :delete])
   end
 end

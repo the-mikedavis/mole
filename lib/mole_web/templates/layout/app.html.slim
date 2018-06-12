@@ -14,6 +14,13 @@ html lang="en"
           ul
             li
               a href="http://www.phoenixframework.org/docs" Get Started
+            = if @current_user do
+              li = @current_user.username
+              li = link("Log out", to: Routes.session_path(@conn, :delete, @current_user), method: "delete")
+            - else
+              li = link("Register", to: Routes.user_path(@conn, :new))
+              li = link("Log in", to: Routes.session_path(@conn, :new))
+
         a href="http://phoenixframework.org/" class="phx-logo"
           img src=Routes.static_path(@conn, "/images/phoenix.png") alt="Phoenix Framework Logo"
 
