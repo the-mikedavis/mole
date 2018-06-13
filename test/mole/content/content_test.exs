@@ -7,7 +7,11 @@ defmodule Mole.ContentTest do
     alias Mole.Content.Image
 
     @valid_attrs %{malignant: true, origin_id: "some origin_id", path: "some path"}
-    @update_attrs %{malignant: false, origin_id: "some updated origin_id", path: "some updated path"}
+    @update_attrs %{
+      malignant: false,
+      origin_id: "some updated origin_id",
+      path: "some updated path"
+    }
     @invalid_attrs %{malignant: nil, origin_id: nil, path: nil}
 
     def image_fixture(attrs \\ %{}) do

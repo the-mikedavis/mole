@@ -3,9 +3,9 @@ defmodule Mole.Content.Image do
   import Ecto.Changeset
 
   schema "images" do
-    field :malignant, :boolean, default: false
-    field :origin_id, :string
-    field :path, :string
+    field(:malignant, :boolean, default: false)
+    field(:origin_id, :string)
+    field(:path, :string)
 
     timestamps()
   end
