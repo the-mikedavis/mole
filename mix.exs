@@ -10,7 +10,15 @@ defmodule Mole.MixProject do
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
-      deps: deps()
+      deps: deps(),
+      preferred_cli_env: [
+        coveralls: :test,
+        "coveralls.detail": :test,
+        "coveralls.travis": :test,
+        "coveralls.post": :test,
+        "coveralls.html": :test
+      ],
+      test_coverage: [tool: ExCoveralls]
     ]
   end
 
@@ -41,9 +49,17 @@ defmodule Mole.MixProject do
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:cowboy, "~> 1.0"},
-      {:phoenix_slime, "~> 0.10.0"},
+      {:phoenix_slime, "~> 0.10"},
       {:comeonin, "~> 4.1"},
-      {:bcrypt_elixir, "~> 1.0"}
+      {:bcrypt_elixir, "~> 1.0"},
+
+      # test
+      {:credo, "~> 0.9", only: [:dev, :test], runtime: false},
+      {:excoveralls, "~> 0.9", only: :test},
+      {:mox, "~> 0.3"},
+
+      # deploy
+      {:distillery, "~> 1.5", runtime: false}
     ]
   end
 
@@ -57,7 +73,13 @@ defmodule Mole.MixProject do
     [
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      test: ["ecto.create --quiet", "ecto.migrate", "test"]
+      test: ["ecto.create --quiet", "ecto.migrate", "test"],
+      bless: [
+        "compile --warnings-as-errors",
+        "coveralls.html --color",
+        "credo",
+        "format --check-formatted"
+      ]
     ]
   end
 end
