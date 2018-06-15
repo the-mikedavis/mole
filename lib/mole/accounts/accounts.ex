@@ -5,6 +5,8 @@ defmodule Mole.Accounts do
 
   def get_user(id), do: Repo.get(User, id)
 
+  def get_user!(id), do: Repo.get!(User, id)
+
   def list_users(), do: Repo.all(User)
 
   def change_user(%User{} = user), do: User.changeset(user, %{})
@@ -13,6 +15,12 @@ defmodule Mole.Accounts do
     %User{}
     |> User.changeset(attrs)
     |> Repo.insert()
+  end
+
+  def update_user(%User{} = user, attrs) do
+    user
+    |> User.changeset(attrs)
+    |> Repo.update()
   end
 
   def register_user(attrs \\ %{}) do
