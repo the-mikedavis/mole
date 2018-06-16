@@ -2,18 +2,18 @@ defmodule Mole.AccountsTest do
   use Mole.DataCase
 
   alias Mole.Accounts
+  alias Mole.Accounts.User
 
   describe "accounts -> user" do
-    alias Mole.Accounts.User
 
-    @valid_attrs %{name: "some name", username: "some username"}
-    @update_attrs %{name: "another name", username: "another username"}
-    @invalid_attrs %{name: nil, username: ""}
+    @user_valid_attrs %{name: "some name", username: "some username"}
+    @user_update_attrs %{name: "another name", username: "another username"}
+    @user_invalid_attrs %{name: nil, username: ""}
 
     def user_fixture(attrs \\ %{}) do
       {:ok, user} =
         attrs
-        |> Enum.into(@valid_attrs)
+        |> Enum.into(@user_valid_attrs)
         |> Accounts.create_user()
 
       user
@@ -35,18 +35,18 @@ defmodule Mole.AccountsTest do
     end
 
     test "create_user/1 with valid data creates a user" do
-      assert {:ok, %User{} = user} = Accounts.create_user(@valid_attrs)
+      assert {:ok, %User{} = user} = Accounts.create_user(@user_valid_attrs)
       assert user.name == "some name"
       assert user.username == "some username"
     end
 
     test "create_user/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Accounts.create_user(@invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} = Accounts.create_user(@user_invalid_attrs)
     end
 
     test "update_user/2 with valid data updates the user" do
       user = user_fixture()
-      assert {:ok, %User{} = user} = Accounts.update_user(user, @update_attrs)
+      assert {:ok, %User{} = user} = Accounts.update_user(user, @user_update_attrs)
 
       assert user.name == "another name"
       assert user.username == "another username"
@@ -54,7 +54,7 @@ defmodule Mole.AccountsTest do
 
     test "update_user/2 with invalid data returns error changeset" do
       user = user_fixture()
-      assert {:error, %Ecto.Changeset{}} = Accounts.update_user(user, @invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} = Accounts.update_user(user, @user_invalid_attrs)
       assert user == Accounts.get_user!(user.id)
     end
 
@@ -62,5 +62,9 @@ defmodule Mole.AccountsTest do
       user = user_fixture()
       assert %Ecto.Changeset{} = Accounts.change_user(user)
     end
+  end
+
+  describe "accounts -> credential" do
+    alias Mole.Accounts.Credential
   end
 end

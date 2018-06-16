@@ -1,0 +1,12 @@
+{
+  "coverage_options": {
+    "treat_no_relevant_lines_as_covered" : true
+  },
+  "skip_files": [
+    "test/*",
+    "lib/relay_web.ex",
+    "lib/relay_web/application.ex",
+    "lib/relay_web/endpoint.ex",
+    "lib/relay_web/views/error_helpers.ex"
+  ]
+}
