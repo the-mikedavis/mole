@@ -52,6 +52,7 @@ defmodule Mole.MixProject do
       {:phoenix_slime, "~> 0.10"},
       {:comeonin, "~> 4.1"},
       {:bcrypt_elixir, "~> 1.0"},
+      {:httpoison, "~> 1.0"},
 
       # test
       {:credo, "~> 0.9", only: [:dev, :test], runtime: false},
