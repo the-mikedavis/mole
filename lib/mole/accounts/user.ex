@@ -1,4 +1,5 @@
 defmodule Mole.Accounts.User do
+  @moduledoc "A user, including name and username"
   use Ecto.Schema
   import Ecto.Changeset
   alias Mole.Accounts.Credential

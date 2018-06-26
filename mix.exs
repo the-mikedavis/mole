@@ -75,12 +75,20 @@ defmodule Mole.MixProject do
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate", "test"],
-      bless: [
-        "compile --warnings-as-errors",
-        "coveralls.html --color",
-        "credo",
-        "format --check-formatted"
-      ]
+      bless: [&bless/1]
     ]
+  end
+
+  defp bless(_) do
+    Mix.shell().cmd(
+      """
+      mix do \
+        format --check-formatted, \
+        compile --warnings-as-errors, \
+        coveralls.html, \
+        credo
+      """,
+      env: [{"MIX_ENV", "test"}]
+    )
   end
 end

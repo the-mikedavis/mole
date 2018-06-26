@@ -1,4 +1,5 @@
 defmodule MoleWeb.Auth do
+  @moduledoc false
   import Plug.Conn
 
   alias Mole.Accounts

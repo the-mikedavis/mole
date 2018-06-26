@@ -1,4 +1,5 @@
 defmodule Mole.Accounts.Credential do
+  @moduledoc "A credential, which is email + password"
   use Ecto.Schema
   import Ecto.Changeset
 

@@ -5,7 +5,6 @@ defmodule Mole.AccountsTest do
   alias Mole.Accounts.User
 
   describe "accounts -> user" do
-
     @user_valid_attrs %{name: "some name", username: "some username"}
     @user_update_attrs %{name: "another name", username: "another username"}
     @user_invalid_attrs %{name: nil, username: ""}
@@ -64,7 +63,7 @@ defmodule Mole.AccountsTest do
     end
   end
 
-  describe "accounts -> credential" do
-    alias Mole.Accounts.Credential
-  end
+  # describe "accounts -> credential" do
+  #  alias Mole.Accounts.Credential
+  # end
 end

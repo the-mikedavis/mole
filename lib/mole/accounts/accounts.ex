@@ -1,4 +1,5 @@
 defmodule Mole.Accounts do
+  @moduledoc "Functions to act on accounts and credentials"
   alias Mole.Accounts.User
   alias Mole.Repo
   import Ecto.Query
