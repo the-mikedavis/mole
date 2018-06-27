@@ -75,7 +75,8 @@ defmodule Mole.MixProject do
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate", "test"],
-      bless: [&bless/1]
+      bless: [&bless/1],
+      clean_images: [&clean_images/1]
     ]
   end
 
@@ -89,6 +90,13 @@ defmodule Mole.MixProject do
         credo
       """,
       env: [{"MIX_ENV", "test"}]
+    )
+  end
+
+  defp clean_images(_) do
+    Mix.shell().cmd(
+      "rm -rf priv/static/images/*.jpeg",
+      env: [{"MIX_ENV", "dev"}]
     )
   end
 end
