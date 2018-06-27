@@ -8,7 +8,8 @@ use Mix.Config
 # General application configuration
 config :mole,
   ecto_repos: [Mole.Repo],
-  http_client: HTTPoison
+  http_client: HTTPoison,
+  max_amount: 100
 
 # Configures the endpoint
 config :mole, MoleWeb.Endpoint,

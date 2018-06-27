@@ -102,4 +102,9 @@ defmodule Mole.Content do
   def change_image(%Image{} = image) do
     Image.changeset(image, %{})
   end
+
+  @doc """
+  Count the number of images in the repo.
+  """
+  def count_images(), do: Repo.aggregate(Image, :count, :id)
 end

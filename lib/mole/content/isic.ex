@@ -10,6 +10,13 @@ defmodule Mole.Content.Isic do
   @http_client Application.get_env(:mole, :http_client)
 
   @impl Source
+  def get_by_type(_amount, :malignant) do
+  end
+
+  def get_by_type(_amount, :benign) do
+  end
+
+  @impl Source
   def get_chunk(amount, offset) do
     "#{@url}?limit=#{amount}&offset#{offset}&sort=_id&sortdir=1&detail=true"
     |> @http_client.get()
