@@ -76,7 +76,8 @@ defmodule Mole.MixProject do
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate", "test"],
       bless: [&bless/1],
-      clean_images: [&clean_images/1]
+      clean_images: [&clean_images/1],
+      reset_scraper: [&clean_images/1, "ecto.reset"]
     ]
   end
 
