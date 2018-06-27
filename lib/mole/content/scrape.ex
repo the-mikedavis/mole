@@ -9,8 +9,10 @@ defmodule Mole.Content.Scrape do
   @db_module Mole.Content.Isic
   @amount 20
   @max_amount Application.get_env(:mole, :max_amount)
-  # 50 seconds
-  @time_buffer 10 * 1_000
+  # 1 seconds
+  @time_buffer 1_000
+  # 30 seconds
+  @await_time 30 * 1_000
 
   def start_link(args) do
     GenServer.start_link(__MODULE__, args, name: __MODULE__)
@@ -18,7 +20,6 @@ defmodule Mole.Content.Scrape do
 
   @impl true
   def init(_offset) do
-    # TODO: check status of db as the seek position, initialize seeking
     offset = Mole.Content.count_images()
 
     Process.send_after(self(), :chunk, @time_buffer)
@@ -28,7 +29,9 @@ defmodule Mole.Content.Scrape do
 
   @impl true
   def handle_info(:chunk, offset) do
-    if @amount + offset < @max_amount do
+    Logger.info("Received request to get chunk at offset #{offset}")
+
+    if @amount + offset <= @max_amount do
       Logger.info("Gettting a new chunk, at offset #{offset}")
 
       download(@amount, offset)
@@ -42,7 +45,7 @@ defmodule Mole.Content.Scrape do
   end
 
   def examine_statistics(amount) do
-    Logger.info("Examining statistics. There are #{amount} total.")
+    Logger.info("Done. Examining statistics. There are #{amount} total.")
   end
 
   @doc "Download a chunk from a Source"
@@ -58,7 +61,7 @@ defmodule Mole.Content.Scrape do
   def pmap(enumerable, fun) do
     enumerable
     |> Enum.map(&Task.async(fn -> fun.(&1) end))
-    |> Enum.map(&Task.await/1)
+    |> Enum.map(&Task.await(&1, @await_time))
   end
 
   @spec save_all({:ok, list(Meta.t())}) :: Enum.t()
@@ -86,9 +89,21 @@ defmodule Mole.Content.Scrape do
     id
     |> static_path()
     |> File.open!([:write])
-    |> IO.binwrite(@db_module.download(meta))
+    |> write(@db_module.download(meta))
 
     meta
+  end
+
+  defp write(file, {:ok, data}), do: IO.binwrite(file, data)
+
+  defp write(_file, {:error, reason}) do
+    Logger.error(fn ->
+      """
+      Error occurred saving... Reason: #{inspect(reason)}"
+      """
+    end)
+
+    :ok
   end
 
   defp insert(%Meta{id: id, malignant?: mal}) do

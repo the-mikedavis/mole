@@ -18,7 +18,7 @@ defmodule Mole.Content.Isic do
 
   @impl Source
   def get_chunk(amount, offset) do
-    "#{@url}?limit=#{amount}&offset#{offset}&sort=_id&sortdir=1&detail=true"
+    "#{@url}?limit=#{amount}&offset=#{offset}&sort=_id&sortdir=1&detail=true"
     |> @http_client.get()
     |> decode()
   end
@@ -42,6 +42,7 @@ defmodule Mole.Content.Isic do
       |> Jason.decode!()
       |> Enum.map(&decode/1)
       |> Enum.filter(fn {status, _} -> status !== :error end)
+      |> Enum.map(fn {_status, meta} -> meta end)
 
     {:ok, valids}
   end
