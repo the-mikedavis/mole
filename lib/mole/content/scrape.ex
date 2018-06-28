@@ -14,11 +14,20 @@ defmodule Mole.Content.Scrape do
   # 30 seconds
   @await_time 30 * 1_000
 
+  @doc "Start the scraper as a worker"
+  @spec start_link(any()) :: GenServer.on_start()
   def start_link(args) do
     GenServer.start_link(__MODULE__, args, name: __MODULE__)
   end
 
+  @doc """
+  Initialize the scraper.
+
+  Get the number of images in the database. Save that as the state of the
+  server. Send a notification that a chunk is ready to be collected.
+  """
   @impl true
+  @spec init(any()) :: {:ok, integer()}
   def init(_offset) do
     offset = Mole.Content.count_images()
 
@@ -27,7 +36,15 @@ defmodule Mole.Content.Scrape do
     {:ok, offset}
   end
 
+  @doc """
+  Handle a notification that it's time to collect a chunk.
+
+  If the local datastore should save more images, collect and save a chunk.
+  If not, examine the ratio of malignant to non-malignant images in the
+  datastore.
+  """
   @impl true
+  @spec handle_info(:chunk, integer()) :: {:noreply, integer()}
   def handle_info(:chunk, offset) do
     Logger.info("Received request to get chunk at offset #{offset}")
 
@@ -41,14 +58,10 @@ defmodule Mole.Content.Scrape do
       examine_statistics(offset)
     end
 
-    {:noreply, offset + @amount}
+    {:noreply, Mole.Content.count_images()}
   end
 
-  def examine_statistics(amount) do
-    Logger.info("Done. Examining statistics. There are #{amount} total.")
-  end
-
-  @doc "Download a chunk from a Source"
+  @doc "Download a chunk from a Source and save it to disk and database"
   @spec download(integer(), integer()) :: any()
   def download(amount, offset) do
     amount
@@ -56,7 +69,7 @@ defmodule Mole.Content.Scrape do
     |> save_all()
   end
 
-  @doc "Parallelized mapping function"
+  @doc "Map a function to each element of a collection in parallel."
   @spec pmap(Enum.t(), function()) :: Enum.t()
   def pmap(enumerable, fun) do
     enumerable
@@ -64,8 +77,9 @@ defmodule Mole.Content.Scrape do
     |> Enum.map(&Task.await(&1, @await_time))
   end
 
+  @doc "Save all meta structs in a list to local datastore and database."
   @spec save_all({:ok, list(Meta.t())}) :: Enum.t()
-  defp save_all({:ok, data}) do
+  def save_all({:ok, data}) do
     data
     # execute in parallel
     |> pmap(&save/1)
@@ -74,7 +88,7 @@ defmodule Mole.Content.Scrape do
   end
 
   @spec save_all({:error, any()}) :: :ok
-  defp save_all({:error, reason}) do
+  def save_all({:error, reason}) do
     Logger.error(fn ->
       """
       Error occurred saving... Reason: #{inspect(reason)}"
@@ -84,8 +98,9 @@ defmodule Mole.Content.Scrape do
     :ok
   end
 
+  @doc "Save a single meta structure to the local datastore and database."
   @spec save(Meta.t()) :: :ok
-  defp save(%Meta{id: id} = meta) do
+  def save(%Meta{id: id} = meta) do
     id
     |> static_path()
     |> File.open!([:write])
@@ -94,9 +109,12 @@ defmodule Mole.Content.Scrape do
     meta
   end
 
-  defp write(file, {:ok, data}), do: IO.binwrite(file, data)
+  @doc "Write a raw image binary to a file"
+  @spec write(File.t(), {:ok, binary()}) :: :ok | {:error, term()}
+  def write(file, {:ok, data}), do: IO.binwrite(file, data)
 
-  defp write(_file, {:error, reason}) do
+  @spec write(File.t(), {:error, any()}) :: :ok
+  def write(_file, {:error, reason}) do
     Logger.error(fn ->
       """
       Error occurred saving... Reason: #{inspect(reason)}"
@@ -106,11 +124,41 @@ defmodule Mole.Content.Scrape do
     :ok
   end
 
-  defp insert(%Meta{id: id, malignant?: mal}) do
+  @doc "Insert a Meta struct into the Image Ecto database"
+  @spec insert(Meta.t()) :: {:ok, Ecto.Schema.t()} | {:error, Ecto.Changeset.t()}
+  def insert(%Meta{id: id, malignant?: mal}) do
     %{origin_id: id, malignant: mal, path: static_path(id)}
     |> Mole.Content.create_image()
   end
 
+  @doc "Produce a static path in which to save the image"
   @spec static_path(String.t()) :: String.t()
-  defp static_path(id), do: "./priv/static/images/#{id}.jpeg"
+  def static_path(id), do: "./priv/static/images/#{id}.jpeg"
+
+  import Ecto.Query
+
+  # 30%
+  # @ratio_malignant_percent 0.3
+
+  # Ecto query to select malignant images
+  @malignant_query from(i in "images", where: [malignant: "TRUE"], select: i.id)
+
+  @doc "Get the ratio of malignant images in the local datastore."
+  @spec ratio_malignant(integer()) :: float()
+  def ratio_malignant(total_amount) do
+    Mole.Repo.aggregate(@malignant_query, :count, :id) / total_amount
+  end
+
+  @doc "Determine the percentage of malignant images in the Repo."
+  @spec examine_statistics(integer()) :: :ok
+  def examine_statistics(amount) do
+    Logger.info("Done. Examining statistics.")
+
+    percent = ratio_malignant(amount)
+
+    Logger.info("There are #{amount} images total")
+    Logger.info("#{round(percent * 100)}% of which are malignant.")
+
+    :ok
+  end
 end
