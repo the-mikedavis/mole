@@ -58,6 +58,7 @@ defmodule Mole.MixProject do
       {:credo, "~> 0.9", only: [:dev, :test], runtime: false},
       {:excoveralls, "~> 0.9", only: :test},
       {:mox, "~> 0.3"},
+      {:private, "~> 0.1.1"},
 
       # deploy
       {:distillery, "~> 1.5", runtime: false}
