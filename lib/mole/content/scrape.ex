@@ -70,18 +70,30 @@ defmodule Mole.Content.Scrape do
   @impl true
   @spec handle_cast({:chunk, boolean(), integer()}, integer()) ::
           {:noreply, integer()}
-  def handle_cast({:chunk, _malignant?, _amount}, _offset) do
-    # TODO
+  def handle_cast({:chunk, malignant?, amount}, total) do
+    offset =
+      if malignant? do
+        percent_malignant(total) / 100 * total
+      else
+        total - percent_malignant(total) / 100 * total
+      end
+
+    download(amount, offset, malignant?: malignant?)
+
+    # check again in a short amount of time
+    Process.send_after(self(), :chunk, @time_buffer)
 
     {:noreply, Mole.Content.count_images()}
   end
 
   private do
     # Download a chunk from a Source and save it to disk and database
-    @spec download(integer(), integer()) :: any()
-    def download(amount, offset) do
+    # If you want malignant ones, use the options keyword list of
+    # [malignant?: true], and similar for benign
+    @spec download(integer(), integer(), Keyword.t()) :: any()
+    def download(amount, offset, options \\ []) do
       amount
-      |> @db_module.get_chunk(offset)
+      |> @db_module.get_chunk(offset, options)
       |> save_all()
     end
 
