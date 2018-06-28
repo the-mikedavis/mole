@@ -14,7 +14,8 @@ config :mole,
 # Configures the endpoint
 config :mole, MoleWeb.Endpoint,
   url: [host: "localhost"],
-  secret_key_base: "IV0jX8QHymKlHxwrbZdV3o05C267MRG+M9VbLCzp5x4nXatSp6MFJM60+PY/4idP",
+  secret_key_base:
+    "IV0jX8QHymKlHxwrbZdV3o05C267MRG+M9VbLCzp5x4nXatSp6MFJM60+PY/4idP",
   render_errors: [view: MoleWeb.ErrorView, accepts: ~w(html json)],
   pubsub: [name: Mole.PubSub, adapter: Phoenix.PubSub.PG2]
 

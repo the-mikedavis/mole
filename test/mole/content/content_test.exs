@@ -6,7 +6,11 @@ defmodule Mole.ContentTest do
   describe "images" do
     alias Mole.Content.Image
 
-    @valid_attrs %{malignant: true, origin_id: "some origin_id", path: "some path"}
+    @valid_attrs %{
+      malignant: true,
+      origin_id: "some origin_id",
+      path: "some path"
+    }
     @update_attrs %{
       malignant: false,
       origin_id: "some updated origin_id",
@@ -46,7 +50,9 @@ defmodule Mole.ContentTest do
 
     test "update_image/2 with valid data updates the image" do
       image = image_fixture()
-      assert {:ok, %Image{} = image} = Content.update_image(image, @update_attrs)
+
+      assert {:ok, %Image{} = image} =
+               Content.update_image(image, @update_attrs)
 
       assert image.malignant == false
       assert image.origin_id == "some updated origin_id"
@@ -55,7 +61,10 @@ defmodule Mole.ContentTest do
 
     test "update_image/2 with invalid data returns error changeset" do
       image = image_fixture()
-      assert {:error, %Ecto.Changeset{}} = Content.update_image(image, @invalid_attrs)
+
+      assert {:error, %Ecto.Changeset{}} =
+               Content.update_image(image, @invalid_attrs)
+
       assert image == Content.get_image!(image.id)
     end
 

@@ -66,13 +66,11 @@ defmodule Mole.Content.Scrape do
 
   @doc """
   Onboard a set of images that are only either malignant or benign.
-
-  The `type` parameter is `true` for getting malignant images, false for
-  getting `benign images.
   """
   @impl true
-  @spec handle_cast({:chunk, boolean(), integer()}, integer()) :: {:noreply, integer()}
-  def handle_cast({:chunk, _type, _amount}, _offset) do
+  @spec handle_cast({:chunk, boolean(), integer()}, integer()) ::
+          {:noreply, integer()}
+  def handle_cast({:chunk, _malignant?, _amount}, _offset) do
     # TODO
 
     {:noreply, Mole.Content.count_images()}
@@ -143,7 +141,8 @@ defmodule Mole.Content.Scrape do
     end
 
     # Insert a Meta struct into the Image Ecto database
-    @spec insert(Meta.t()) :: {:ok, Ecto.Schema.t()} | {:error, Ecto.Changeset.t()}
+    @spec insert(Meta.t()) ::
+            {:ok, Ecto.Schema.t()} | {:error, Ecto.Changeset.t()}
     def insert(%Meta{id: id, malignant?: mal}) do
       %{origin_id: id, malignant: mal, path: static_path(id)}
       |> Mole.Content.create_image()
@@ -156,7 +155,11 @@ defmodule Mole.Content.Scrape do
     import Ecto.Query
 
     # Ecto query to select malignant images
-    @malignant_query from(i in "images", where: [malignant: "TRUE"], select: i.id)
+    @malignant_query from(
+                       i in "images",
+                       where: [malignant: "TRUE"],
+                       select: i.id
+                     )
 
     # Get the percent of malignant images in the local datastore.
     @spec percent_malignant(integer()) :: float()
