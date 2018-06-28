@@ -3,6 +3,7 @@ defmodule Mole.Content.Scrape do
   A Scraper that collects mole images and metadata from the database
   """
   use GenServer
+  use Private
   require Logger
   alias Mole.Content.Meta
 
@@ -61,104 +62,106 @@ defmodule Mole.Content.Scrape do
     {:noreply, Mole.Content.count_images()}
   end
 
-  @doc "Download a chunk from a Source and save it to disk and database"
-  @spec download(integer(), integer()) :: any()
-  def download(amount, offset) do
-    amount
-    |> @db_module.get_chunk(offset)
-    |> save_all()
-  end
+  private do
+    @doc "Download a chunk from a Source and save it to disk and database"
+    @spec download(integer(), integer()) :: any()
+    def download(amount, offset) do
+      amount
+      |> @db_module.get_chunk(offset)
+      |> save_all()
+    end
 
-  @doc "Map a function to each element of a collection in parallel."
-  @spec pmap(Enum.t(), function()) :: Enum.t()
-  def pmap(enumerable, fun) do
-    enumerable
-    |> Enum.map(&Task.async(fn -> fun.(&1) end))
-    |> Enum.map(&Task.await(&1, @await_time))
-  end
+    @doc "Map a function to each element of a collection in parallel."
+    @spec pmap(Enum.t(), function()) :: Enum.t()
+    def pmap(enumerable, fun) do
+      enumerable
+      |> Enum.map(&Task.async(fn -> fun.(&1) end))
+      |> Enum.map(&Task.await(&1, @await_time))
+    end
 
-  @doc "Save all meta structs in a list to local datastore and database."
-  @spec save_all({:ok, list(Meta.t())}) :: Enum.t()
-  def save_all({:ok, data}) do
-    data
-    # execute in parallel
-    |> pmap(&save/1)
-    # execute in serial
-    |> Enum.map(&insert/1)
-  end
+    @doc "Save all meta structs in a list to local datastore and database."
+    @spec save_all({:ok, list(Meta.t())}) :: Enum.t()
+    def save_all({:ok, data}) do
+      data
+      # execute in parallel
+      |> pmap(&save/1)
+      # execute in serial
+      |> Enum.map(&insert/1)
+    end
 
-  @spec save_all({:error, any()}) :: :ok
-  def save_all({:error, reason}) do
-    Logger.error(fn ->
-      """
-      Error occurred saving... Reason: #{inspect(reason)}"
-      """
-    end)
+    @spec save_all({:error, any()}) :: :ok
+    def save_all({:error, reason}) do
+      Logger.error(fn ->
+        """
+        Error occurred saving... Reason: #{inspect(reason)}"
+        """
+      end)
 
-    :ok
-  end
+      :ok
+    end
 
-  @doc "Save a single meta structure to the local datastore and database."
-  @spec save(Meta.t()) :: :ok
-  def save(%Meta{id: id} = meta) do
-    id
-    |> static_path()
-    |> File.open!([:write])
-    |> write(@db_module.download(meta))
+    @doc "Save a single meta structure to the local datastore and database."
+    @spec save(Meta.t()) :: :ok
+    def save(%Meta{id: id} = meta) do
+      id
+      |> static_path()
+      |> File.open!([:write])
+      |> write(@db_module.download(meta))
 
-    meta
-  end
+      meta
+    end
 
-  @doc "Write a raw image binary to a file"
-  @spec write(File.t(), {:ok, binary()}) :: :ok | {:error, term()}
-  def write(file, {:ok, data}), do: IO.binwrite(file, data)
+    @doc "Write a raw image binary to a file"
+    @spec write(File.t(), {:ok, binary()}) :: :ok | {:error, term()}
+    def write(file, {:ok, data}), do: IO.binwrite(file, data)
 
-  @spec write(File.t(), {:error, any()}) :: :ok
-  def write(_file, {:error, reason}) do
-    Logger.error(fn ->
-      """
-      Error occurred saving... Reason: #{inspect(reason)}"
-      """
-    end)
+    @spec write(File.t(), {:error, any()}) :: :ok
+    def write(_file, {:error, reason}) do
+      Logger.error(fn ->
+        """
+        Error occurred saving... Reason: #{inspect(reason)}"
+        """
+      end)
 
-    :ok
-  end
+      :ok
+    end
 
-  @doc "Insert a Meta struct into the Image Ecto database"
-  @spec insert(Meta.t()) :: {:ok, Ecto.Schema.t()} | {:error, Ecto.Changeset.t()}
-  def insert(%Meta{id: id, malignant?: mal}) do
-    %{origin_id: id, malignant: mal, path: static_path(id)}
-    |> Mole.Content.create_image()
-  end
+    @doc "Insert a Meta struct into the Image Ecto database"
+    @spec insert(Meta.t()) :: {:ok, Ecto.Schema.t()} | {:error, Ecto.Changeset.t()}
+    def insert(%Meta{id: id, malignant?: mal}) do
+      %{origin_id: id, malignant: mal, path: static_path(id)}
+      |> Mole.Content.create_image()
+    end
 
-  @doc "Produce a static path in which to save the image"
-  @spec static_path(String.t()) :: String.t()
-  def static_path(id), do: "./priv/static/images/#{id}.jpeg"
+    @doc "Produce a static path in which to save the image"
+    @spec static_path(String.t()) :: String.t()
+    def static_path(id), do: "./priv/static/images/#{id}.jpeg"
 
-  import Ecto.Query
+    import Ecto.Query
 
-  # 30%
-  # @ratio_malignant_percent 0.3
+    # 30%
+    # @ratio_malignant_percent 0.3
 
-  # Ecto query to select malignant images
-  @malignant_query from(i in "images", where: [malignant: "TRUE"], select: i.id)
+    # Ecto query to select malignant images
+    @malignant_query from(i in "images", where: [malignant: "TRUE"], select: i.id)
 
-  @doc "Get the ratio of malignant images in the local datastore."
-  @spec ratio_malignant(integer()) :: float()
-  def ratio_malignant(total_amount) do
-    Mole.Repo.aggregate(@malignant_query, :count, :id) / total_amount
-  end
+    @doc "Get the ratio of malignant images in the local datastore."
+    @spec ratio_malignant(integer()) :: float()
+    def ratio_malignant(total_amount) do
+      Mole.Repo.aggregate(@malignant_query, :count, :id) / total_amount
+    end
 
-  @doc "Determine the percentage of malignant images in the Repo."
-  @spec examine_statistics(integer()) :: :ok
-  def examine_statistics(amount) do
-    Logger.info("Done. Examining statistics.")
+    @doc "Determine the percentage of malignant images in the Repo."
+    @spec examine_statistics(integer()) :: :ok
+    def examine_statistics(amount) do
+      Logger.info("Done. Examining statistics.")
 
-    percent = ratio_malignant(amount)
+      percent = ratio_malignant(amount)
 
-    Logger.info("There are #{amount} images total")
-    Logger.info("#{round(percent * 100)}% of which are malignant.")
+      Logger.info("There are #{amount} images total")
+      Logger.info("#{round(percent * 100)}% of which are malignant.")
 
-    :ok
+      :ok
+    end
   end
 end
