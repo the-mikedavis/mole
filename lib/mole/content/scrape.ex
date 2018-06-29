@@ -6,6 +6,7 @@ defmodule Mole.Content.Scrape do
   use Private
   require Logger
   alias Mole.Content.Meta
+  alias Mole.Content
 
   @db_module Mole.Content.Isic
   @std_chunk_size 20
@@ -32,7 +33,7 @@ defmodule Mole.Content.Scrape do
   @impl true
   @spec init(any()) :: {:ok, integer()}
   def init(_offset) do
-    offset = Mole.Content.count_images()
+    offset = Content.count_images()
 
     Process.send_after(self(), :chunk, @time_buffer)
 
@@ -49,19 +50,21 @@ defmodule Mole.Content.Scrape do
   @impl true
   @spec handle_info(:chunk, integer()) :: {:noreply, integer()}
   def handle_info(:chunk, offset) do
+    total = Content.count_images()
+
     Logger.info("Received request to get chunk at offset #{offset}")
 
     if @std_chunk_size + offset <= @max_amount do
-      Logger.info("Gettting a new chunk, at offset #{offset}")
+      Logger.info("Getting a new chunk, at offset #{offset}")
 
       download(@std_chunk_size, offset)
 
       Process.send_after(self(), :chunk, @time_buffer)
     else
-      examine_statistics(offset)
+      examine_statistics(total)
     end
 
-    {:noreply, Mole.Content.count_images()}
+    {:noreply, offset + @std_chunk_size}
   end
 
   @doc """
@@ -70,20 +73,14 @@ defmodule Mole.Content.Scrape do
   @impl true
   @spec handle_cast({:chunk, boolean(), integer()}, integer()) ::
           {:noreply, integer()}
-  def handle_cast({:chunk, malignant?, amount}, total) do
-    offset =
-      if malignant? do
-        percent_malignant(total) / 100 * total
-      else
-        total - percent_malignant(total) / 100 * total
-      end
-
+  def handle_cast({:chunk, malignant?, amount}, offset) do
+    Logger.info("Got a request to get #{amount} more. Malignant? #{malignant?}")
     download(amount, offset, malignant?: malignant?)
 
     # check again in a short amount of time
     Process.send_after(self(), :chunk, @time_buffer)
 
-    {:noreply, Mole.Content.count_images()}
+    {:noreply, offset + amount}
   end
 
   private do
@@ -157,7 +154,7 @@ defmodule Mole.Content.Scrape do
             {:ok, Ecto.Schema.t()} | {:error, Ecto.Changeset.t()}
     def insert(%Meta{id: id, malignant?: mal}) do
       %{origin_id: id, malignant: mal, path: static_path(id)}
-      |> Mole.Content.create_image()
+      |> Content.create_image()
     end
 
     # Produce a static path in which to save the image
@@ -192,23 +189,59 @@ defmodule Mole.Content.Scrape do
 
       Logger.info("There are #{amount} images total")
       Logger.info("#{percent}% of which are malignant.")
+      Logger.info("That's #{round(percent / 100 * amount)} images.")
 
       enforce_ratio(percent, amount)
 
       :ok
     end
 
-    def enforce_ratio(percent, _total) when percent in @malignant_range, do: :ok
+    @spec enforce_ratio(integer(), integer()) :: :ok
+    def enforce_ratio(percent, _total) when percent in @malignant_range do
+      Logger.info("Percent was in range, done...")
 
-    def enforce_ratio(_percent, total) do
-      m = midpoint(@malignant_range)
+      :ok
+    end
 
-      # TODO: check this math for negative condition
-      amount_outstanding = round(m * total / (100 - m))
+    def enforce_ratio(percent, total) do
+      mid = midpoint(@malignant_range)
+      number_mal = round(percent / 100 * total)
 
-      type = amount_outstanding < 0
+      Process.send_after(
+        self(),
+        {:"$gen_cast",
+         {:chunk, get_malignant?(number_mal, total, mid),
+          amount_out(number_mal, total, mid)}},
+        @time_buffer
+      )
 
-      GenServer.cast(__MODULE__, {:chunk, type, abs(amount_outstanding)})
+      :ok
+    end
+
+    defguard above_midpoint(count, total, midpoint)
+             when round(count / total) > midpoint
+
+    defp get_malignant?(count, total, midpoint)
+         when above_midpoint(count, total, midpoint),
+         do: false
+
+    defp get_malignant?(_, _, _), do: true
+
+    # x = (100c - mt) / m
+    # add benigns
+    defp amount_out(count, total, midpoint)
+         when above_midpoint(count, total, midpoint) do
+      ((100 * count - midpoint * total) / midpoint)
+      |> Float.ceil()
+      |> round()
+    end
+
+    # x = (mt - 100c) / (100 - m)
+    # add malignants
+    defp amount_out(count, total, midpoint) do
+      ((midpoint * total - 100 * count) / (100 - midpoint))
+      |> Float.ceil()
+      |> round()
     end
 
     defp midpoint(a..b), do: round((a + b) / 2)

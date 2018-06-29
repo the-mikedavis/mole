@@ -10,9 +10,16 @@ defmodule Mole.Content.Isic do
   @http_client Application.get_env(:mole, :http_client)
 
   @impl Source
-  def get_chunk(amount, offset, options \\ []) do
+  def get_chunk(amount, offset, options \\ [])
+
+  def get_chunk(amount, offset, malignant?: malignant?) do
     amount
-    |> url(offset, options)
+    |> get_chunk(offset)
+    |> filter(malignant?)
+  end
+
+  def get_chunk(amount, offset, []) do
+    "#{@base_url}?limit=#{amount}&offset=#{offset}&sort=_id&sortdir=1&detail=true"
     |> @http_client.get()
     |> decode()
   end
@@ -26,15 +33,14 @@ defmodule Mole.Content.Isic do
     end
   end
 
-  @spec url(integer(), integer(), Keyword.t()) :: String.t()
-  defp url(amount, offset, []) do
-    "#{@base_url}?limit=#{amount}&offset=#{offset}&sort=_id&sortdir=1&detail=true"
+  defp filter({:ok, data}, malignant?) do
+    {:ok,
+     Enum.filter(data, fn %Meta{malignant?: mal} ->
+       mal === malignant?
+     end)}
   end
 
-  defp url(_amount, _offset, malignant?: _malignant?) do
-    # TODO use "PegJS specefied grammar" to get by type
-    # "#{@base_url}?limit=#{amount}&offset=#{offset}&sort=_id&sortdir=1&detail=true"
-  end
+  defp filter({:error, _} = status, _), do: status
 
   @spec decode({:error, HTTPoison.Error.t()}) :: {:error, binary() | atom()}
   defp decode({:error, %Error{reason: reason}}), do: {:error, reason}
