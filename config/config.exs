@@ -9,7 +9,8 @@ use Mix.Config
 config :mole,
   ecto_repos: [Mole.Repo],
   http_client: HTTPoison,
-  max_amount: 100
+  malignant_range: 35..40,
+  max_amount: 200
 
 # Configures the endpoint
 config :mole, MoleWeb.Endpoint,

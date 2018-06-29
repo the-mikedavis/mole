@@ -16,7 +16,7 @@ defmodule Mole.Content.Scrape do
   # 30 seconds
   @await_time 30 * 1_000
   # range of malignant images, in percentage
-  @malignant_range 35..40
+  @malignant_range Application.get_env(:mole, :malignant_range)
 
   @doc "Start the scraper as a worker"
   @spec start_link(any()) :: GenServer.on_start()
