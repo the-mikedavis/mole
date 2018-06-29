@@ -10,7 +10,7 @@ defmodule Mole.Content.Scrape do
 
   @db_module Mole.Content.Isic
   @std_chunk_size 20
-  @max_amount Application.get_env(:mole, :max_amount)
+  @min_amount Application.get_env(:mole, :min_amount)
   # 1 seconds
   @time_buffer 1_000
   # 30 seconds
@@ -54,7 +54,7 @@ defmodule Mole.Content.Scrape do
 
     Logger.info("Received request to get chunk at offset #{offset}")
 
-    if @std_chunk_size + offset <= @max_amount do
+    if @std_chunk_size + offset <= @min_amount do
       Logger.info("Getting a new chunk, at offset #{offset}")
 
       download(@std_chunk_size, offset)
