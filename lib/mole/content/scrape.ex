@@ -116,7 +116,7 @@ defmodule Mole.Content.Scrape do
 
     @spec save_all({:error, any()}) :: :ok
     def save_all({:error, reason}) do
-      Logger.error(fn ->
+      Logger.debug(fn ->
         """
         Error occurred saving... Reason: #{inspect(reason)}"
         """
@@ -142,7 +142,7 @@ defmodule Mole.Content.Scrape do
 
     @spec write(File.t(), {:error, any()}) :: :ok
     def write(_file, {:error, reason}) do
-      Logger.error(fn ->
+      Logger.debug(fn ->
         """
         Error occurred saving... Reason: #{inspect(reason)}"
         """
