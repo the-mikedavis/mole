@@ -3,7 +3,7 @@ defmodule Mole.ContentTest do
 
   alias Mole.Content
 
-  describe "images" do
+  describe "database operations on the images table" do
     alias Mole.Content.Image
 
     @valid_attrs %{
@@ -25,6 +25,12 @@ defmodule Mole.ContentTest do
         |> Content.create_image()
 
       image
+    end
+
+    setup do
+      Repo.delete_all(Mole.Content.Image)
+
+      :ok
     end
 
     test "list_images/0 returns all images" do
