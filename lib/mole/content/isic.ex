@@ -2,6 +2,7 @@ defmodule Mole.Content.Isic do
   @moduledoc """
   The [ISIC database](https://isic-archive.com/api/v1#!/image/image_download).
   """
+  use Private
   alias Mole.Content.{Source, Meta}
   alias HTTPoison.{Response, Error}
   @behaviour Source
@@ -33,14 +34,18 @@ defmodule Mole.Content.Isic do
     end
   end
 
-  defp filter({:ok, data}, malignant?) do
-    {:ok,
-     Enum.filter(data, fn %Meta{malignant?: mal} ->
-       mal === malignant?
-     end)}
-  end
+  private do
+    @spec filter({:ok, list(Meta.t())}, boolean()) :: {:ok, list(Meta.t())}
+    def filter({:ok, data}, malignant?) do
+      {:ok,
+       Enum.filter(data, fn %Meta{malignant?: mal} ->
+         mal === malignant?
+       end)}
+    end
 
-  defp filter({:error, _} = status, _), do: status
+    @spec filter({:error, any()}, any()) :: {:error, any()}
+    def filter({:error, _} = status, _), do: status
+  end
 
   @spec decode({:error, HTTPoison.Error.t()}) :: {:error, binary() | atom()}
   defp decode({:error, %Error{reason: reason}}), do: {:error, reason}
