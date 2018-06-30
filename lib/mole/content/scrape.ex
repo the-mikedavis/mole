@@ -18,6 +18,8 @@ defmodule Mole.Content.Scrape do
   # range of malignant images, in percentage
   @malignant_range Application.get_env(:mole, :malignant_range)
 
+  @auto_start Application.get_env(:mole, :auto_start)
+
   @doc "Start the scraper as a worker"
   @spec start_link(any()) :: GenServer.on_start()
   def start_link(args) do
@@ -33,9 +35,11 @@ defmodule Mole.Content.Scrape do
   @impl true
   @spec init(any()) :: {:ok, integer()}
   def init(_offset) do
+
     offset = Content.count_images()
 
-    if Mix.env() !== "test" do
+    if @auto_start do
+      Logger.info("Starting the scraper")
       Process.send_after(self(), :chunk, @time_buffer)
     end
 

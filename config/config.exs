@@ -10,7 +10,8 @@ config :mole,
   ecto_repos: [Mole.Repo],
   http_client: HTTPoison,
   malignant_range: 35..40,
-  min_amount: 200
+  min_amount: 200,
+  auto_start: true
 
 # Configures the endpoint
 config :mole, MoleWeb.Endpoint,

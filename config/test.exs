@@ -10,6 +10,9 @@ config :mole, MoleWeb.Endpoint,
 # Print only warnings and errors during test
 config :logger, level: :warn
 
+config :mole,
+  auto_start: false
+
 # Configure your database
 config :mole, Mole.Repo,
   adapter: Ecto.Adapters.Postgres,
