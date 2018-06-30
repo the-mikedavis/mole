@@ -35,7 +35,6 @@ defmodule Mole.Content.Scrape do
   @impl true
   @spec init(any()) :: {:ok, integer()}
   def init(_offset) do
-
     offset = Content.count_images()
 
     if @auto_start do
