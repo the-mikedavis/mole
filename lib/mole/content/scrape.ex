@@ -35,7 +35,9 @@ defmodule Mole.Content.Scrape do
   def init(_offset) do
     offset = Content.count_images()
 
-    Process.send_after(self(), :chunk, @time_buffer)
+    if Mix.env() !== "test" do
+      Process.send_after(self(), :chunk, @time_buffer)
+    end
 
     {:ok, offset}
   end
@@ -218,8 +220,9 @@ defmodule Mole.Content.Scrape do
       :ok
     end
 
+    # 100 because the midpoint is a percentage not a ratio
     defguard above_midpoint(count, total, midpoint)
-             when round(count / total) > midpoint
+             when round(count / total * 100) > midpoint
 
     defp get_malignant?(count, total, midpoint)
          when above_midpoint(count, total, midpoint),
