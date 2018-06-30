@@ -4,13 +4,13 @@ use Mix.Config
 # you can enable the server option below.
 config :mole, MoleWeb.Endpoint,
   http: [port: 4001],
-  http_client: HTTPoisonMock,
   server: false
 
 # Print only warnings and errors during test
 config :logger, level: :warn
 
 config :mole,
+  http_client: HTTPoisonMock,
   auto_start: false
 
 # Configure your database

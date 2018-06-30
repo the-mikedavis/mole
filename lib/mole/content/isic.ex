@@ -8,7 +8,6 @@ defmodule Mole.Content.Isic do
   @behaviour Source
 
   @base_url "https://isic-archive.com/api/v1/image"
-  @http_client Application.get_env(:mole, :http_client)
 
   @impl Source
   def get_chunk(amount, offset, options \\ [])
@@ -21,20 +20,23 @@ defmodule Mole.Content.Isic do
 
   def get_chunk(amount, offset, []) do
     "#{@base_url}?limit=#{amount}&offset=#{offset}&sort=_id&sortdir=1&detail=true"
-    |> @http_client.get()
+    |> http_client().get()
     |> decode()
   end
 
   @impl Source
   @doc "Download a single image by id"
   def download(%Meta{id: id}) do
-    case @http_client.get("#{@base_url}/#{id}/download") do
+    case http_client().get("#{@base_url}/#{id}/download") do
       {:ok, %Response{body: image_raw}} -> {:ok, image_raw}
       error -> error
     end
   end
 
   private do
+    @spec http_client() :: module()
+    def http_client(), do: Application.get_env(:mole, :http_client)
+
     @spec filter({:ok, list(Meta.t())}, boolean()) :: {:ok, list(Meta.t())}
     def filter({:ok, data}, malignant?) do
       {:ok,

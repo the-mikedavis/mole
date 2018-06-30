@@ -37,4 +37,32 @@ defmodule Mole.Content.IsicTest do
 
     assert not malignant
   end
+
+  test "the filter/2 function just spits errors back out" do
+    assert Isic.filter({:error, "reason"}, true) == {:error, "reason"}
+  end
+
+  test "download/1 on a valid http response" do
+    Mox.expect(HTTPoisonMock, :get, fn _ ->
+      {:ok, %HTTPoison.Response{status_code: 200, body: "data"}}
+    end)
+
+    [to_get | _others] = @payload
+
+    assert Isic.download(to_get) == {:ok, "data"}
+  end
+
+  test "download/1 on an invalid http response" do
+    error = {:error, %HTTPoison.Error{id: 0, reason: :timeout}}
+
+    Mox.expect(HTTPoisonMock, :get, fn _ -> error end)
+
+    [to_get | _others] = @payload
+
+    assert Isic.download(to_get) == error
+  end
+
+  test "http_client/1 is producing the moxed version in :test" do
+    assert Isic.http_client() == HTTPoisonMock
+  end
 end
