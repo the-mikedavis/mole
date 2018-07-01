@@ -18,6 +18,7 @@ defmodule MoleWeb.Router do
     pipe_through(:browser)
 
     get("/", PageController, :index)
+    get("/play", GameController, :index)
     resources("/users", UserController, only: [:show, :new, :create, :index])
     resources("/sessions", SessionController, only: [:new, :create, :delete])
   end
