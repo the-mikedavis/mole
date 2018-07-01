@@ -107,4 +107,26 @@ defmodule Mole.Content do
   Count the number of images in the repo.
   """
   def count_images(), do: Repo.aggregate(Image, :count, :id)
+
+  @doc """
+  Determine if an image is malignant or not.
+  """
+  @spec malignant?(String.t()) :: {:ok, boolean()} | :error
+  def malignant?(id) do
+    case Repo.get(Image, id) do
+      %Image{malignant: malignant?} ->
+        {:ok, malignant?}
+
+      _ ->
+        :error
+    end
+  end
+
+  @doc """
+  Retreive a random image from the repo.
+  """
+  @spec random_image() :: %Image{} | :error
+  def random_image() do
+    # TODO
+  end
 end

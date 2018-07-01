@@ -1,9 +1,16 @@
 defmodule MoleWeb.GameChannel do
   use Phoenix.Channel
 
+  @moduledoc """
+  Socket channel for games.
+
+  Involves registering for games, sending images, and handling responses about
+  those images from clients.
+  """
+
   def join("game:new", _params, socket) do
     # TODO, send an image and assign it to the user
-    socket = assign(socket, :image_id, Mole.Content.random_image().source_id)
+    socket = assign(socket, :image_id, Mole.Content.random_image().id)
 
     {:ok, socket}
   end
