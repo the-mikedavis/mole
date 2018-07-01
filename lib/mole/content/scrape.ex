@@ -33,7 +33,6 @@ defmodule Mole.Content.Scrape do
   server. Send a notification that a chunk is ready to be collected.
   """
   @impl true
-  @spec init(any()) :: {:ok, integer()}
   def init(_offset) do
     offset = Content.count_images()
 
@@ -53,7 +52,6 @@ defmodule Mole.Content.Scrape do
   datastore.
   """
   @impl true
-  @spec handle_info(:chunk, integer()) :: {:noreply, integer()}
   def handle_info(:chunk, offset) do
     total = Content.count_images()
 
@@ -76,8 +74,6 @@ defmodule Mole.Content.Scrape do
   Onboard a set of images that are only either malignant or benign.
   """
   @impl true
-  @spec handle_cast({:chunk, boolean(), integer()}, integer()) ::
-          {:noreply, integer()}
   def handle_cast({:chunk, malignant?, amount}, offset) do
     Logger.info("Got a request to get #{amount} more. Malignant? #{malignant?}")
     download(amount, offset, malignant?: malignant?)
