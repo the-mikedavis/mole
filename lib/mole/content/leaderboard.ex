@@ -1,4 +1,10 @@
 defmodule Mole.Content.Leaderboard do
+  @moduledoc """
+  The leaderboard.
+
+  Handles the operation of holding the leaderboard in memory, which is an
+  ordered list of the users, sorted by score.
+  """
   use GenServer
   alias Mole.Accounts.User
   alias Mole.Repo
@@ -23,7 +29,7 @@ defmodule Mole.Content.Leaderboard do
     leaderboard =
       User
       |> Repo.all()
-      |> Enum.sort_by(&(&1.score), &>=/2)
+      |> Enum.sort_by(& &1.score, &>=/2)
       |> Enum.with_index()
 
     {:ok, leaderboard}
