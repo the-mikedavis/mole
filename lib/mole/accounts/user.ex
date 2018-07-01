@@ -7,6 +7,9 @@ defmodule Mole.Accounts.User do
   schema "users" do
     field(:name, :string)
     field(:username, :string)
+    field(:correct, :integer, default: 0)
+    field(:incorrect, :integer, default: 0)
+    field(:score, :integer, default: 0)
     has_one(:credential, Credential)
 
     timestamps()
@@ -17,6 +20,9 @@ defmodule Mole.Accounts.User do
     |> cast(attrs, [:name, :username])
     |> validate_required([:name, :username])
     |> validate_length(:username, min: 1, max: 20)
+    |> validate_number(:correct, greater_than: -1)
+    |> validate_number(:incorrect, greater_than: -1)
+    |> validate_number(:score, greater_than: -1)
   end
 
   def registration_changeset(user, params) do
