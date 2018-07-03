@@ -122,11 +122,34 @@ defmodule Mole.Content do
     end
   end
 
+  # Ecto query to select malignant images
+  @malignant_query from(
+                     i in "images",
+                     where: [malignant: "TRUE"],
+                     select: i.id
+                   )
+
+  # Get the percent of malignant images in the local datastore.
+  @spec percent_malignant() :: float()
+  def percent_malignant() do
+    total_amount = count_images()
+
+    @malignant_query
+    |> Mole.Repo.aggregate(:count, :id)
+    |> Kernel./(total_amount)
+    |> Kernel.*(100)
+    |> round()
+  end
+
   @doc """
   Retreive a random image from the repo.
   """
   @spec random_image() :: %Image{} | :error
   def random_image() do
-    # TODO
+    size = count_images() + 1
+
+    1..size
+    |> Enum.random()
+    |> (&Repo.get(Image, &1)).()
   end
 end

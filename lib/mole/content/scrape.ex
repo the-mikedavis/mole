@@ -162,31 +162,12 @@ defmodule Mole.Content.Scrape do
     @spec static_path(String.t()) :: String.t()
     def static_path(id), do: "./priv/static/images/#{id}.jpeg"
 
-    import Ecto.Query
-
-    # Ecto query to select malignant images
-    @malignant_query from(
-                       i in "images",
-                       where: [malignant: "TRUE"],
-                       select: i.id
-                     )
-
-    # Get the percent of malignant images in the local datastore.
-    @spec percent_malignant(integer()) :: float()
-    def percent_malignant(total_amount) do
-      @malignant_query
-      |> Mole.Repo.aggregate(:count, :id)
-      |> Kernel./(total_amount)
-      |> Kernel.*(100)
-      |> round()
-    end
-
     # Determine the percentage of malignant images in the Repo
     @spec examine_statistics(integer()) :: :ok
     def examine_statistics(amount) do
       Logger.info("Done. Examining statistics.")
 
-      percent = percent_malignant(amount)
+      percent = Content.percent_malignant()
 
       Logger.info("There are #{amount} images total")
       Logger.info("#{percent}% of which are malignant.")
