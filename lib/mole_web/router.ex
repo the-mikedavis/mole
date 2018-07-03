@@ -1,4 +1,5 @@
 defmodule MoleWeb.Router do
+  @moduledoc false
   use MoleWeb, :router
 
   pipeline :browser do
