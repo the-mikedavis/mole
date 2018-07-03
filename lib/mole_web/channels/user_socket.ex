@@ -1,5 +1,6 @@
 defmodule MoleWeb.UserSocket do
   use Phoenix.Socket
+
   @moduledoc """
   The user socket.
 
@@ -20,7 +21,7 @@ defmodule MoleWeb.UserSocket do
       {:ok, user_id} ->
         {:ok, assign(socket, :current_user, user_id)}
 
-      {:error, reason} ->
+      {:error, _reason} ->
         :error
     end
   end
