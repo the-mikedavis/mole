@@ -1,4 +1,15 @@
 h1 play!
 
+div#type-tell
+  span.left BENIGN
+  span &#47
+  span.right MALIGNANT
+
+div#card
+
+div#help.far.fa-question-circle onclick="toggleHelp(this)"
+  p.details Swipe left if you think the mole is benign (non-cancerous).
+  p.details Swipe right if you think the mole is malignant (cancerous).
+
 javascript:
   window.userToken = "#{assigns[:user_token]}";

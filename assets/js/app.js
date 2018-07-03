@@ -1,20 +1,11 @@
-// We need to import the CSS so that webpack will load it.
-// The MiniCssExtractPlugin is used to separate it out into
-// its own CSS file.
 import css from "../css/app.css"
-import sass from "../css/test.sass"
+import sass from "../css/master.sass"
 
-// webpack automatically bundles all modules in your
-// entry points. Those entry points can be configured
-// in "webpack.config.js".
-//
-// Import dependencies
-//
 import "phoenix_html"
 
-// Import local files
-//
-// Local files can be imported directly using relative
-// paths "./socket" or full ones "web/static/js/socket".
-
 import socket from "./socket"
+import slider from "./tinder"
+
+const slide_piece = document.getElementById('card');
+if (slide_piece)
+  slider(slide_piece);
