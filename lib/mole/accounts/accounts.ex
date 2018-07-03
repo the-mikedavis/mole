@@ -51,4 +51,10 @@ defmodule Mole.Accounts do
         {:error, :not_found}
     end
   end
+
+  @doc "Check if a username is already taken in the repo."
+  @spec username_exists?(String.t()) :: boolean()
+  def username_exists?(username) do
+    Repo.get_by(User, username: username) !== nil
+  end
 end
