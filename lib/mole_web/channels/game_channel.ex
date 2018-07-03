@@ -9,11 +9,14 @@ defmodule MoleWeb.GameChannel do
   """
 
   def join("game:new", _params, socket) do
-    image = Mole.Content.random_image()
+    %{
+      id: id,
+      path: "./priv/static" <> path
+    } = Mole.Content.random_image()
 
-    socket = assign(socket, :image_id, image.id)
+    socket = assign(socket, :image_id, id)
 
-    {:ok, "hello!", socket}
+    {:ok, %{path: path}, socket}
   end
 
   def handle_in("malignant?", %{"body" => answer}, socket) do
