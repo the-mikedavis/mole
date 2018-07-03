@@ -9,16 +9,20 @@ defmodule MoleWeb.GameChannel do
   """
 
   def join("game:new", _params, socket) do
-    # TODO, send an image and assign it to the user
-    socket = assign(socket, :image_id, Mole.Content.random_image().id)
+    image = Mole.Content.random_image()
 
-    {:ok, socket}
+    socket = assign(socket, :image_id, image.id)
+
+    {:ok, "hello!", socket}
   end
 
   def handle_in("malignant?", %{"body" => answer}, socket) do
     case Mole.Content.malignant?(socket.assigns.image_id) do
-      {:ok, malignant?} -> {:ok, malignant? == answer, socket}
-      _ -> {:error, %{reason: "Image does not exist"}}
+      {:ok, malignant?} ->
+        {:ok, malignant? == answer, socket}
+
+      _ ->
+        {:error, %{reason: "Image does not exist"}, socket}
     end
   end
 end

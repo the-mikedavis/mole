@@ -1,27 +1,30 @@
 defmodule MoleWeb.UserSocket do
   use Phoenix.Socket
+  @moduledoc """
+  The user socket.
+
+  It waits for a connction on the `game` topic. On trying to connect, it
+  verifies the user. It allows them to play if they have a token. Else
+  they cannot play.
+
+  It also saves the current user id to the socket, allowing saving of a
+  potential user later.
+  """
 
   channel("game:*", MoleWeb.GameChannel)
 
   def connect(%{"token" => token}, socket) do
-    case Phoenix.Token.verify(socket, "user socket", token, max_age: 1_209_600) do
+    socket
+    |> Phoenix.Token.verify("user socket", token, max_age: 1_209_600)
+    |> case do
       {:ok, user_id} ->
         {:ok, assign(socket, :current_user, user_id)}
 
-      {:error, _reason} ->
+      {:error, reason} ->
         :error
     end
   end
 
-  # Socket id's are topics that allow you to identify all sockets for a given user:
-  #
-  #     def id(socket), do: "user_socket:#{socket.assigns.user_id}"
-  #
-  # Would allow you to broadcast a "disconnect" event and terminate
-  # all active sockets and channels for a given user:
-  #
-  #     MoleWeb.Endpoint.broadcast("user_socket:#{user.id}", "disconnect", %{})
-  #
-  # Returning `nil` makes this socket anonymous.
+  # these sockets should be anonymous
   def id(_socket), do: nil
 end
