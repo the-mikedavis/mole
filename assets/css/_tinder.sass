@@ -1,0 +1,35 @@
+#type-tell
+  :font-family $display
+  :background-color #ddd
+  :width 100%
+  :margin 50px 0
+  :text-align center
+  :padding 10px 0
+  :border-radius 20px
+  span
+    :padding 2.5px 8px
+    :border-radius 10px
+    :color black
+    :transition background-color 0.5s ease-in-out
+    &.right, &.left
+      :background-color #ccc
+    &.right.active
+      :background-color $red
+    &.left.active
+      :background-color $green
+
+#card
+  :width 100%
+  :height 250px
+  :background-color #ccc
+  :border-radius 5px
+
+#help
+  :margin-top 25px
+  :font-size 22px
+  .details
+    :font-family $text
+    :font-size 0.9em
+    :visibility hidden
+    &.active
+      :visibility visible
