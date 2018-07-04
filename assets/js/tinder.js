@@ -3,7 +3,7 @@ import constants from './constants'
 
 const TRIGGER_WIDTH = 60
 const TRANSFORM_CUTTER = 10
-const EVENT_NAME = constants.tinder_event_name
+const SWIPE_EVENT = constants.tinder_event_name
 
 function tinder (el) {
   // pull in hammer.js
@@ -11,7 +11,7 @@ function tinder (el) {
   // only allow horizontal panning
   hammertime.get('pan').set({ direction: Hammer.DIRECTION_HORIZONTAL })
   // handle the event of swiping
-  document.addEventListener(EVENT_NAME, listener)
+  document.addEventListener(SWIPE_EVENT, listener)
   // where the swipe starts
   let starting_x = null
 
@@ -32,7 +32,7 @@ function tinder (el) {
 
     // emit a boolean for which direction was swiped
     if (Math.abs(delta) > TRIGGER_WIDTH)
-      document.dispatchEvent(new CustomEvent(EVENT_NAME, {detail: delta > 0}))
+      document.dispatchEvent(new CustomEvent(SWIPE_EVENT, {detail: delta > 0}))
 
     // reset the element back to center
     el.style.transform = `translate(0,0) rotate(0deg)`;
