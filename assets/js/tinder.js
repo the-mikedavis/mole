@@ -1,8 +1,9 @@
 import listener from './swipe_highlighter'
+import constants from './constants'
 
 const TRIGGER_WIDTH = 60
 const TRANSFORM_CUTTER = 10
-const EVENT_NAME = 'trigger'
+const EVENT_NAME = constants.tinder_event_name
 
 function tinder (el) {
   // pull in hammer.js
