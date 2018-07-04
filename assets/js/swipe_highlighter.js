@@ -1,4 +1,5 @@
 /* Handle a swipe event from `tinder.js` */
+import image_listener from './image_listener'
 
 const FADE_TIME = 3000  // 3 seconds
 const type_tell = document.getElementById('type-tell')
