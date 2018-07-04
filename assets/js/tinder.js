@@ -1,41 +1,41 @@
-const TRIGGER_WIDTH = 60;
-const TRANSFORM_CUTTER = 10;
+import listener from './swipe_highlighter'
 
-module.exports = function (el) {
-  const hammertime = new Hammer(el, {});
-  hammertime.get('pan').set({ direction: Hammer.DIRECTION_HORIZONTAL });
+const TRIGGER_WIDTH = 60
+const TRANSFORM_CUTTER = 10
+const EVENT_NAME = 'trigger'
 
-  let starting_x = null;
+function tinder (el) {
+  // pull in hammer.js
+  const hammertime = new Hammer(el, {})
+  // only allow horizontal panning
+  hammertime.get('pan').set({ direction: Hammer.DIRECTION_HORIZONTAL })
+  // handle the event of swiping
+  document.addEventListener(EVENT_NAME, listener)
+  // where the swipe starts
+  let starting_x = null
 
-  hammertime.on('panstart', function (evt) {
-    starting_x = evt.center.x;
-  });
+  // record the start of the 'delta' when starting a pan
+  hammertime.on('panstart', evt => starting_x = evt.center.x)
 
   hammertime.on('pan', function (evt) {
-    const delta = evt.center.x - starting_x,
-      direction = (delta < 0 ? "left" : "right"),
-      rotation = delta / (screen.width / TRANSFORM_CUTTER);
-
-    el.style.transform = `translate(${delta}px, 0) rotate(${rotation}deg)`;
+    // determine the amount panned
+    const delta = evt.center.x - starting_x
+    // determine a good rotation amount for the image
+    const rotation = delta / (screen.width / TRANSFORM_CUTTER)
+    // rotate and translate the element for a tinder-like feel
+    el.style.transform = `translate(${delta}px, 0) rotate(${rotation}deg)`
   });
 
   hammertime.on('panend', function (evt) {
-    const delta = evt.center.x - starting_x,
-      direction = (delta < 0 ? "left" : "right");
+    const delta = evt.center.x - starting_x
 
-    if (Math.abs(delta) > TRIGGER_WIDTH) {
-      console.log('triggered ' + direction);
-      const highlight = document.getElementsByClassName(direction);
-      for (let i = 0; i < highlight.length; i++) {
-        highlight[i].classList.add('active');
-        fadeActive(highlight[i]);
-      }
-    }
+    // emit a boolean for which direction was swiped
+    if (Math.abs(delta) > TRIGGER_WIDTH)
+      document.dispatchEvent(new CustomEvent(EVENT_NAME, {detail: delta > 0}))
 
+    // reset the element back to center
     el.style.transform = `translate(0,0) rotate(0deg)`;
   });
 }
 
-function fadeActive(element) {
-  setTimeout(() => element.classList.remove('active'), 3000);
-}
+export default tinder;
