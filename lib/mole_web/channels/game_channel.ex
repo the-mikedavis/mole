@@ -1,6 +1,9 @@
 defmodule MoleWeb.GameChannel do
   use Phoenix.Channel
 
+  alias Mole.Content.Image
+  alias Mole.Content
+
   @moduledoc """
   Socket channel for games.
 
@@ -12,9 +15,12 @@ defmodule MoleWeb.GameChannel do
   Join a new game, which involves assigning a user a new image
   """
   def join("game:new", _params, socket) do
-    {path, updated_socket} = assign_new_image(socket)
+    updated_socket =
+      socket
+      |> assign(:gameplay, %{correct: 0, incorrect: 0})
+      |> assign_new_image()
 
-    {:ok, %{path: path}, updated_socket}
+    {:ok, %{path: updated_socket.assigns.image.path}, updated_socket}
   end
 
   @doc """
@@ -24,22 +30,20 @@ defmodule MoleWeb.GameChannel do
   or not, send them whether or not they were correct and update their score.
   """
   def handle_in("answer", malignant?, socket) do
-    correct? = socket.assigns.image.malignant? == malignant?
-
-    # TODO: change the score of the user here based on their answer
-    # Also send them a new image
-
-    {:reply, {:ok, %{"correct" => correct?}}, socket}
+    with correct? <- socket.assigns.image.malignant? == malignant?,
+         key <- if(correct?, do: :correct, else: :incorrect),
+         gameplay <- Map.update(socket.assigns.gameplay, key, 0, &(&1 + 1)),
+         socket <- socket |> assign(:gameplay, gameplay) |> assign_new_image(),
+         path <- socket.assigns.image.path,
+         do: {:reply, {:ok, %{"correct" => correct?, "path" => path}}, socket}
   end
 
   # put a new random image into the socket
   # and return the path to that image
   defp assign_new_image(socket) do
-    %Mole.Content.Image{malignant: malignant, path: "./priv/static" <> path} =
-      Mole.Content.random_image()
+    %Image{malignant: malignant, path: "./priv/static" <> path} =
+      Content.random_image()
 
-    assign(socket, :image, %{malignant?: malignant})
-
-    {path, socket}
+    assign(socket, :image, %{malignant?: malignant, path: path})
   end
 end
