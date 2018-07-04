@@ -8,24 +8,32 @@ defmodule MoleWeb.GameChannel do
   those images from clients.
   """
 
+  @doc """
+  Join a new game, which involves assigning a user a new image
+  """
   def join("game:new", _params, socket) do
     %{
       id: id,
-      path: "./priv/static" <> path
+      path: "./priv/static" <> path,
+      malignant: malignant?
     } = Mole.Content.random_image()
 
-    socket = assign(socket, :image_id, id)
+    socket = assign(socket, :image, %{id: id, malignant?: malignant?})
 
     {:ok, %{path: path}, socket}
   end
 
-  def handle_in("malignant?", %{"body" => answer}, socket) do
-    case Mole.Content.malignant?(socket.assigns.image_id) do
-      {:ok, malignant?} ->
-        {:ok, malignant? == answer, socket}
+  @doc """
+  Handle things the user says.
 
-      _ ->
-        {:error, %{reason: "Image does not exist"}, socket}
-    end
+  If they send an answer to whether or not they thing an image is malignant
+  or not, send them whether or not they were correct and update their score.
+  """
+  def handle_in("answer", malignant?, socket) do
+    correct? = socket.assigns.image.malignant? == malignant?
+
+    # TODO: change the score of the user here based on their answer
+
+    {:reply, {:ok, %{"correct" => correct?}}, socket}
   end
 end
