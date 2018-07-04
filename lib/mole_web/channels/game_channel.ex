@@ -12,15 +12,9 @@ defmodule MoleWeb.GameChannel do
   Join a new game, which involves assigning a user a new image
   """
   def join("game:new", _params, socket) do
-    %{
-      id: id,
-      path: "./priv/static" <> path,
-      malignant: malignant?
-    } = Mole.Content.random_image()
+    {path, updated_socket} = assign_new_image(socket)
 
-    socket = assign(socket, :image, %{id: id, malignant?: malignant?})
-
-    {:ok, %{path: path}, socket}
+    {:ok, %{path: path}, updated_socket}
   end
 
   @doc """
@@ -33,7 +27,19 @@ defmodule MoleWeb.GameChannel do
     correct? = socket.assigns.image.malignant? == malignant?
 
     # TODO: change the score of the user here based on their answer
+    # Also send them a new image
 
     {:reply, {:ok, %{"correct" => correct?}}, socket}
+  end
+
+  # put a new random image into the socket
+  # and return the path to that image
+  defp assign_new_image(socket) do
+    %Mole.Content.Image{malignant: malignant, path: "./priv/static" <> path} =
+      Mole.Content.random_image()
+
+    assign(socket, :image, %{malignant?: malignant})
+
+    {path, socket}
   end
 end
