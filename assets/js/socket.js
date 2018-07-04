@@ -1,7 +1,10 @@
 import {Socket} from "phoenix"
 import constants from './constants'
+import image_listener from './image_listener'
 
-let socket = null;
+let socket = null
+
+const IMAGE_EVENT = constants.image_event_name
 
 if (window.userToken) {
   let socket = new Socket("/socket", {params: {token: window.userToken}})
@@ -11,13 +14,18 @@ if (window.userToken) {
   // Now that you are connected, you can join channels with a topic:
   let channel = socket.channel("game:new", {})
   channel.join()
-    .receive("ok", resp => { console.log("Joined successfully", resp) })
+    .receive("ok", resp => {
+      console.log("Joined successfully", resp)
+      document.dispatchEvent(new CustomEvent(IMAGE_EVENT, {detail: resp}))
+    })
     .receive("error", resp => { console.log("Unable to join", resp) })
 
   document.addEventListener(constants.tinder_event_name, (event) => {
     channel.push("answer", event.detail)
       .receive("ok", resp => console.log("Was I correct?", resp))
   })
+
+  document.addEventListener(IMAGE_EVENT, image_listener)
 }
 
 export default socket
