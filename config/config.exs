@@ -11,7 +11,9 @@ config :mole,
   http_client: HTTPoison,
   malignant_range: 35..40,
   min_amount: 200,
-  auto_start: true
+  auto_start: true,
+  correct_mult: 3,
+  incorrect_mult: 2
 
 # Configures the endpoint
 config :mole, MoleWeb.Endpoint,

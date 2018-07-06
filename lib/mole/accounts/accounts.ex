@@ -4,6 +4,9 @@ defmodule Mole.Accounts do
   alias Mole.Repo
   import Ecto.Query
 
+  @correct_multiplier Application.get_env(:mole, :correct_mult)
+  @incorrect_multiplier Application.get_env(:mole, :incorrect_mult)
+
   def get_user(id), do: Repo.get(User, id)
 
   def get_user!(id), do: Repo.get!(User, id)
@@ -22,6 +25,18 @@ defmodule Mole.Accounts do
     user
     |> User.changeset(attrs)
     |> Repo.update()
+  end
+
+  def update_gameplay(user_id, correct?) do
+    with user <- get_user(user_id),
+         key <- if(correct?, do: :correct, else: :incorrect),
+         changes <- Map.update!(user, key, &(&1 + 1)),
+         changes <- %{changes | score: compute_score(changes)} do
+      user
+      |> Repo.preload(:credential)
+      |> User.changeset(Map.from_struct(changes))
+      |> Repo.update()
+    end
   end
 
   def register_user(attrs \\ %{}) do
@@ -56,5 +71,10 @@ defmodule Mole.Accounts do
   @spec username_exists?(String.t()) :: boolean()
   def username_exists?(username) do
     Repo.get_by(User, username: username) !== nil
+  end
+
+  # floor of 0
+  defp compute_score(%{correct: correct, incorrect: incorrect}) do
+    max(@correct_multiplier * correct - @incorrect_multiplier * incorrect, 0)
   end
 end

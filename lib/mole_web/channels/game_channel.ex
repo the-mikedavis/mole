@@ -3,6 +3,7 @@ defmodule MoleWeb.GameChannel do
 
   alias Mole.Content.Image
   alias Mole.Content
+  alias Mole.Accounts
 
   @moduledoc """
   Socket channel for games.
@@ -34,8 +35,11 @@ defmodule MoleWeb.GameChannel do
          key <- if(correct?, do: :correct, else: :incorrect),
          gameplay <- Map.update(socket.assigns.gameplay, key, 0, &(&1 + 1)),
          socket <- socket |> assign(:gameplay, gameplay) |> assign_new_image(),
-         path <- socket.assigns.image.path,
-         do: {:reply, {:ok, %{"correct" => correct?, "path" => path}}, socket}
+         path <- socket.assigns.image.path do
+      Accounts.update_gameplay(socket.assigns.current_user, correct?)
+
+      {:reply, {:ok, %{"correct" => correct?, "path" => path}}, socket}
+    end
   end
 
   # put a new random image into the socket
