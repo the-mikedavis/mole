@@ -17,6 +17,17 @@
       :background-color $red
     &.left.active
       :background-color $green
+    &.correctness
+      :font-size 1.25em
+      :position relative
+      :top 2px
+      :color #888
+      :transition color 0.5s ease-in-out
+    &#correct.active
+      :color $green
+    &#incorrect.active
+      :color $red
+
 
 #card
   :width 100%
