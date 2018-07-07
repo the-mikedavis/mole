@@ -20,11 +20,11 @@ defmodule MoleWeb.UserController do
   end
 
   def create(conn, %{"user" => user_params}) do
-    case Accounts.register_user(user_params) do
+    case Accounts.create_user(user_params) do
       {:ok, user} ->
         conn
         |> MoleWeb.Auth.login(user)
-        |> put_flash(:info, "#{user.name} created!")
+        |> put_flash(:info, "#{user.username} created!")
         |> redirect(to: Routes.user_path(conn, :index))
 
       {:error, %Ecto.Changeset{} = changeset} ->

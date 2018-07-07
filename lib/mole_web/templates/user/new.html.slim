@@ -5,16 +5,10 @@ h2 New User
     div.alert.alert-danger
       p Oops, something went wrong! Please check the errors below.
   div
-    = text_input f, :name, placeholder: "Name"
-    = error_tag f, :name
-  div
     = text_input f, :username, placeholder: "Username"
     = error_tag f, :username
   div
-    = inputs_for f, :credential, fn cf ->
-      = text_input cf, :email, placeholder: "Email"
-      = error_tag cf, :email
-      = password_input cf, :password, placeholder: "Password"
-      = error_tag cf, :password
+    = text_input f, :password, placeholder: "Password"
+    = error_tag f, :password
   = submit "Create User"
 

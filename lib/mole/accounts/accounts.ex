@@ -1,8 +1,9 @@
 defmodule Mole.Accounts do
-  @moduledoc "Functions to act on accounts and credentials"
+  @moduledoc "Functions to act on accounts."
   alias Mole.Accounts.User
   alias Mole.Repo
   import Ecto.Query
+  require Logger
 
   @correct_multiplier Application.get_env(:mole, :correct_mult)
   @incorrect_multiplier Application.get_env(:mole, :incorrect_mult)
@@ -32,30 +33,24 @@ defmodule Mole.Accounts do
          key <- if(correct?, do: :correct, else: :incorrect),
          changes <- Map.update!(user, key, &(&1 + 1)),
          changes <- %{changes | score: compute_score(changes)} do
+      Logger.info("Updating gameplay for user #{user.username}")
+
       user
-      |> Repo.preload(:credential)
       |> User.changeset(Map.from_struct(changes))
       |> Repo.update()
     end
   end
 
-  def register_user(attrs \\ %{}) do
-    %User{}
-    |> User.registration_changeset(attrs)
-    |> Repo.insert()
-  end
-
-  def get_user_by_email(email) do
-    from(u in User, join: c in assoc(u, :credential), where: c.email == ^email)
+  def get_user_by_uname(uname) do
+    from(u in User, where: u.username == ^uname)
     |> Repo.one()
-    |> Repo.preload(:credential)
   end
 
-  def authenticate_by_email_and_pass(email, given_pass) do
-    user = get_user_by_email(email)
+  def authenticate_by_uname_and_pass(uname, given_pass) do
+    user = get_user_by_uname(uname)
 
     cond do
-      user && Comeonin.Bcrypt.checkpw(given_pass, user.credential.password_hash) ->
+      user && Comeonin.Bcrypt.checkpw(given_pass, user.password_hash) ->
         {:ok, user}
 
       user ->

@@ -5,6 +5,6 @@ table
     tr
       td
         b
-          = first_name(user)
+          = user.username
       td
         = link("View", to: Routes.user_path(@conn, :show, user.id))
