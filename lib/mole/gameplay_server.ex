@@ -65,7 +65,7 @@ defmodule Mole.GameplayServer do
 
   @impl GenServer
   def handle_call({:get, username}, _caller, state),
-    do: {:ok, Map.get(state, username), state}
+    do: {:reply, Map.get(state, username), state}
 
   @impl GenServer
   def handle_cast({:end, username, gameplay}, state) do

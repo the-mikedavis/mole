@@ -14,7 +14,8 @@ defmodule Mole.Application do
       MoleWeb.Endpoint,
       # Starts a worker by calling: Mole.Worker.start_link(arg)
       # {Mole.Worker, arg},
-      {Mole.Content.Scrape, 0}
+      {Mole.Content.Scrape, 0},
+      {Mole.GameplayServer, %{}}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

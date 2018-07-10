@@ -72,9 +72,9 @@ defmodule Mole.Accounts do
   end
 
   defp total_gameplay(%User{} = user, gameplay) do
-    gameplay
-    |> Map.keys()
-    |> Enum.reduce(%{}, fn key, acc ->
+    user = Map.from_struct(user)
+
+    Enum.reduce([:correct, :incorrect], %{}, fn key, acc ->
       Map.put(acc, key, gameplay[key] + user[key])
     end)
   end

@@ -128,7 +128,7 @@ defmodule Mole.Content.Scrape do
     @spec save(Meta.t()) :: :ok
     def save(%Meta{id: id} = meta) do
       id
-      |> static_path()
+      |> download_path()
       |> File.open!([:write])
       |> write(@db_module.download(meta))
 
@@ -158,9 +158,13 @@ defmodule Mole.Content.Scrape do
       |> Content.create_image()
     end
 
-    # Produce a static path in which to save the image
+    # Produce a static path in which to access the image
     @spec static_path(String.t()) :: String.t()
-    def static_path(id), do: "./priv/static/images/#{id}.jpeg"
+    def static_path(id), do: "/images/#{id}.jpeg"
+
+    # Produce a download path in which to save the image
+    @spec download_path(String.t()) :: String.t()
+    def download_path(id), do: "./priv/static" <> static_path(id)
 
     # Determine the percentage of malignant images in the Repo
     @spec examine_statistics(integer()) :: :ok

@@ -7,7 +7,7 @@ defmodule Mole.ScrapeTest do
 
   describe "Test the private functions scraper" do
     test "produces a proper static path given a String `id`" do
-      assert Scrape.static_path("X") == "./priv/static/images/X.jpeg"
+      assert Scrape.static_path("X") == "/images/X.jpeg"
     end
 
     test "midpoint function gets the number in the middle of a range" do

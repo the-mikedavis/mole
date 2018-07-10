@@ -24,7 +24,7 @@ defmodule MoleWeb.GameChannel do
         gameplay -> assign(socket, :gameplay, gameplay)
       end
 
-    {:ok, %{path: current_image(socket)}, socket}
+    {:ok, %{path: current_image(socket).path}, socket}
   end
 
   @doc """
@@ -35,11 +35,14 @@ defmodule MoleWeb.GameChannel do
   """
   def handle_in("answer", malignant?, socket) do
     with correct? <- current_image(socket).malignant? == malignant?,
-         socket <- update_gameplay(socket, correct?),
-         path <- current_image(socket).path do
-      case GameplayServer.update(socket.assigns.username, socket.gameplay) do
+         socket <- update_gameplay(socket, correct?) do
+      socket.assigns.username
+      |> GameplayServer.update(socket.assigns.gameplay)
+      |> case do
         :ok ->
-          {:reply, {:ok, %{"reroute" => false, "path" => path}}, socket}
+          {:reply,
+           {:ok, %{"reroute" => false, "path" => current_image(socket).path}},
+           socket}
 
         :end ->
           {:reply, {:ok, %{"reroute" => true}}, socket}
@@ -55,9 +58,7 @@ defmodule MoleWeb.GameChannel do
         %{malignant?: malignant?, path: path}
       end)
 
-    socket
-    |> assign(:gameplay, %{correct: 0, incorrect: 0})
-    |> put_in([:assigns, :gameplay, :images], images)
+    assign(socket, :gameplay, %{correct: 0, incorrect: 0, images: images})
   end
 
   defp current_image(%{assigns: %{gameplay: %{images: [h | _t]}}}), do: h
@@ -65,9 +66,12 @@ defmodule MoleWeb.GameChannel do
   defp update_gameplay(socket, correct?) do
     key = if correct?, do: :correct, else: :incorrect
 
-    socket
-    |> update_in([:assigns, :gameplay, key], &(&1 + 1))
-    |> update_in([:assigns, :gameplay, :images], &tail/1)
+    gameplay =
+      socket.assigns.gameplay
+      |> Map.update(key, 0, &(&1 + 1))
+      |> Map.update(:images, [], &tail/1)
+
+    assign(socket, :gameplay, gameplay)
   end
 
   defp tail([]), do: nil
