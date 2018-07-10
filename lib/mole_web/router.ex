@@ -2,6 +2,8 @@ defmodule MoleWeb.Router do
   @moduledoc false
   use MoleWeb, :router
 
+  @user_socket_secret Application.get_env(:mole, :user_socket_secret)
+
   pipeline :browser do
     plug(:accepts, ["html"])
     plug(:fetch_session)
@@ -27,7 +29,8 @@ defmodule MoleWeb.Router do
 
   defp put_user_token(conn, _) do
     if current_user = conn.assigns[:current_user] do
-      token = Phoenix.Token.sign(conn, "user socket", current_user.id)
+      token =
+        Phoenix.Token.sign(conn, @user_socket_secret, current_user.username)
 
       assign(conn, :user_token, token)
     else

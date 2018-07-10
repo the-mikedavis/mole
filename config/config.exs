@@ -13,7 +13,10 @@ config :mole,
   min_amount: 200,
   auto_start: true,
   correct_mult: 3,
-  incorrect_mult: 2
+  incorrect_mult: 2,
+  play_chunksize: 4,
+  user_socket_secret:
+    "aEv4XpOMzHrn/EWs/yYqMEiRG4D7SgSUt08mQyasbyUp6kNkJOAcTY9hhVcJmi7w"
 
 # Configures the endpoint
 config :mole, MoleWeb.Endpoint,

@@ -12,14 +12,17 @@ defmodule MoleWeb.UserSocket do
   potential user later.
   """
 
+  @user_socket_secret Application.get_env(:mole, :user_socket_secret)
+
   channel("game:*", MoleWeb.GameChannel)
 
   def connect(%{"token" => token}, socket) do
     socket
-    |> Phoenix.Token.verify("user socket", token, max_age: 1_209_600)
+    |> Phoenix.Token.verify(@user_socket_secret, token, max_age: 1_209_600)
     |> case do
-      {:ok, user_id} ->
-        {:ok, assign(socket, :current_user, user_id)}
+      {:ok, uname} ->
+        # TODO change to username
+        {:ok, assign(socket, :username, uname)}
 
       {:error, _reason} ->
         :error

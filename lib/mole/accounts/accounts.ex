@@ -5,8 +5,8 @@ defmodule Mole.Accounts do
   import Ecto.Query
   require Logger
 
-  @correct_multiplier Application.get_env(:mole, :correct_mult)
-  @incorrect_multiplier Application.get_env(:mole, :incorrect_mult)
+  @correct_mult Application.get_env(:mole, :correct_mult)
+  @incorrect_mult Application.get_env(:mole, :incorrect_mult)
 
   def get_user(id), do: Repo.get(User, id)
 
@@ -28,17 +28,13 @@ defmodule Mole.Accounts do
     |> Repo.update()
   end
 
-  def update_gameplay(user_id, correct?) do
-    with user <- get_user(user_id),
-         key <- if(correct?, do: :correct, else: :incorrect),
-         changes <- Map.update!(user, key, &(&1 + 1)),
-         changes <- %{changes | score: compute_score(changes)} do
-      Logger.info("Updating gameplay for user #{user.username}")
+  def save_gameplay(username, gameplay) do
+    with user <- get_user_by_uname(username),
+         total_gameplay <- total_gameplay(user, gameplay),
+         new_scores <- compute_score(total_gameplay),
+         do: update_user(user, new_scores)
 
-      user
-      |> User.changeset(Map.from_struct(changes))
-      |> Repo.update()
-    end
+    Logger.info("Saved gameplay for user #{username}.")
   end
 
   def get_user_by_uname(uname) do
@@ -69,7 +65,17 @@ defmodule Mole.Accounts do
   end
 
   # floor of 0
-  defp compute_score(%{correct: correct, incorrect: incorrect}) do
-    max(@correct_multiplier * correct - @incorrect_multiplier * incorrect, 0)
+  defp compute_score(%{correct: correct, incorrect: incorrect} = gameplay) do
+    score = max(@correct_mult * correct - @incorrect_mult * incorrect, 0)
+
+    Map.put(gameplay, :score, score)
+  end
+
+  defp total_gameplay(%User{} = user, gameplay) do
+    gameplay
+    |> Map.keys()
+    |> Enum.reduce(%{}, fn key, acc ->
+      Map.put(acc, key, gameplay[key] + user[key])
+    end)
   end
 end

@@ -144,12 +144,14 @@ defmodule Mole.Content do
   @doc """
   Retreive a random image from the repo.
   """
-  @spec random_image() :: %Image{} | :error
-  def random_image() do
+  @spec random_images(integer()) :: [%Image{} | :error]
+  def random_images(count) do
     size = count_images() + 1
 
     1..size
-    |> Enum.random()
-    |> (&Repo.get(Image, &1)).()
+    |> Enum.take_random(count * 2)
+    |> Enum.uniq()
+    |> Enum.take(count)
+    |> Enum.map(&Repo.get(Image, &1))
   end
 end
