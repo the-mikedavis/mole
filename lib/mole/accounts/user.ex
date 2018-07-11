@@ -22,7 +22,6 @@ defmodule Mole.Accounts.User do
     |> validate_length(:password, min: 6, max: 30)
     |> validate_number(:correct, greater_than: -1)
     |> validate_number(:incorrect, greater_than: -1)
-    |> validate_number(:score, greater_than: -1)
     |> put_pass_hash()
   end
 
