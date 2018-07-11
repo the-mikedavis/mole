@@ -5,7 +5,7 @@ function listener(event) {
   if (event.detail.reroute) {
     // reroute to the specified path
     window.location.href = event.detail.path
-  } else
+  } else {
     // move on to the next image
     const path = event.detail.path
     const correct = event.detail.correct
