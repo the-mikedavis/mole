@@ -60,6 +60,9 @@ defmodule MoleWeb.GameChannel do
     assign(socket, :gameplay, %{playable: images, played: []})
   end
 
+  defp current_image(%{assigns: %{gameplay: %{playable: []}}}),
+    do: raise("GameChannel tried to get the next image after all ran out!")
+
   defp current_image(%{assigns: %{gameplay: %{playable: [h | _t]}}}), do: h
 
   defp current_image_path(socket) do
