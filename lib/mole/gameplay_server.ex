@@ -1,8 +1,6 @@
 defmodule Mole.GameplayServer do
   use GenServer
 
-  alias Mole.Accounts
-
   @type gameplay :: %{correct: integer(), incorrect: integer()}
 
   @moduledoc """
@@ -34,16 +32,37 @@ defmodule Mole.GameplayServer do
   database).
   """
 
-  @play_chunksize Application.get_env(:mole, :play_chunksize)
-
   # Client API
 
+  @doc "Get a user's gameplay by username"
   @spec get(binary()) :: map() | nil
   def get(username), do: GenServer.call(__MODULE__, {:get, username})
 
-  @spec get_and_del(username) :: map() | nil
-  def get_and_del(username),
-    do: GenServer.call(__MODULE__, {:get_and_del, username})
+  @doc "Return a user's gameplay if and only if it's in progress"
+  @spec get_in_progress(binary()) :: map() | nil
+  def get_in_progress(username) do
+    case get(username) do
+      # non existant
+      nil -> nil
+      # done
+      %{playable: []} -> nil
+      # in progress
+      gameplay -> gameplay
+    end
+  end
+
+  @doc "Return a user's gameplay if and only if it's done"
+  @spec get_done(binary()) :: map() | nil
+  def get_done(username) do
+    case get(username) do
+      # non existant
+      nil -> nil
+      # done
+      %{playable: []} = gameplay -> gameplay
+      # in progress
+      _gameplay -> nil
+    end
+  end
 
   @spec update(binary(), gameplay()) :: :ok
   def update(username, gameplay),
@@ -61,9 +80,23 @@ defmodule Mole.GameplayServer do
   def handle_call({:get, username}, _caller, state),
     do: {:reply, Map.get(state, username), state}
 
-  def handle_call({:get_and_del, username}, _caller, state)
-    do: {:reply, Map.get(state, username), Map.delete(state, username)}
+  def handle_call({:done, username}, _caller, state) do
+    case Map.get(state, username) do
+      # there is no gameplay under that user
+      nil ->
+        {:reply, nil, state}
 
+      # the gameplay is done
+      %{playable: []} = gameplay ->
+        {:reply, {true, gameplay}, Map.delete(state, username)}
+
+      # the gameplay is still in progress
+      gameplay ->
+        {:reply, {false, gameplay}, state}
+    end
+  end
+
+  @impl GenServer
   def handle_cast({:update, username, gameplay}, state),
     do: {:noreply, Map.put(state, username, gameplay)}
 end
