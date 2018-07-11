@@ -38,22 +38,16 @@ defmodule Mole.GameplayServer do
 
   # Client API
 
-  @spec get(binary()) :: GenServer.on_start()
+  @spec get(binary()) :: map() | nil
   def get(username), do: GenServer.call(__MODULE__, {:get, username})
 
-  @spec update(binary(), gameplay()) :: :ok | :end
-  def update(username, %{correct: cor, incorrect: incor} = gameplay)
-      when cor + incor == @play_chunksize do
-    GenServer.cast(__MODULE__, {:end, username, gameplay})
+  @spec get_and_del(username) :: map() | nil
+  def get_and_del(username),
+    do: GenServer.call(__MODULE__, {:get_and_del, username})
 
-    :end
-  end
-
-  def update(username, gameplay) do
-    GenServer.cast(__MODULE__, {:update, username, gameplay})
-
-    :ok
-  end
+  @spec update(binary(), gameplay()) :: :ok
+  def update(username, gameplay),
+    do: GenServer.cast(__MODULE__, {:update, username, gameplay})
 
   # Server API
 
@@ -67,12 +61,8 @@ defmodule Mole.GameplayServer do
   def handle_call({:get, username}, _caller, state),
     do: {:reply, Map.get(state, username), state}
 
-  @impl GenServer
-  def handle_cast({:end, username, gameplay}, state) do
-    Accounts.save_gameplay(username, gameplay)
-
-    {:noreply, Map.delete(state, username)}
-  end
+  def handle_call({:get_and_del, username}, _caller, state)
+    do: {:reply, Map.get(state, username), Map.delete(state, username)}
 
   def handle_cast({:update, username, gameplay}, state),
     do: {:noreply, Map.put(state, username, gameplay)}
