@@ -5,6 +5,7 @@ defmodule MoleWeb.UserController do
   alias Mole.{Accounts, Accounts.User}
 
   def index(conn, _params) do
+    # TODO, show the leaderboard here, with pagination
     users = Accounts.list_users()
     render(conn, "index.html", users: users)
   end
@@ -31,6 +32,9 @@ defmodule MoleWeb.UserController do
         render(conn, "new.html", changeset: changeset)
     end
   end
+
+  def taken(conn, %{"username" => username}),
+    do: json(conn, %{taken: Accounts.username_taken?(username)})
 
   defp authenticate(conn, _opts) do
     if conn.assigns.current_user do

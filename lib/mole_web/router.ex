@@ -18,6 +18,12 @@ defmodule MoleWeb.Router do
     plug(:accepts, ["json"])
   end
 
+  scope "/api", MoleWeb do
+    pipe_through(:api)
+
+    get("/taken", UserController, :taken)
+  end
+
   scope "/", MoleWeb do
     pipe_through(:browser)
 

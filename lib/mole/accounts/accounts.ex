@@ -59,10 +59,9 @@ defmodule Mole.Accounts do
   end
 
   @doc "Check if a username is already taken in the repo."
-  @spec username_exists?(String.t()) :: boolean()
-  def username_exists?(username) do
-    Repo.get_by(User, username: username) !== nil
-  end
+  @spec username_taken?(String.t()) :: boolean()
+  def username_taken?(username),
+    do: Repo.get_by(User, username: username) != nil
 
   # floor of 0
   defp compute_score(%{correct: correct, incorrect: incorrect} = gameplay) do
