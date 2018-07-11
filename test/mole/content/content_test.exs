@@ -8,15 +8,13 @@ defmodule Mole.ContentTest do
 
     @valid_attrs %{
       malignant: true,
-      origin_id: "some origin_id",
-      path: "some path"
+      origin_id: "some origin_id"
     }
     @update_attrs %{
       malignant: false,
-      origin_id: "some updated origin_id",
-      path: "some updated path"
+      origin_id: "some updated origin_id"
     }
-    @invalid_attrs %{malignant: nil, origin_id: nil, path: nil}
+    @invalid_attrs %{malignant: nil, origin_id: nil}
 
     def image_fixture(attrs \\ %{}) do
       {:ok, image} =
@@ -47,7 +45,6 @@ defmodule Mole.ContentTest do
       assert {:ok, %Image{} = image} = Content.create_image(@valid_attrs)
       assert image.malignant == true
       assert image.origin_id == "some origin_id"
-      assert image.path == "some path"
     end
 
     test "create_image/1 with invalid data returns error changeset" do
@@ -62,7 +59,6 @@ defmodule Mole.ContentTest do
 
       assert image.malignant == false
       assert image.origin_id == "some updated origin_id"
-      assert image.path == "some updated path"
     end
 
     test "update_image/2 with invalid data returns error changeset" do
@@ -84,5 +80,9 @@ defmodule Mole.ContentTest do
       image = image_fixture()
       assert %Ecto.Changeset{} = Content.change_image(image)
     end
+  end
+
+  test "produces a proper static path given a String `id`" do
+    assert Content.static_path("X") == "/images/X.jpeg"
   end
 end

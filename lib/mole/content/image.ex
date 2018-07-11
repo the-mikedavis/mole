@@ -9,7 +9,6 @@ defmodule Mole.Content.Image do
   schema "images" do
     field(:malignant, :boolean, default: false)
     field(:origin_id, :string)
-    field(:path, :string)
 
     timestamps()
   end
@@ -17,8 +16,8 @@ defmodule Mole.Content.Image do
   @doc false
   def changeset(image, attrs) do
     image
-    |> cast(attrs, [:origin_id, :path, :malignant])
-    |> validate_required([:origin_id, :path, :malignant])
+    |> cast(attrs, [:origin_id, :malignant])
+    |> validate_required([:origin_id, :malignant])
     |> unique_constraint(:origin_id)
   end
 end

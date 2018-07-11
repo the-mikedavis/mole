@@ -23,7 +23,7 @@ defmodule MoleWeb.GameChannel do
         gameplay -> assign(socket, :gameplay, gameplay)
       end
 
-    {:ok, %{path: current_image(socket).path}, socket}
+    {:ok, %{path: current_image_path(socket)}, socket}
   end
 
   @doc """
@@ -45,7 +45,7 @@ defmodule MoleWeb.GameChannel do
 
         _list ->
           {:reply,
-           {:ok, %{"reroute" => false, "path" => current_image(socket).path}},
+           {:ok, %{"reroute" => false, "path" => current_image_path(socket)}},
            socket}
       end
     end
@@ -63,6 +63,12 @@ defmodule MoleWeb.GameChannel do
   end
 
   defp current_image(%{assigns: %{gameplay: %{playable: [h | _t]}}}), do: h
+
+  defp current_image_path(socket) do
+    socket
+    |> current_image()
+    |> Content.static_path()
+  end
 
   defp update_gameplay(socket, correct?) do
     with gameplay <- socket.assigns.gameplay,

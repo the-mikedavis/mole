@@ -6,10 +6,6 @@ defmodule Mole.ScrapeTest do
   @malignant_range 28..32
 
   describe "Test the private functions scraper" do
-    test "produces a proper static path given a String `id`" do
-      assert Scrape.static_path("X") == "/images/X.jpeg"
-    end
-
     test "midpoint function gets the number in the middle of a range" do
       assert Scrape.midpoint(0..10) === 5
       # rounds up as well

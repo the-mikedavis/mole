@@ -5,10 +5,9 @@ defmodule Mole.Content.Scrape do
   use GenServer
   use Private
   require Logger
-  alias Mole.Content.Meta
-  alias Mole.Content
+  alias Mole.{Content, Content.Isic, Content.Meta}
 
-  @db_module Mole.Content.Isic
+  @db_module Isic
   @std_chunk_size 20
   @min_amount Application.get_env(:mole, :min_amount)
   # 1 seconds
@@ -128,7 +127,7 @@ defmodule Mole.Content.Scrape do
     @spec save(Meta.t()) :: :ok
     def save(%Meta{id: id} = meta) do
       id
-      |> download_path()
+      |> Content.download_path()
       |> File.open!([:write])
       |> write(@db_module.download(meta))
 
@@ -153,18 +152,8 @@ defmodule Mole.Content.Scrape do
     # Insert a Meta struct into the Image Ecto database
     @spec insert(Meta.t()) ::
             {:ok, Ecto.Schema.t()} | {:error, Ecto.Changeset.t()}
-    def insert(%Meta{id: id, malignant?: mal}) do
-      %{origin_id: id, malignant: mal, path: static_path(id)}
-      |> Content.create_image()
-    end
-
-    # Produce a static path in which to access the image
-    @spec static_path(String.t()) :: String.t()
-    def static_path(id), do: "/images/#{id}.jpeg"
-
-    # Produce a download path in which to save the image
-    @spec download_path(String.t()) :: String.t()
-    def download_path(id), do: "./priv/static" <> static_path(id)
+    def insert(%Meta{id: id, malignant?: mal}),
+      do: Content.create_image(%{origin_id: id, malignant: mal})
 
     # Determine the percentage of malignant images in the Repo
     @spec examine_statistics(integer()) :: :ok
