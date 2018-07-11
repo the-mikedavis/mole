@@ -17,8 +17,8 @@ defmodule MoleWeb.GameChannel do
   Join a new game, which involves assigning a user a new image
   """
   def join("game:new", _params, socket) do
+    # recover gameplay that's in progress (part way through images)
     socket =
-      # recover gameplay that's in progress (part way through images)
       case GameplayServer.get_in_progress(socket.assigns.username) do
         nil -> assign_new_gameplay(socket)
         gameplay -> assign(socket, :gameplay, gameplay)

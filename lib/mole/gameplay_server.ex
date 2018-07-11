@@ -43,11 +43,16 @@ defmodule Mole.GameplayServer do
   def get_in_progress(username) do
     case get(username) do
       # non existant
-      nil -> nil
+      nil ->
+        nil
+
       # done
-      %{playable: []} -> nil
+      %{playable: []} ->
+        nil
+
       # in progress
-      gameplay -> gameplay
+      gameplay ->
+        gameplay
     end
   end
 
@@ -56,11 +61,16 @@ defmodule Mole.GameplayServer do
   def get_done(username) do
     case get(username) do
       # non existant
-      nil -> nil
+      nil ->
+        nil
+
       # done
-      %{playable: []} = gameplay -> gameplay
+      %{playable: []} = gameplay ->
+        gameplay
+
       # in progress
-      _gameplay -> nil
+      _gameplay ->
+        nil
     end
   end
 

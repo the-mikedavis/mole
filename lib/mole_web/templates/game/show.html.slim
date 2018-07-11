@@ -1,8 +1,12 @@
 h1 Here's how you did:
 
-img.recap
-img.recap
-img.recap
-img.recap
+= for image <- Enum.reverse(@gameplay.played) do
+  = if image.correct? do
+    div.correct
+      i.far.fa-check-circle
+  - else
+    div.incorrect
+      i.far.fa-times-circle
+  img.recap_card src="#{image_path(image)}"
 
-a href="" play again?
+a href="#{Routes.game_path(@conn, :index)}" Play again?
