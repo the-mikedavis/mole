@@ -66,16 +66,22 @@ defmodule Mole.Accounts do
 
   # floor of 0
   defp compute_score(%{correct: correct, incorrect: incorrect} = gameplay) do
-    score = max(@correct_mult * correct - @incorrect_mult * incorrect, 0)
-
-    Map.put(gameplay, :score, score)
+    Map.put(
+      gameplay,
+      :score,
+      @correct_mult * correct - @incorrect_mult * incorrect
+    )
   end
 
   defp total_gameplay(%User{} = user, gameplay) do
-    user = Map.from_struct(user)
+    {correct, incorrect} =
+      Enum.reduce(gameplay.played, {0, 0}, fn image, {cor, incor} ->
+        if image.correct?, do: {cor + 1, incor}, else: {cor, incor + 1}
+      end)
 
-    Enum.reduce([:correct, :incorrect], %{}, fn key, acc ->
-      Map.put(acc, key, gameplay[key] + user[key])
-    end)
+    %{
+      correct: user.correct + correct,
+      incorrect: user.incorrect + incorrect
+    }
   end
 end

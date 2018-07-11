@@ -1,9 +1,8 @@
 defmodule MoleWeb.GameChannel do
   use Phoenix.Channel
 
-  alias Mole.GameplayServer
-  alias Mole.Content.Image
-  alias Mole.Content
+  alias Mole.{Content, GameplayServer}
+  alias MoleWeb.{Endpoint, Router.Helpers}
 
   @moduledoc """
   Socket channel for games.
@@ -36,16 +35,18 @@ defmodule MoleWeb.GameChannel do
   def handle_in("answer", malignant?, socket) do
     with correct? <- current_image(socket).malignant? == malignant?,
          socket <- update_gameplay(socket, correct?) do
-      socket.assigns.username
-      |> GameplayServer.update(socket.assigns.gameplay)
-      |> case do
-        :ok ->
+      GameplayServer.update(socket.assigns.username, socket.assigns.gameplay)
+
+      case socket.assigns.gameplay.playable do
+        [] ->
+          recap_path = Helpers.game_path(Endpoint, :show)
+
+          {:reply, {:ok, %{"reroute" => true, "path" => recap_path}}, socket}
+
+        _list ->
           {:reply,
            {:ok, %{"reroute" => false, "path" => current_image(socket).path}},
            socket}
-
-        :end ->
-          {:reply, {:ok, %{"reroute" => true}}, socket}
       end
     end
   end
@@ -54,26 +55,22 @@ defmodule MoleWeb.GameChannel do
     images =
       @play_chunksize
       |> Content.random_images()
-      |> Enum.map(fn %Image{malignant: malignant?, path: path} ->
-        %{malignant?: malignant?, path: path}
-      end)
+      |> Enum.map(&Map.from_struct/1)
+      # TODO: consider removing from schema
+      |> Enum.map(&Map.delete(&1, :origin_id))
 
-    assign(socket, :gameplay, %{correct: 0, incorrect: 0, images: images})
+    assign(socket, :gameplay, %{playable: images, played: []})
   end
 
-  defp current_image(%{assigns: %{gameplay: %{images: [h | _t]}}}), do: h
+  defp current_image(%{assigns: %{gameplay: %{playable: [h | _t]}}}), do: h
 
   defp update_gameplay(socket, correct?) do
-    key = if correct?, do: :correct, else: :incorrect
-
-    gameplay =
-      socket.assigns.gameplay
-      |> Map.update(key, 0, &(&1 + 1))
-      |> Map.update(:images, [], &tail/1)
-
-    assign(socket, :gameplay, gameplay)
+    with gameplay <- socket.assigns.gameplay,
+         [just_played | to_play] <- gameplay.playable,
+         just_played <- Map.put(just_played, :correct?, correct?),
+         # N.B. the `played` list will need to be reversed at the end
+         gameplay <-
+           %{playable: to_play, played: [just_played | gameplay.played]},
+         do: assign(socket, :gameplay, gameplay)
   end
-
-  defp tail([]), do: nil
-  defp tail([_h | tail]), do: tail
 end
