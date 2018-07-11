@@ -1,12 +1,12 @@
 import {Socket} from "phoenix"
 import constants from './constants'
 import image_listener from './image_listener'
-import correct_listener from './correct_listener'
+import next_listener from './next_listener'
 
 let socket = null
 
 const IMAGE_EVENT = constants.image_event_name
-const CORRECT_EVENT = constants.correct_event_name
+const NEXT_EVENT = constants.next_event_name
 
 if (window.userToken) {
   let socket = new Socket("/socket", {params: {token: window.userToken}})
@@ -25,7 +25,7 @@ if (window.userToken) {
   document.addEventListener(constants.tinder_event_name, (event) => {
     channel.push("answer", event.detail)
       .receive("ok", resp => {
-        document.dispatchEvent(new CustomEvent(CORRECT_EVENT, {detail: resp}))
+        document.dispatchEvent(new CustomEvent(NEXT_EVENT, {detail: resp}))
       })
   })
 
