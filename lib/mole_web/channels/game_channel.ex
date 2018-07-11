@@ -33,7 +33,7 @@ defmodule MoleWeb.GameChannel do
   one set and will be re-routed to the results page.
   """
   def handle_in("answer", malignant?, socket) do
-    with correct? <- current_image(socket).malignant? == malignant?,
+    with correct? <- current_image(socket).malignant == malignant?,
          socket <- update_gameplay(socket, correct?) do
       GameplayServer.update(socket.assigns.username, socket.assigns.gameplay)
 
@@ -55,9 +55,7 @@ defmodule MoleWeb.GameChannel do
     images =
       @play_chunksize
       |> Content.random_images()
-      |> Enum.map(&Map.from_struct/1)
-      # TODO: consider removing from schema
-      |> Enum.map(&Map.delete(&1, :origin_id))
+      |> Enum.map(&Map.take(&1, [:origin_id, :malignant]))
 
     assign(socket, :gameplay, %{playable: images, played: []})
   end
