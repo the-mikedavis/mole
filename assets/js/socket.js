@@ -30,7 +30,7 @@ if (window.userToken) {
   })
 
   document.addEventListener(IMAGE_EVENT, image_listener)
-  document.addEventListener(CORRECT_EVENT, correct_listener)
+  document.addEventListener(NEXT_EVENT, next_listener)
 }
 
 export default socket
