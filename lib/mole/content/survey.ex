@@ -2,10 +2,13 @@ defmodule Mole.Content.Survey do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @moduledoc "The Survey context, which keeps track of survey links."
 
   schema "surveys" do
-    field :link, :string
-    field :slug, :string
+    # external link to qualtrics or whatever
+    field(:link, :string)
+    # internally identifiable slug
+    field(:slug, :string)
 
     timestamps()
   end

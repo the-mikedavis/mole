@@ -33,6 +33,7 @@ defmodule MoleWeb.Router do
     resources("/users", UserController, only: [:show, :new, :create, :index])
     resources("/sessions", SessionController, only: [:new, :create, :delete])
     resources("/admins", AdminController, only: [:index, :create])
+    # custom because :delete requires an id, so it can't be used in a form
     post("/admins/delete", AdminController, :delete)
     resources("/surveys", SurveyController)
   end

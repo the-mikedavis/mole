@@ -124,15 +124,20 @@ defmodule Mole.ContentTest do
 
     test "update_survey/2 with valid data updates the survey" do
       survey = survey_fixture()
-      assert {:ok, %Survey{} = survey} = Content.update_survey(survey, @update_attrs)
-      
+
+      assert {:ok, %Survey{} = survey} =
+               Content.update_survey(survey, @update_attrs)
+
       assert survey.link == "some updated link"
       assert survey.slug == "some updated slug"
     end
 
     test "update_survey/2 with invalid data returns error changeset" do
       survey = survey_fixture()
-      assert {:error, %Ecto.Changeset{}} = Content.update_survey(survey, @invalid_attrs)
+
+      assert {:error, %Ecto.Changeset{}} =
+               Content.update_survey(survey, @invalid_attrs)
+
       assert survey == Content.get_survey!(survey.id)
     end
 

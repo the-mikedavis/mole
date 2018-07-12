@@ -1,6 +1,6 @@
 defmodule MoleWeb.AdminController do
   use MoleWeb, :controller
-  plug(:authenticate)
+  plug(MoleWeb.AdminAuth)
 
   alias Mole.Administrators
 
@@ -23,21 +23,5 @@ defmodule MoleWeb.AdminController do
     conn
     |> put_flash(:info, "Admin access for #{username} has been revoked!")
     |> redirect(to: Routes.admin_path(conn, :index))
-  end
-
-  defp authenticate(conn, _opts) do
-    with %{username: username} <- conn.assigns.current_user,
-         true <- Administrators.is?(username) do
-      conn
-    else
-      _ ->
-        conn
-        |> put_flash(
-          :error,
-          "You do not have proper permissions to access that page."
-        )
-        |> redirect(to: Routes.session_path(conn, :index))
-        |> halt()
-    end
   end
 end

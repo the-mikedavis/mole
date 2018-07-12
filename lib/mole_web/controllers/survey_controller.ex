@@ -1,6 +1,8 @@
 defmodule MoleWeb.SurveyController do
   use MoleWeb, :controller
 
+  plug(MoleWeb.AdminAuth when action != :show)
+
   alias Mole.Content
   alias Mole.Content.Survey
 
@@ -20,6 +22,7 @@ defmodule MoleWeb.SurveyController do
         conn
         |> put_flash(:info, "Survey created successfully.")
         |> redirect(to: Routes.survey_path(conn, :show, survey))
+
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "new.html", changeset: changeset)
     end
@@ -44,6 +47,7 @@ defmodule MoleWeb.SurveyController do
         conn
         |> put_flash(:info, "Survey updated successfully.")
         |> redirect(to: Routes.survey_path(conn, :show, survey))
+
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "edit.html", survey: survey, changeset: changeset)
     end
