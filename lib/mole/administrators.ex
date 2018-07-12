@@ -14,6 +14,10 @@ defmodule Mole.Administrators do
     )
   end
 
+  @doc "Retreive all administrators"
+  @spec all() :: [String.t()]
+  def all, do: Agent.get(__MODULE__, &Enum.into(&1, []))
+
   @doc "Is the username in the list of administrators?"
   @spec is?(String.t()) :: boolean()
   def is?(username),

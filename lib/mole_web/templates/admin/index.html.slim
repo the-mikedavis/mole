@@ -1,0 +1,19 @@
+h1 Administrator Users
+
+ul
+  = for username <- @users do
+    li = username
+
+h2 Add a new administrator
+
+= form_for @conn, Routes.admin_path(@conn, :create), fn f ->
+  div
+    = text_input f, :username, placeholder: "username"
+  = submit "add administrator"
+
+h2 Remove an existing administrator
+
+= form_for @conn, Routes.admin_path(@conn, :delete), fn f ->
+  div
+    = text_input f, :username, placeholder: "username"
+  = submit "remove administrator"

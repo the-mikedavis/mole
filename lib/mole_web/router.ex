@@ -32,6 +32,8 @@ defmodule MoleWeb.Router do
     get("/recap", GameController, :show)
     resources("/users", UserController, only: [:show, :new, :create, :index])
     resources("/sessions", SessionController, only: [:new, :create, :delete])
+    resources("/admins", AdminController, only: [:index, :create])
+    post("/admins/delete", AdminController, :delete)
   end
 
   defp put_user_token(conn, _) do
