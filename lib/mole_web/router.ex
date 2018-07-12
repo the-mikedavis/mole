@@ -34,6 +34,7 @@ defmodule MoleWeb.Router do
     resources("/sessions", SessionController, only: [:new, :create, :delete])
     resources("/admins", AdminController, only: [:index, :create])
     post("/admins/delete", AdminController, :delete)
+    resources("/surveys", SurveyController)
   end
 
   defp put_user_token(conn, _) do

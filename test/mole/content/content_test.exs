@@ -85,4 +85,66 @@ defmodule Mole.ContentTest do
   test "produces a proper static path given a String `id`" do
     assert Content.static_path("X") == "/images/X.jpeg"
   end
+
+  describe "surveys" do
+    alias Mole.Content.Survey
+
+    @valid_attrs %{link: "some link", slug: "some slug"}
+    @update_attrs %{link: "some updated link", slug: "some updated slug"}
+    @invalid_attrs %{link: nil, slug: nil}
+
+    def survey_fixture(attrs \\ %{}) do
+      {:ok, survey} =
+        attrs
+        |> Enum.into(@valid_attrs)
+        |> Content.create_survey()
+
+      survey
+    end
+
+    test "list_surveys/0 returns all surveys" do
+      survey = survey_fixture()
+      assert Content.list_surveys() == [survey]
+    end
+
+    test "get_survey!/1 returns the survey with given id" do
+      survey = survey_fixture()
+      assert Content.get_survey!(survey.id) == survey
+    end
+
+    test "create_survey/1 with valid data creates a survey" do
+      assert {:ok, %Survey{} = survey} = Content.create_survey(@valid_attrs)
+      assert survey.link == "some link"
+      assert survey.slug == "some slug"
+    end
+
+    test "create_survey/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Content.create_survey(@invalid_attrs)
+    end
+
+    test "update_survey/2 with valid data updates the survey" do
+      survey = survey_fixture()
+      assert {:ok, %Survey{} = survey} = Content.update_survey(survey, @update_attrs)
+      
+      assert survey.link == "some updated link"
+      assert survey.slug == "some updated slug"
+    end
+
+    test "update_survey/2 with invalid data returns error changeset" do
+      survey = survey_fixture()
+      assert {:error, %Ecto.Changeset{}} = Content.update_survey(survey, @invalid_attrs)
+      assert survey == Content.get_survey!(survey.id)
+    end
+
+    test "delete_survey/1 deletes the survey" do
+      survey = survey_fixture()
+      assert {:ok, %Survey{}} = Content.delete_survey(survey)
+      assert_raise Ecto.NoResultsError, fn -> Content.get_survey!(survey.id) end
+    end
+
+    test "change_survey/1 returns a survey changeset" do
+      survey = survey_fixture()
+      assert %Ecto.Changeset{} = Content.change_survey(survey)
+    end
+  end
 end
