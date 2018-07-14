@@ -11,6 +11,7 @@ defmodule MoleWeb.Router do
     plug(:protect_from_forgery)
     plug(:put_secure_browser_headers)
     plug(MoleWeb.Auth)
+    plug(MoleWeb.SurveyAuth)
     plug(:put_user_token)
   end
 
@@ -35,6 +36,7 @@ defmodule MoleWeb.Router do
     resources("/admins", AdminController, only: [:index, :create])
     # custom because :delete requires an id, so it can't be used in a form
     post("/admins/delete", AdminController, :delete)
+    get("/join/:slug", SurveyController, :join)
     resources("/surveys", SurveyController)
   end
 

@@ -29,7 +29,11 @@ defmodule Mole.Administrators do
     do: Agent.update(__MODULE__, &MapSet.put(&1, username))
 
   @doc "Remove an existing administrator from the system."
-  @spec remove(String.t()) :: :ok
+  @spec remove(username :: String.t()) :: :ok | :error
+  def remove(username)
+
+  def remove("the-mikedavis"), do: :error
+
   def remove(username),
     do: Agent.update(__MODULE__, &MapSet.delete(&1, username))
 end

@@ -1,10 +1,11 @@
 defmodule MoleWeb.SurveyController do
   use MoleWeb, :controller
 
-  plug(MoleWeb.AdminAuth when action != :show)
+  alias Mole.{Content, Content.Survey}
+  alias MoleWeb.{AdminAuth, SurveyAuth}
 
-  alias Mole.Content
-  alias Mole.Content.Survey
+  plug(AdminAuth when action != :join)
+  plug(SurveyAuth when action == :join)
 
   def index(conn, _params) do
     surveys = Content.list_surveys()
@@ -60,5 +61,20 @@ defmodule MoleWeb.SurveyController do
     conn
     |> put_flash(:info, "Survey deleted successfully.")
     |> redirect(to: Routes.survey_path(conn, :index))
+  end
+
+  def join(conn, %{"slug" => slug}) do
+    case Content.get_survey_by_slug(slug) do
+      nil ->
+        conn
+        |> put_flash(:error, "Couldn't find the \"#{slug}\" survey.")
+        |> redirect(to: Routes.page_path(conn, :index))
+
+      id ->
+        conn
+        |> SurveyAuth.put_survey(id)
+        |> put_flash(:info, "You have joined survey \"#{slug}\".")
+        |> redirect(to: Routes.game_path(conn, :index))
+    end
   end
 end

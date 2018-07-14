@@ -264,4 +264,9 @@ defmodule Mole.Content do
   def change_survey(%Survey{} = survey) do
     Survey.changeset(survey, %{})
   end
+
+  def get_survey_by_slug(slug) do
+    from(s in "surveys", where: [slug: ^slug], select: s.id)
+    |> Repo.one()
+  end
 end
