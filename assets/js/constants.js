@@ -7,7 +7,9 @@ const constants = {
   activate_element: function (element) {
     element.classList.add('active')
     fade(element)
-  }
+  },
+  // TODO: implement if I really want this
+  forms: []
 }
 
 function fade(element) {

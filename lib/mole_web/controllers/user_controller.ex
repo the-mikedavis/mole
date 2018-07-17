@@ -33,7 +33,7 @@ defmodule MoleWeb.UserController do
     end
   end
 
-  def taken(conn, %{"username" => username}),
+  def taken(conn, %{"value" => username}),
     do: json(conn, %{taken: Accounts.username_taken?(username)})
 
   defp authenticate(conn, _opts) do
