@@ -24,7 +24,7 @@ defmodule MoleWeb.UserController do
     case Accounts.create_user(user_params) do
       {:ok, user} ->
         conn
-        |> MoleWeb.Auth.login(user)
+        |> MoleWeb.Plugs.Auth.login(user)
         |> put_flash(:info, "#{user.username} created!")
         |> redirect(to: Routes.user_path(conn, :index))
 

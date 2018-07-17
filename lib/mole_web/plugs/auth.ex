@@ -1,4 +1,4 @@
-defmodule MoleWeb.Auth do
+defmodule MoleWeb.Plugs.Auth do
   @moduledoc false
   import Plug.Conn
 

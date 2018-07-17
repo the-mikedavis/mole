@@ -1,10 +1,12 @@
 defmodule MoleWeb.SessionController do
   use MoleWeb, :controller
 
+  alias MoleWeb.Plugs.Auth
+
   def new(conn, _), do: render(conn, "new.html")
 
   def create(conn, %{"session" => %{"username" => uname, "password" => pass}}) do
-    case MoleWeb.Auth.login_by_uname_and_pass(conn, uname, pass) do
+    case Auth.login_by_uname_and_pass(conn, uname, pass) do
       {:ok, conn} ->
         conn
         |> put_flash(:info, "Welcome back!")
@@ -19,7 +21,7 @@ defmodule MoleWeb.SessionController do
 
   def delete(conn, _) do
     conn
-    |> MoleWeb.Auth.logout()
+    |> Auth.logout()
     |> redirect(to: Routes.page_path(conn, :index))
   end
 end

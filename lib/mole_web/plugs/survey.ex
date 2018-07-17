@@ -1,4 +1,4 @@
-defmodule MoleWeb.SurveyAuth do
+defmodule MoleWeb.Plugs.Survey do
   @moduledoc false
   import Plug.Conn
 

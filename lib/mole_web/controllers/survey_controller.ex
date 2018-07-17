@@ -2,10 +2,10 @@ defmodule MoleWeb.SurveyController do
   use MoleWeb, :controller
 
   alias Mole.{Content, Content.Survey}
-  alias MoleWeb.{AdminAuth, SurveyAuth}
+  alias MoleWeb.Plugs
 
-  plug(AdminAuth when action != :join)
-  plug(SurveyAuth when action == :join)
+  plug(Plugs.Admin when action != :join)
+  plug(Plugs.Survey when action == :join)
 
   def index(conn, _params) do
     surveys = Content.list_surveys()
@@ -72,7 +72,7 @@ defmodule MoleWeb.SurveyController do
 
       id ->
         conn
-        |> SurveyAuth.put_survey(id)
+        |> Plugs.Survey.put_survey(id)
         |> put_flash(:info, "You have joined survey \"#{slug}\".")
         |> redirect(to: Routes.game_path(conn, :index))
     end

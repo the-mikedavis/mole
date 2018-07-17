@@ -1,6 +1,6 @@
 defmodule MoleWeb.AdminController do
   use MoleWeb, :controller
-  plug(MoleWeb.AdminAuth)
+  plug(MoleWeb.Plugs.Admin)
 
   alias Mole.Administrators
 

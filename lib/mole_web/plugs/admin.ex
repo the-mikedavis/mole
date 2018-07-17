@@ -1,4 +1,4 @@
-defmodule MoleWeb.AdminAuth do
+defmodule MoleWeb.Plugs.Admin do
   @moduledoc false
   import Phoenix.Controller
   import Plug.Conn

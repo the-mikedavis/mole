@@ -2,6 +2,8 @@ defmodule MoleWeb.Router do
   @moduledoc false
   use MoleWeb, :router
 
+  alias MoleWeb.Plugs
+
   @user_socket_secret Application.get_env(:mole, :user_socket_secret)
 
   pipeline :browser do
@@ -10,8 +12,9 @@ defmodule MoleWeb.Router do
     plug(:fetch_flash)
     plug(:protect_from_forgery)
     plug(:put_secure_browser_headers)
-    plug(MoleWeb.Auth)
-    plug(MoleWeb.SurveyAuth)
+    plug(Plugs.Auth)
+    plug(Plugs.Survey)
+    plug(Plugs.Consent)
     plug(:put_user_token)
   end
 
