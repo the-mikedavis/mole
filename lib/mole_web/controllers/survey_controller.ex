@@ -1,7 +1,7 @@
 defmodule MoleWeb.SurveyController do
   use MoleWeb, :controller
 
-  alias Mole.{Accounts, Content, Content.Survey, Repo}
+  alias Mole.{Content, Content.Survey, Repo}
   alias MoleWeb.Plugs
 
   plug(Plugs.Admin when action != :join)
@@ -33,6 +33,7 @@ defmodule MoleWeb.SurveyController do
     survey =
       Content.get_survey!(id)
       |> Repo.preload(:users)
+
     render(conn, "show.html", survey: survey)
   end
 
