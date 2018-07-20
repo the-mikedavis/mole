@@ -14,7 +14,7 @@ defmodule Mole.Accounts do
   def get_users_by_survey(%Survey{id: id}) do
     from(
       u in User,
-      join: s in assoc(u, :surveys),
+      join: s in assoc(u, :survey),
       where: s.id == ^id,
       select: u
     )

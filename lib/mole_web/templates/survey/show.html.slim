@@ -1,0 +1,15 @@
+h2 Show Survey
+
+ul
+  li
+    strong Slug:
+    = " #{@survey.slug}"
+  li
+    strong Prelink:
+    = " #{@survey.prelink}"
+  li
+    strong Postlink:
+    = " #{@survey.postlink}"
+
+span = link "Edit", to: Routes.survey_path(@conn, :edit, @survey)
+span = link "Back", to: Routes.survey_path(@conn, :index)
