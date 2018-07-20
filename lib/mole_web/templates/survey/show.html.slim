@@ -11,5 +11,12 @@ ul
     strong Postlink:
     = " #{@survey.postlink}"
 
+h2 Users
+
+ul
+  = for user <- @survey.users do
+    li
+      = user.username
+
 span = link "Edit", to: Routes.survey_path(@conn, :edit, @survey)
 span = link "Back", to: Routes.survey_path(@conn, :index)
