@@ -17,7 +17,14 @@ defmodule Mole.Accounts.User do
 
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:username, :correct, :incorrect, :score, :password])
+    |> cast(attrs, [
+      :username,
+      :correct,
+      :incorrect,
+      :score,
+      :password,
+      :survey_id
+    ])
     |> validate_required([:username])
     |> validate_length(:username, min: 3, max: 20)
     |> validate_length(:password, min: 6, max: 30)
