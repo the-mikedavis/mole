@@ -10,6 +10,7 @@ defmodule Mole.Accounts.User do
     field(:score, :integer, default: 0)
     field(:password, :string, virtual: true)
     field(:password_hash, :string)
+    field(:survey_id, :id)
 
     timestamps()
   end

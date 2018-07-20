@@ -1,0 +1,23 @@
+<h2>Show Survey</h2>
+
+<ul>
+
+  <li>
+    <strong>Slug:</strong>
+    <%= @survey.slug %>
+  </li>
+
+  <li>
+    <strong>Prelink:</strong>
+    <%= @survey.prelink %>
+  </li>
+
+  <li>
+    <strong>Postlink:</strong>
+    <%= @survey.postlink %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: Routes.survey_path(@conn, :edit, @survey) %></span>
+<span><%= link "Back", to: Routes.survey_path(@conn, :index) %></span>

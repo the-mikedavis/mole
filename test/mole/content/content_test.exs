@@ -89,9 +89,17 @@ defmodule Mole.ContentTest do
   describe "surveys" do
     alias Mole.Content.Survey
 
-    @valid_attrs %{link: "some link", slug: "some slug"}
-    @update_attrs %{link: "some updated link", slug: "some updated slug"}
-    @invalid_attrs %{link: nil, slug: nil}
+    @valid_attrs %{
+      postlink: "some postlink",
+      prelink: "some prelink",
+      slug: "some slug"
+    }
+    @update_attrs %{
+      postlink: "some updated postlink",
+      prelink: "some updated prelink",
+      slug: "some updated slug"
+    }
+    @invalid_attrs %{postlink: nil, prelink: nil, slug: nil}
 
     def survey_fixture(attrs \\ %{}) do
       {:ok, survey} =
@@ -114,7 +122,8 @@ defmodule Mole.ContentTest do
 
     test "create_survey/1 with valid data creates a survey" do
       assert {:ok, %Survey{} = survey} = Content.create_survey(@valid_attrs)
-      assert survey.link == "some link"
+      assert survey.postlink == "some postlink"
+      assert survey.prelink == "some prelink"
       assert survey.slug == "some slug"
     end
 
@@ -128,7 +137,8 @@ defmodule Mole.ContentTest do
       assert {:ok, %Survey{} = survey} =
                Content.update_survey(survey, @update_attrs)
 
-      assert survey.link == "some updated link"
+      assert survey.postlink == "some updated postlink"
+      assert survey.prelink == "some updated prelink"
       assert survey.slug == "some updated slug"
     end
 
