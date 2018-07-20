@@ -1,7 +1,6 @@
 defmodule Mole.Accounts do
   @moduledoc "Functions to act on accounts."
-  alias Mole.Accounts.User
-  alias Mole.Repo
+  alias Mole.{Accounts.User, Content.Survey, Repo}
   import Ecto.Query
   require Logger
 
@@ -11,6 +10,16 @@ defmodule Mole.Accounts do
   def get_user(id), do: Repo.get(User, id)
 
   def get_user!(id), do: Repo.get!(User, id)
+
+  def get_users_by_survey(%Survey{id: id}) do
+    from(
+      u in User,
+      join: s in assoc(u, :surveys),
+      where: s.id == ^id,
+      select: u
+    )
+    |> Repo.all()
+  end
 
   def list_users(), do: Repo.all(User)
 
