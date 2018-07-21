@@ -5,7 +5,6 @@ defmodule MoleWeb.SurveyController do
   alias MoleWeb.Plugs
 
   plug(Plugs.Admin when action != :join)
-  plug(Plugs.Survey when action == :join)
 
   def index(conn, _params) do
     surveys = Content.list_surveys()

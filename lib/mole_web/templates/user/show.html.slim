@@ -1,7 +1,6 @@
-h1 Showing User
+h2 = "#{@user.username} (#{@user.id})"
 
-b
-  = @user.username
-    | (
-    = @user.id
-    | )
+ul
+  li = "Correct: #{@user.correct}"
+  li = "Incorrect: #{@user.incorrect}"
+  li = "Score: #{@user.score}"

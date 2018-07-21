@@ -1,22 +1,37 @@
-h2 Show Survey
+h2 = "Survey \"#{@survey.slug}\""
 
 ul
   li
-    strong Slug:
+    strong Join Link:
     = " #{@survey.slug}"
   li
-    strong Prelink:
+    strong Pre-play Survey:
     = " #{@survey.prelink}"
   li
-    strong Postlink:
+    strong Post-play Survey:
     = " #{@survey.postlink}"
 
 h2 Users
 
-ul
-  = for user <- @survey.users do
-    li
-      = user.username
+table
+  thead
+    tr
+      th Username
+      th Correct
+      th Incorrect
+      th Score
+
+      th
+  tbody
+    = for user <- @survey.users do
+      tr
+        td = user.username
+        td = user.correct
+        td = user.incorrect
+        td = user.score
+
+        td
+          = link "Show", to: Routes.user_path(@conn, :show, user)
 
 span = link "Edit", to: Routes.survey_path(@conn, :edit, @survey)
 span = link "Back", to: Routes.survey_path(@conn, :index)
