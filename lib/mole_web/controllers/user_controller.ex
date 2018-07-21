@@ -4,17 +4,15 @@ defmodule MoleWeb.UserController do
 
   alias Mole.{Accounts, Accounts.Leaderboard, Accounts.User}
 
-  @leaderboard_pagesize 20
+  @page_size 20
 
   def index(conn, %{"offset" => offset}) do
-    users = Leaderboard.get_block(@leaderboard_pagesize, offset)
-    render(conn, "index.html", users: users)
+    users = Leaderboard.get_block(@page_size, offset)
+    pagination = Leaderboard.pagination(@page_size, offset)
+    render(conn, "index.html", users: users, pagination: pagination)
   end
 
-  def index(conn, _params) do
-    users = Leaderboard.get_block(@leaderboard_pagesize, 0)
-    render(conn, "index.html", users: users)
-  end
+  def index(conn, _opts), do: index(conn, %{"offset" => 0})
 
   def show(conn, %{"id" => id}) do
     user = Accounts.get_user(id)

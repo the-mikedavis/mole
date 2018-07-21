@@ -20,3 +20,5 @@ table
         td = user.incorrect
 
         td = link("View", to: Routes.user_path(@conn, :show, user.id))
+
+= pagination(@conn, @pagination)
