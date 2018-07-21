@@ -1,4 +1,6 @@
 defmodule Mole.Accounts.Leaderboard do
+  use Private
+
   @moduledoc """
   The leaderboard.
 
@@ -14,6 +16,10 @@ defmodule Mole.Accounts.Leaderboard do
   @spec get_block(integer(), integer()) :: [{integer(), %User{}}]
   def get_block(size, offset),
     do: GenServer.call(__MODULE__, {:block, size, offset})
+
+  @spec pagination(integer(), integer()) :: %{last: integer(), current: integer()}
+  def pagination(size, offset),
+    do: GenServer.call(__MODULE__, {:pages, size, offset})
 
   # Server API
 
@@ -51,5 +57,34 @@ defmodule Mole.Accounts.Leaderboard do
   @impl true
   def handle_call({:block, size, offset}, _caller, leaderboard) do
     {:reply, Enum.slice(leaderboard, offset, size), leaderboard}
+  end
+
+  def handle_call({:pages, size, offset}, _caller, leaderboard) do
+    {:reply,
+      %{
+        current: current_page(leaderboard, size, offset),
+        last: last_page(leaderboard, size, offset)
+      },
+      leaderboard
+    }
+  end
+
+  private do
+    defp current_page(_, _, 0), do: 1
+    defp current_page(_leaderboard, size, offset) do
+      offset
+      |> Kernel./(size)
+      |> Float.ceil()
+      |> round()
+    end
+
+    defp last_page([], _, _), do: 1
+    defp last_page(leaderboard, size, _offset) do
+      leaderboard
+      |> length
+      |> Kernel./(size)
+      |> Float.ceil()
+      |> round()
+    end
   end
 end
