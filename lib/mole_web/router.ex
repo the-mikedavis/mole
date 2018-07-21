@@ -41,6 +41,8 @@ defmodule MoleWeb.Router do
     post("/admins/delete", AdminController, :delete)
     get("/join/:slug", SurveyController, :join)
     resources("/surveys", SurveyController)
+    get("/consent", ConsentController, :index)
+    post("/consent", ConsentController, :agree)
   end
 
   defp put_user_token(conn, _) do

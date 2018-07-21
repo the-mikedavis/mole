@@ -1,0 +1,30 @@
+i The following information describes the research study in which you are being asked to participate.  Please read this carefully. At the end, you will be asked to sign if you agree to take part in this research study.
+hr
+h2 PURPOSE OF STUDY
+p You are being asked to take part in a research study. The purpose of this study is to get your thoughts about an interactive game called Whack-a-mole, designed to increase people's ability to identify cancerous moles.
+h2 PROCEDURES
+p Today, you will complete a short survey, play the game, and fill out another brief survey. If you choose, you can provide us with your email and we will send you a link to a follow-up survey in 2 weeks. Your participation today will take about 5 - 10 minutes. The follow-up survey in 2 weeks will take another 5 minutes.
+h2 RISKS AND/OR DISCOMFORTS
+p We do not expect you will experience any physical risk or discomfort from taking part in this study.
+h2 BENEFITS
+p No benefit can be promised to you from participating in this study, but you may learn more about how to identify cancerous moles.
+h2 CONFIDENTIALITY
+p The pre-test survey will not ask any information that can identify you. The contact details requested in the second survey will be used for two purposes:
+ol
+  li to email you the follow-up survey in two weeks, and
+  li as an identifier to match your responses on today’s survey with your response in the follow-up survey. After this, your email address will be deleted from our data. This will ensure that there will be no way to link your personal identity to your responses on the survey. Please remember that this step is completely optional and you do not have to share your email address with us if you do not want to.
+
+h2 COSTS
+p There are no costs associated with your participation in this study.
+h2 COMPENSATION
+p You will receive a $5 gift card for taking part in the first part of this study today. You will receive another $10 gift card for taking part in the second part of this study in two weeks.
+h2 RIGHT TO DECLINE OR WITHDRAW
+p Taking part in this study is voluntary. You are free to refuse to take part in the study or withdraw your consent at any time during the study. If you are an employee or student at the University of Miami, your desire not to participate in this study or request to withdraw will not adversely affect your status as an employee or grades at the University of Miami.
+h2 CONTACT INFORMATION
+p Dr. Nick Carcioppolo (305-284-5633) will gladly answer any questions you may have concerning the purpose, procedures, and outcome of this project. If you have questions about your rights as a research participant you may contact the Human Subjects Research Office at the University of Miami, at (305) 243-3195. If you would like a copy of this informed consent form, please email n.carcioppolo@miami.edu.
+h2 PARTICIPANT AGREEMENT
+p I have read the information in this consent form and agree to participate in this study.
+p Click to agree and participate in the study.
+
+= form_for @conn, Routes.consent_path(@conn, :agree), fn _f ->
+  = submit "Agree"
