@@ -17,8 +17,10 @@ defmodule MoleWeb.UserView do
   defp pages(conn, pages) when is_list(pages), do: raw(_pages(conn, pages))
 
   defp _pages(conn, [page]), do: page(conn, page)
+
   defp _pages(conn, [a, b]),
     do: page(conn, a) <> ", " <> page(conn, b)
+
   defp _pages(conn, pages) when length(pages) == 3,
     do: Enum.map(pages, &page(conn, &1)) |> Enum.join(" ... ")
 

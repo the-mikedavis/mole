@@ -17,7 +17,10 @@ defmodule Mole.Accounts.Leaderboard do
   def get_block(size, offset),
     do: GenServer.call(__MODULE__, {:block, size, offset})
 
-  @spec pagination(integer(), integer()) :: %{last: integer(), current: integer()}
+  @spec pagination(integer(), integer()) :: %{
+          last: integer(),
+          current: integer()
+        }
   def pagination(size, offset),
     do: GenServer.call(__MODULE__, {:pages, size, offset})
 
@@ -61,16 +64,15 @@ defmodule Mole.Accounts.Leaderboard do
 
   def handle_call({:pages, size, offset}, _caller, leaderboard) do
     {:reply,
-      %{
-        current: current_page(leaderboard, size, offset),
-        last: last_page(leaderboard, size, offset)
-      },
-      leaderboard
-    }
+     %{
+       current: current_page(leaderboard, size, offset),
+       last: last_page(leaderboard, size, offset)
+     }, leaderboard}
   end
 
   private do
     defp current_page(_, _, 0), do: 1
+
     defp current_page(_leaderboard, size, offset) do
       offset
       |> Kernel./(size)
@@ -79,6 +81,7 @@ defmodule Mole.Accounts.Leaderboard do
     end
 
     defp last_page([], _, _), do: 1
+
     defp last_page(leaderboard, size, _offset) do
       leaderboard
       |> length
