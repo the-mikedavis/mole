@@ -1,10 +1,22 @@
-h1 Listing Users
+h1 Leaderboard
 
 table
-  = for user <- @users do
+  thead
     tr
-      td
-        b
-          = user.username
-      td
-        = link("View", to: Routes.user_path(@conn, :show, user.id))
+      th Rank
+      th Username
+      th Score
+      th Correct
+      th Incorrect
+
+      th
+  tbody
+    = for {user, rank} <- @users do
+      tr
+        td = rank
+        td = user.username
+        td = user.score
+        td = user.correct
+        td = user.incorrect
+
+        td = link("View", to: Routes.user_path(@conn, :show, user.id))

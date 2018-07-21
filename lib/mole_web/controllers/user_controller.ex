@@ -2,11 +2,17 @@ defmodule MoleWeb.UserController do
   use MoleWeb, :controller
   plug(:authenticate when action in [:index, :show])
 
-  alias Mole.{Accounts, Accounts.User}
+  alias Mole.{Accounts, Accounts.Leaderboard, Accounts.User}
+
+  @leaderboard_pagesize 20
+
+  def index(conn, %{"offset" => offset}) do
+    users = Leaderboard.get_block(@leaderboard_pagesize, offset)
+    render(conn, "index.html", users: users)
+  end
 
   def index(conn, _params) do
-    # TODO, show the leaderboard here, with pagination
-    users = Accounts.list_users()
+    users = Leaderboard.get_block(@leaderboard_pagesize, 0)
     render(conn, "index.html", users: users)
   end
 

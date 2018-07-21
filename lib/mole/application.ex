@@ -15,6 +15,7 @@ defmodule Mole.Application do
       # Starts a worker by calling: Mole.Worker.start_link(arg)
       # {Mole.Worker, arg},
       {Mole.Content.Scrape, 0},
+      {Mole.Accounts.Leaderboard, []},
       {Mole.GameplayServer, %{}},
       {Mole.Administrators, %{}}
     ]

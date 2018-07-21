@@ -1,4 +1,4 @@
-defmodule Mole.Content.Leaderboard do
+defmodule Mole.Accounts.Leaderboard do
   @moduledoc """
   The leaderboard.
 
@@ -6,8 +6,16 @@ defmodule Mole.Content.Leaderboard do
   ordered list of the users, sorted by score.
   """
   use GenServer
-  alias Mole.Accounts.User
-  alias Mole.Repo
+  alias Mole.{Accounts.User, Repo}
+
+  # Client API
+
+  @doc "Get the leaderboard by block."
+  @spec get_block(integer(), integer()) :: [{integer(), %User{}}]
+  def get_block(size, offset),
+    do: GenServer.call(__MODULE__, {:block, size, offset})
+
+  # Server API
 
   @doc "Start the leaderboard server"
   @spec start_link(any()) :: GenServer.on_start()
@@ -17,10 +25,10 @@ defmodule Mole.Content.Leaderboard do
 
   @doc "Initialize the leaderboard"
   @impl true
-  def init(_args) do
-    GenServer.cast(__MODULE__, :index)
+  def init(args) do
+    GenServer.cast(__MODULE__, :update)
 
-    {:ok, []}
+    {:ok, args}
   end
 
   @doc "Handle a call to update the leaderboard index"
@@ -29,10 +37,11 @@ defmodule Mole.Content.Leaderboard do
     leaderboard =
       User
       |> Repo.all()
+      |> Enum.map(&Map.from_struct/1)
       |> Enum.sort_by(& &1.score, &>=/2)
       |> Enum.with_index()
 
-    {:ok, leaderboard}
+    {:noreply, leaderboard}
   end
 
   @doc """
@@ -41,6 +50,6 @@ defmodule Mole.Content.Leaderboard do
   """
   @impl true
   def handle_call({:block, size, offset}, _caller, leaderboard) do
-    {:ok, Enum.slice(leaderboard, offset, size)}
+    {:reply, Enum.slice(leaderboard, offset, size), leaderboard}
   end
 end
