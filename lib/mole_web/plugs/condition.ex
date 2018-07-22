@@ -24,7 +24,13 @@ defmodule MoleWeb.Plugs.Condition do
   end
 
   # give a random condition to a user
-  def put_random(conn), do: put_session(conn, @key, Enum.random(0..5))
+  def put_random(conn) do
+    if conn.assigns.condition do
+      conn
+    else
+      put_session(conn, @key, Enum.random(0..5))
+    end
+  end
 
   # get back the useful information from the conditions
   def to_tuple(index), do: Enum.at(@conditions, index)
