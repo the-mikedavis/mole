@@ -2,7 +2,6 @@ defmodule Mole.Accounts do
   @moduledoc "Functions to act on accounts."
   alias Mole.{Accounts.User, Content.Survey, Repo}
   import Ecto.Query
-  require Logger
 
   @correct_mult Application.get_env(:mole, :correct_mult)
   @incorrect_mult Application.get_env(:mole, :incorrect_mult)
@@ -42,8 +41,6 @@ defmodule Mole.Accounts do
          total_gameplay <- total_gameplay(user, gameplay),
          new_scores <- compute_score(total_gameplay),
          do: update_user(user, new_scores)
-
-    Logger.info("Saved gameplay for user #{username}.")
   end
 
   def get_user_by_uname(uname) do

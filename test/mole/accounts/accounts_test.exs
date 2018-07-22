@@ -1,7 +1,7 @@
 defmodule Mole.AccountsTest do
   use Mole.DataCase
 
-  alias Mole.{Accounts, Accounts.User, Content, Content.Survey, Repo}
+  alias Mole.{Accounts, Accounts.User, Content, Repo}
 
   describe "accounts -> user" do
     @user_valid_attrs %{username: "some username", password: "some password"}
@@ -110,6 +110,46 @@ defmodule Mole.AccountsTest do
       [gotten1, gotten2] = Accounts.get_users_by_survey(survey)
       assert gotten1.id == user1.id
       assert gotten2.id == user2.id
+    end
+  end
+
+  describe "authentication matters" do
+    test "authenticating by uname & pass" do
+      user = user_fixture()
+
+      {:ok, gotten} =
+        Accounts.authenticate_by_uname_and_pass(
+          "some username",
+          "some password"
+        )
+
+      assert gotten.id == user.id
+    end
+
+    test "authenticating by uname & wrong pass" do
+      _user = user_fixture()
+
+      assert Accounts.authenticate_by_uname_and_pass(
+               "some username",
+               "another password"
+             ) == {:error, :unauthorized}
+    end
+
+    test "authenticating by wrong uname & wrong pass" do
+      _user = user_fixture()
+
+      assert Accounts.authenticate_by_uname_and_pass(
+               "another username",
+               "another password"
+             ) == {:error, :not_found}
+    end
+  end
+
+  describe "utility functions of accounts" do
+    test "username_taken?" do
+      user = user_fixture()
+      assert Accounts.username_taken?(user.username)
+      assert not Accounts.username_taken?("another username")
     end
   end
 end
