@@ -26,6 +26,7 @@ defmodule Mole.Accounts.User do
       :password,
       :survey_id
     ])
+    |> foreign_key_constraint(:survey_id)
     |> validate_required([:username])
     |> validate_length(:username, min: 3, max: 20)
     |> validate_length(:password, min: 6, max: 30)
