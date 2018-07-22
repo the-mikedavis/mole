@@ -4,15 +4,17 @@ defmodule MoleWeb.Plugs.Survey do
 
   alias Mole.{Accounts, Accounts.User, Content}
 
+  @key :survey_id
+
   def init(opts), do: opts
 
   def call(conn, _opts) do
-    survey_id = get_session(conn, :survey_id)
+    survey_id = get_session(conn, @key)
 
     with %User{survey_id: nil} = user <- conn.assigns.current_user,
          do: Accounts.update_user(user, %{survey_id: survey_id})
 
-    assign(conn, :survey_id, survey_id)
+    assign(conn, @key, survey_id)
   end
 
   def load_surey(conn) do
@@ -21,11 +23,7 @@ defmodule MoleWeb.Plugs.Survey do
     assign(conn, :current_survey, survey)
   end
 
-  def put_survey(conn, survey_id) do
-    put_session(conn, :survey_id, survey_id)
-  end
+  def put_survey(conn, survey_id), do: put_session(conn, @key, survey_id)
 
-  def delete_survey(conn) do
-    delete_session(conn, :survey_id)
-  end
+  def delete_survey(conn), do: delete_session(conn, @key)
 end
