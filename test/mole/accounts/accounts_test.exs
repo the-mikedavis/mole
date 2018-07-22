@@ -1,8 +1,7 @@
 defmodule Mole.AccountsTest do
   use Mole.DataCase
 
-  alias Mole.Accounts
-  alias Mole.Accounts.User
+  alias Mole.{Accounts, Accounts.User, Content, Content.Survey, Repo}
 
   describe "accounts -> user" do
     @user_valid_attrs %{username: "some username", password: "some password"}
@@ -78,6 +77,39 @@ defmodule Mole.AccountsTest do
     test "change_user/1 returns a user changeset" do
       user = user_fixture()
       assert %Ecto.Changeset{} = Accounts.change_user(user)
+    end
+  end
+
+  describe "users & surveys are bound together" do
+    @survey_valid_attrs %{
+      slug: "qualtrics",
+      prelink: "prequal",
+      postlink: "postqual"
+    }
+
+    def survey_fixture(attrs \\ %{}) do
+      {:ok, survey} =
+        attrs
+        |> Enum.into(@survey_valid_attrs)
+        |> Content.create_survey()
+
+      Repo.preload(survey, :users)
+    end
+
+    test "to get all users in a survey" do
+      survey = survey_fixture()
+      user1 = user_fixture(%{survey_id: survey.id})
+
+      user2 =
+        user_fixture(%{
+          username: "other",
+          password: "others",
+          survey_id: survey.id
+        })
+
+      [gotten1, gotten2] = Accounts.get_users_by_survey(survey)
+      assert gotten1.id == user1.id
+      assert gotten2.id == user2.id
     end
   end
 end
