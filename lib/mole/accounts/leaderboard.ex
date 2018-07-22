@@ -24,6 +24,11 @@ defmodule Mole.Accounts.Leaderboard do
   def pagination(size, offset),
     do: GenServer.call(__MODULE__, {:pages, size, offset})
 
+  @doc "Update the leaderboard, synchronously"
+  @spec update() :: :ok
+  def update(repo \\ Repo.all(User)),
+    do: GenServer.call(__MODULE__, {:update, repo})
+
   # Server API
 
   @doc "Start the leaderboard server"
@@ -40,18 +45,9 @@ defmodule Mole.Accounts.Leaderboard do
     {:ok, args}
   end
 
-  @doc "Handle a call to update the leaderboard index"
+  @doc "Handle a call to update the leaderboard index, asynchronosly"
   @impl true
-  def handle_cast(:update, _leaderboard) do
-    leaderboard =
-      User
-      |> Repo.all()
-      |> Enum.map(&Map.from_struct/1)
-      |> Enum.sort_by(& &1.score, &>=/2)
-      |> Enum.with_index()
-
-    {:noreply, leaderboard}
-  end
+  def handle_cast(:update, _leaderboard), do: {:noreply, do_update()}
 
   @doc """
   Get a block of users from the leaderboard. Offset is measured from top of the
@@ -70,7 +66,18 @@ defmodule Mole.Accounts.Leaderboard do
      }, leaderboard}
   end
 
+  # sync update
+  def handle_call({:update, repo}, _caller, _leaderboard),
+    do: {:reply, :ok, do_update(repo)}
+
   private do
+    defp do_update(repo \\ Repo.all(User)) do
+      repo
+      |> Enum.map(&Map.from_struct/1)
+      |> Enum.sort_by(& &1.score, &>=/2)
+      |> Enum.with_index()
+    end
+
     defp current_page(_, _, 0), do: 1
 
     defp current_page(_leaderboard, size, offset) do
