@@ -11,6 +11,7 @@ defmodule Mole.Accounts.User do
     field(:score, :integer, default: 0)
     field(:password, :string, virtual: true)
     field(:password_hash, :string)
+    field(:condition, :integer)
     belongs_to(:survey, Survey)
 
     timestamps()
@@ -24,7 +25,8 @@ defmodule Mole.Accounts.User do
       :incorrect,
       :score,
       :password,
-      :survey_id
+      :survey_id,
+      :condition
     ])
     |> foreign_key_constraint(:survey_id)
     |> validate_required([:username])
