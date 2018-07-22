@@ -1,6 +1,8 @@
 defmodule MoleWeb.GameController do
   use MoleWeb, :controller
 
+  plug(:consent when action == :index)
+
   alias Mole.GameplayServer
 
   def index(conn, _params) do
@@ -14,6 +16,16 @@ defmodule MoleWeb.GameController do
 
       gameplay ->
         render(conn, "show.html", gameplay: gameplay)
+    end
+  end
+
+  defp consent(conn, _opts) do
+    if conn.assigns.survey_id && !conn.assigns.consent? do
+      conn
+      |> redirect(to: Routes.consent_path(conn, :index))
+      |> halt()
+    else
+      conn
     end
   end
 end

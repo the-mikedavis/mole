@@ -12,6 +12,4 @@ defmodule MoleWeb.Plugs.Consent do
     |> put_session(:consent?, true)
     |> assign(:consent?, true)
   end
-
-  def consented?(conn), do: conn.assigns.consent?
 end

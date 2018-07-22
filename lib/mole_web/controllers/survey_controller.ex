@@ -76,7 +76,7 @@ defmodule MoleWeb.SurveyController do
         conn
         |> Plugs.Survey.put_survey(id)
         |> put_flash(:info, "You have joined survey \"#{slug}\".")
-        |> redirect(to: Routes.game_path(conn, :index))
+        |> redirect(to: Routes.consent_path(conn, :index))
     end
   end
 end
