@@ -1,4 +1,6 @@
 defmodule Mole.Accounts do
+  use Private
+
   @moduledoc "Functions to act on accounts."
   alias Mole.{Accounts.User, Content.Survey, Repo}
   import Ecto.Query
@@ -37,10 +39,11 @@ defmodule Mole.Accounts do
   end
 
   def save_gameplay(username, gameplay) do
-    with user <- get_user_by_uname(username),
-         total_gameplay <- total_gameplay(user, gameplay),
-         new_scores <- compute_score(total_gameplay),
-         do: update_user(user, new_scores)
+    user = get_user_by_uname(username)
+    total_gameplay = total_gameplay(user, gameplay)
+    new_scores = compute_score(total_gameplay)
+
+    update_user(user, new_scores)
   end
 
   def get_user_by_uname(uname) do
