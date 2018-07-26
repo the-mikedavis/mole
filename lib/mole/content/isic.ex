@@ -35,10 +35,10 @@ defmodule Mole.Content.Isic do
 
   private do
     @spec http_client() :: module()
-    def http_client(), do: Application.get_env(:mole, :http_client)
+    defp http_client(), do: Application.get_env(:mole, :http_client)
 
     @spec filter({:ok, list(Meta.t())}, boolean()) :: {:ok, list(Meta.t())}
-    def filter({:ok, data}, malignant?) do
+    defp filter({:ok, data}, malignant?) do
       {:ok,
        Enum.filter(data, fn %Meta{malignant?: mal} ->
          mal === malignant?
@@ -46,43 +46,43 @@ defmodule Mole.Content.Isic do
     end
 
     @spec filter({:error, any()}, any()) :: {:error, any()}
-    def filter({:error, _} = status, _), do: status
-  end
+    defp filter({:error, _} = status, _), do: status
 
-  @spec decode({:error, HTTPoison.Error.t()}) :: {:error, binary() | atom()}
-  defp decode({:error, %Error{reason: reason}}), do: {:error, reason}
+    @spec decode({:error, HTTPoison.Error.t()}) :: {:error, binary() | atom()}
+    defp decode({:error, %Error{reason: reason}}), do: {:error, reason}
 
-  @spec decode({:ok, HTTPoison.Response.t()}) :: {:ok, list(Meta.t())}
-  defp decode({:ok, %Response{body: data}}) do
-    valids =
-      data
-      |> Jason.decode!()
-      |> Enum.map(&decode/1)
-      |> Enum.filter(fn {status, _} -> status !== :error end)
-      |> Enum.map(fn {_status, meta} -> meta end)
+    @spec decode({:ok, HTTPoison.Response.t()}) :: {:ok, list(Meta.t())}
+    defp decode({:ok, %Response{body: data}}) do
+      valids =
+        data
+        |> Jason.decode!()
+        |> Enum.map(&decode/1)
+        |> Enum.filter(fn {status, _} -> status !== :error end)
+        |> Enum.map(fn {_status, meta} -> meta end)
 
-    {:ok, valids}
-  end
-
-  @spec decode(map()) :: {:ok, Meta.t()} | {:error, any()}
-  defp decode(metadata) do
-    try do
-      {:ok, decode!(metadata)}
-    rescue
-      e -> {:error, e}
+      {:ok, valids}
     end
+
+    @spec decode(map()) :: {:ok, Meta.t()} | {:error, any()}
+    defp decode(metadata) do
+      try do
+        {:ok, decode!(metadata)}
+      rescue
+        e -> {:error, e}
+      end
+    end
+
+    @spec decode!(map()) :: Meta.t()
+    defp decode!(%{"_id" => id, "_modelType" => "image"} = metadata) do
+      malignant? =
+        metadata
+        |> get_in(["meta", "clinical", "benign_malignant"])
+        |> is_malignant?()
+
+      %Meta{id: id, malignant?: malignant?}
+    end
+
+    defp is_malignant?("malignant"), do: true
+    defp is_malignant?(_), do: false
   end
-
-  @spec decode!(map()) :: Meta.t()
-  defp decode!(%{"_id" => id, "_modelType" => "image"} = metadata) do
-    malignant? =
-      metadata
-      |> get_in(["meta", "clinical", "benign_malignant"])
-      |> is_malignant?()
-
-    %Meta{id: id, malignant?: malignant?}
-  end
-
-  defp is_malignant?("malignant"), do: true
-  defp is_malignant?(_), do: false
 end
