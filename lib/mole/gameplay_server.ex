@@ -74,9 +74,9 @@ defmodule Mole.GameplayServer do
     end
   end
 
-  @spec update(binary(), gameplay()) :: :ok
+  @spec update(binary(), gameplay()) :: gameplay()
   def update(username, gameplay),
-    do: GenServer.cast(__MODULE__, {:update, username, gameplay})
+    do: GenServer.call(__MODULE__, {:update, username, gameplay})
 
   # Server API
 
@@ -107,6 +107,6 @@ defmodule Mole.GameplayServer do
   end
 
   @impl GenServer
-  def handle_cast({:update, username, gameplay}, state),
-    do: {:noreply, Map.put(state, username, gameplay)}
+  def handle_call({:update, username, gameplay}, state),
+    do: {:reply, gameplay, Map.put(state, username, gameplay)}
 end
