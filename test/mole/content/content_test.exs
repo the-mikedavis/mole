@@ -80,10 +80,52 @@ defmodule Mole.ContentTest do
       image = image_fixture()
       assert %Ecto.Changeset{} = Content.change_image(image)
     end
+
+    test "can calculate the percent malignant" do
+      # malignant
+      image_fixture()
+      # non-malignant
+      image_fixture(@update_attrs)
+
+      assert Content.percent_malignant() === 50
+    end
+
+    test "getting a random image" do
+      image1 = image_fixture(%{id: 1})
+      assert Content.random_images(1) == [image1]
+
+      image2 = image_fixture(@update_attrs)
+      [rand] = Content.random_images(1)
+      assert rand == image1 or rand == image2
+
+      together = MapSet.new([image1, image2])
+      rand_together = Content.random_images(2) |> MapSet.new()
+      assert MapSet.equal?(together, rand_together)
+    end
   end
 
-  test "produces a proper static path given a String `id`" do
-    assert Content.static_path("X") == "/images/X.jpeg"
+  describe "path building" do
+    setup do
+      [
+        static: "/images/X.jpeg",
+        download: "./priv/static/images/X.jpeg"
+      ]
+    end
+
+    test "a static path given a String `id`", c do
+      assert Content.static_path("X") == c.static
+    end
+
+    test "a static path given a faux image map", c do
+      assert Content.static_path(%{id: "X"}) == c.static
+      assert Content.static_path(%{origin_id: "X"}) == c.static
+    end
+
+    test "the download path", c do
+      assert Content.download_path("X") == c.download
+      assert Content.download_path(%{id: "X"}) == c.download
+      assert Content.download_path(%{origin_id: "X"}) == c.download
+    end
   end
 
   describe "surveys" do
@@ -160,6 +202,11 @@ defmodule Mole.ContentTest do
     test "change_survey/1 returns a survey changeset" do
       survey = survey_fixture()
       assert %Ecto.Changeset{} = Content.change_survey(survey)
+    end
+
+    test "get a survey by slug" do
+      survey = survey_fixture()
+      assert Content.get_survey_by_slug("some slug") == survey.id
     end
   end
 end

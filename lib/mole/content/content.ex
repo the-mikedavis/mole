@@ -108,20 +108,6 @@ defmodule Mole.Content do
   """
   def count_images(), do: Repo.aggregate(Image, :count, :id)
 
-  @doc """
-  Determine if an image is malignant or not.
-  """
-  @spec malignant?(String.t()) :: {:ok, boolean()} | :error
-  def malignant?(id) do
-    case Repo.get(Image, id) do
-      %Image{malignant: malignant?} ->
-        {:ok, malignant?}
-
-      _ ->
-        :error
-    end
-  end
-
   # Ecto query to select malignant images
   @malignant_query from(
                      i in "images",
@@ -146,13 +132,18 @@ defmodule Mole.Content do
   """
   @spec random_images(integer()) :: [%Image{} | :error]
   def random_images(count) do
-    size = count_images() + 1
+    # This doesn't work because of ecto testing by giving random IDs
+    # size = count_images() + 1
 
-    1..size
-    |> Enum.take_random(count * 2)
-    |> Enum.uniq()
+    # 1..size
+    # |> Enum.take_random(count * 2)
+    # |> Enum.uniq()
+    # |> Enum.take(count)
+    # |> Enum.map(&Repo.get(Image, &1))
+    Image
+    |> Repo.all()
+    |> Enum.shuffle()
     |> Enum.take(count)
-    |> Enum.map(&Repo.get(Image, &1))
   end
 
   @doc "Produce a static path in which to access the image"
