@@ -132,5 +132,20 @@ defmodule Mole.Content.IsicTest do
 
       assert Isic.get_chunk(5, 0, malignant?: true) == c.mal_5_metas
     end
+
+    test "nil JSON returned" do
+      Mox.expect(HTTPoisonMock, :get, fn _url -> nil end)
+
+      assert Isic.get_chunk(5, 0) ==
+               {:error,
+                %FunctionClauseError{
+                  args: nil,
+                  arity: 1,
+                  clauses: nil,
+                  function: :decode!,
+                  kind: nil,
+                  module: Mole.Content.Isic
+                }}
+    end
   end
 end
