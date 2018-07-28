@@ -90,23 +90,6 @@ defmodule Mole.GameplayServer do
   def handle_call({:get, username}, _caller, state),
     do: {:reply, Map.get(state, username), state}
 
-  def handle_call({:done, username}, _caller, state) do
-    case Map.get(state, username) do
-      # there is no gameplay under that user
-      nil ->
-        {:reply, nil, state}
-
-      # the gameplay is done
-      %{playable: []} = gameplay ->
-        {:reply, {true, gameplay}, Map.delete(state, username)}
-
-      # the gameplay is still in progress
-      gameplay ->
-        {:reply, {false, gameplay}, state}
-    end
-  end
-
-  @impl GenServer
-  def handle_call({:update, username, gameplay}, state),
+  def handle_call({:update, username, gameplay}, _caller, state),
     do: {:reply, gameplay, Map.put(state, username, gameplay)}
 end
