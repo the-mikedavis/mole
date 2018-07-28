@@ -36,7 +36,7 @@ defmodule Mole.Content.Scrape do
     offset = Content.count_images()
 
     if @auto_start do
-      Logger.info("Starting the scraper")
+      # Logger.info("Starting the scraper")
       Process.send_after(self(), :chunk, @time_buffer)
     end
 
@@ -54,10 +54,10 @@ defmodule Mole.Content.Scrape do
   def handle_info(:chunk, offset) do
     total = Content.count_images()
 
-    Logger.info("Received request to get chunk at offset #{offset}")
+    # Logger.info("Received request to get chunk at offset #{offset}")
 
     if @std_chunk_size + offset <= @min_amount do
-      Logger.info("Getting a new chunk, at offset #{offset}")
+      # Logger.info("Getting a new chunk, at offset #{offset}")
 
       download(@std_chunk_size, offset)
 
@@ -74,7 +74,7 @@ defmodule Mole.Content.Scrape do
   """
   @impl true
   def handle_cast({:chunk, malignant?, amount}, offset) do
-    Logger.info("Got a request to get #{amount} more. Malignant? #{malignant?}")
+    # Logger.info("Got a request to get #{amount} more. Malignant? #{malignant?}")
     download(amount, offset, malignant?: malignant?)
 
     # check again in a short amount of time
@@ -114,7 +114,7 @@ defmodule Mole.Content.Scrape do
 
     @spec save_all({:error, any()}) :: :ok
     def save_all({:error, reason}) do
-      Logger.debug(fn ->
+      Logger.warn(fn ->
         """
         Error occurred saving... Reason: #{inspect(reason)}"
         """
@@ -140,7 +140,7 @@ defmodule Mole.Content.Scrape do
 
     @spec write(File.t(), {:error, any()}) :: :ok
     def write(_file, {:error, reason}) do
-      Logger.debug(fn ->
+      Logger.warn(fn ->
         """
         Error occurred saving... Reason: #{inspect(reason)}"
         """
@@ -158,13 +158,13 @@ defmodule Mole.Content.Scrape do
     # Determine the percentage of malignant images in the Repo
     @spec examine_statistics(integer()) :: :ok
     def examine_statistics(amount) do
-      Logger.info("Done. Examining statistics.")
+      # Logger.info("Done. Examining statistics.")
 
       percent = Content.percent_malignant()
 
-      Logger.info("There are #{amount} images total")
-      Logger.info("#{percent}% of which are malignant.")
-      Logger.info("That's #{round(percent / 100 * amount)} images.")
+      # Logger.info("There are #{amount} images total")
+      # Logger.info("#{percent}% of which are malignant.")
+      # Logger.info("That's #{round(percent / 100 * amount)} images.")
 
       enforce_ratio(percent, amount)
 
