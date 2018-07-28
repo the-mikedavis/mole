@@ -2,6 +2,7 @@ defmodule Mole.ScrapeTest do
   use ExUnit.Case
   # use Mole.DataCase
   alias Mole.Content.Scrape
+  import ExUnit.CaptureLog
 
   @malignant_range 28..32
 
@@ -36,11 +37,15 @@ defmodule Mole.ScrapeTest do
 
   describe "All error-based functions return `:ok`" do
     test "the save_all/1 function" do
-      assert Scrape.save_all({:error, "reason"}) == :ok
+      assert capture_log(fn ->
+        assert Scrape.save_all({:error, "reason"}) == :ok
+      end) =~ ~S([warn] Error occurred saving... Reason: "reason"")
     end
 
     test "the write/2 function" do
-      assert Scrape.write(nil, {:error, "reason"}) == :ok
+      assert capture_log(fn ->
+        assert Scrape.write(nil, {:error, "reason"}) == :ok
+      end) =~ ~S([warn] Error occurred saving... Reason: "reason"")
     end
   end
 end
