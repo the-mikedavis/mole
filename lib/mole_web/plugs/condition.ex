@@ -2,15 +2,10 @@ defmodule MoleWeb.Plugs.Condition do
   @moduledoc false
   import Plug.Conn
 
-  alias Mole.{Accounts, Accounts.User}
+  alias Mole.{Accounts, Accounts.User, Content.Condition}
 
   # dry
   @key :condition
-
-  @eds [:abcde, :duckling, :none]
-  @feedback [true, false]
-  # the cartesian product of the above
-  @conditions for ed <- @eds, fb <- @feedback, do: {ed, fb}
 
   def init(opts), do: opts
 
@@ -28,10 +23,10 @@ defmodule MoleWeb.Plugs.Condition do
     if conn.assigns.condition do
       conn
     else
-      put_session(conn, @key, Enum.random(0..5))
+      put_session(conn, @key, Condition.random())
     end
   end
 
-  # get back the useful information from the conditions
-  def to_tuple(index), do: Enum.at(@conditions, index)
+  # def redirect(conn) do
+  # end
 end
