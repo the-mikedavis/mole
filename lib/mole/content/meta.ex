@@ -5,9 +5,13 @@ defmodule Mole.Content.Meta do
   A barebones structure that contains only the id and whether or
   not the mole is cancerous or not.
   """
-  @type t :: %__MODULE__{id: String.t(), malignant?: boolean()}
+  @type t :: %__MODULE__{
+          id: String.t(),
+          malignant?: boolean(),
+          data: String.t()
+        }
 
   @enforce_keys [:id, :malignant?]
 
-  defstruct @enforce_keys
+  defstruct [:data | @enforce_keys]
 end
