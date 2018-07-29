@@ -1,5 +1,5 @@
 defmodule Mole.Content.ConditionTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
 
   alias Mole.Content.Condition
 

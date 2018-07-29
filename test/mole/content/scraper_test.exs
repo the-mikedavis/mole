@@ -1,5 +1,5 @@
 defmodule Mole.ScrapeTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   # use Mole.DataCase
   alias Mole.Content.Scrape
   import ExUnit.CaptureLog

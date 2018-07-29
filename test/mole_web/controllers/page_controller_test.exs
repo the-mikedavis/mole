@@ -1,5 +1,5 @@
 defmodule MoleWeb.PageControllerTest do
-  use MoleWeb.ConnCase
+  use MoleWeb.ConnCase, async: true
 
   test "GET /", %{conn: conn} do
     conn = get(conn, "/")

@@ -1,5 +1,5 @@
 defmodule Mole.ContentTest do
-  use Mole.DataCase
+  use Mole.DataCase, async: true
 
   alias Mole.Content
 

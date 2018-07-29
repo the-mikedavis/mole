@@ -1,5 +1,5 @@
 defmodule Mole.Content.IsicTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   alias Mole.Content.{Isic, Meta}
 
   @payload [

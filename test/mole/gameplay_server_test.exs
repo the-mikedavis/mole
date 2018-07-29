@@ -1,5 +1,5 @@
 defmodule Mole.GameplayServerTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   alias Mole.GameplayServer, as: GS
 
   setup do

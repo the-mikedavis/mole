@@ -1,5 +1,5 @@
 defmodule Mole.AccountsTest do
-  use Mole.DataCase
+  use Mole.DataCase, async: true
 
   alias Mole.{Accounts, Accounts.User, Content, Repo}
 
