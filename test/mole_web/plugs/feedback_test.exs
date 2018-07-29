@@ -18,4 +18,12 @@ defmodule MoleWeb.Plugs.FeedbackTest do
 
     assert feedbacked.assigns.feedback
   end
+
+  test "a conn without a user gets feedback" do
+    feedbacked =
+      build_conn()
+      |> Feedback.call(nil)
+
+    assert feedbacked.assigns.feedback
+  end
 end
