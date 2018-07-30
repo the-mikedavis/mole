@@ -9,7 +9,7 @@ defmodule MoleWeb.Plugs.Admin do
   def init(opts), do: opts
 
   def call(conn, _opts) do
-    with %{username: username} <- conn.assigns.current_user,
+    with %{username: username} <- conn.assigns[:current_user],
          true <- Administrators.is?(username) do
       conn
     else
