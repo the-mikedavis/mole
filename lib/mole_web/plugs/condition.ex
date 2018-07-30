@@ -10,20 +10,25 @@ defmodule MoleWeb.Plugs.Condition do
   def init(opts), do: opts
 
   def call(conn, _opts) do
-    condition = get_session(conn, @key)
+    user = conn.assigns[:current_user]
+    condition = (user && user.condition) || get_session(conn, @key)
 
-    with %User{condition: nil} = user <- conn.assigns.current_user,
-         do: Accounts.update_user(user, %{condition: condition})
+    with %User{@key => nil} = user <- conn.assigns[:current_user],
+         do: Accounts.update_user(user, %{@key => condition})
 
     assign(conn, @key, condition)
   end
 
   # give a random condition to a user
   def put_random(conn) do
-    if conn.assigns.condition do
+    if conn.assigns[:condition] do
       conn
     else
-      put_session(conn, @key, Condition.random())
+      condition = Condition.random()
+
+      conn
+      |> put_session(@key, condition)
+      |> assign(@key, condition)
     end
   end
 
