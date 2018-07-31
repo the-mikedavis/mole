@@ -152,8 +152,8 @@ defmodule Mole.Content.Scrape do
     # Insert a Meta struct into the Image Ecto database
     @spec insert(Meta.t()) ::
             {:ok, Ecto.Schema.t()} | {:error, Ecto.Changeset.t()}
-    def insert(%Meta{id: id, malignant?: mal}),
-      do: Content.create_image(%{origin_id: id, malignant: mal})
+    def insert(%Meta{id: id, malignant?: mal, data: data}),
+      do: Content.create_image(%{origin_id: id, malignant: mal, data: data})
 
     # Determine the percentage of malignant images in the Repo
     @spec examine_statistics(integer()) :: :ok

@@ -79,7 +79,7 @@ defmodule Mole.Content.Isic do
         |> get_in(["meta", "clinical", "benign_malignant"])
         |> is_malignant?()
 
-      %Meta{id: id, malignant?: malignant?}
+      %Meta{id: id, malignant?: malignant?, data: metadata}
     end
 
     defp is_malignant?("malignant"), do: true
