@@ -53,6 +53,7 @@ defmodule Mole.MixProject do
       {:comeonin, "~> 4.1"},
       {:bcrypt_elixir, "~> 1.0"},
       {:httpoison, "~> 1.0"},
+      {:csv, "~> 2.0.0"},
 
       # test
       {:credo, "~> 0.9", only: [:dev, :test], runtime: false},

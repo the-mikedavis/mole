@@ -42,4 +42,21 @@ defmodule Mole.Content.Meta do
       end
     end)
   end
+
+  @doc """
+  Make the list of metadata maps into a csv.
+
+  Actually expects maps, not Meta.t()'s
+  """
+  @spec to_csv([%{}]) :: Stream.t()
+  def to_csv(metalist) when is_list(metalist) do
+    maps = Enum.map(metalist, &flatten/1)
+
+    headers =
+      maps
+      |> Enum.reduce(&Map.merge/2)
+      |> Map.keys()
+
+    CSV.encode(maps, headers: headers)
+  end
 end

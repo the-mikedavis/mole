@@ -11,4 +11,31 @@ defmodule Mole.Content.MetaTest do
              "a" => %{"b" => "c", "d" => %{"e" => "f"}}
            }) == %{"a.b" => "c", "a.d.e" => "f"}
   end
+
+  test "creating a simple csv" do
+    csv =
+      [%{"a" => "b", "d" => "e"}, %{"a" => "c", "d" => "f"}]
+      |> Meta.to_csv()
+      |> Enum.take(3)
+
+    assert csv == ["a,d\r\n", "b,e\r\n", "c,f\r\n"]
+  end
+
+  test "creating a simple csv with commas" do
+    csv =
+      [%{"a" => "b,g", "d" => "e"}, %{"a" => "c,h", "d" => "f"}]
+      |> Meta.to_csv()
+      |> Enum.take(3)
+
+    assert csv == ["a,d\r\n", "\"b,g\",e\r\n", "\"c,h\",f\r\n"]
+  end
+
+  test "creating a simple csv with missing keys" do
+    csv =
+      [%{"a" => "b", "d" => "e"}, %{"d" => "f"}]
+      |> Meta.to_csv()
+      |> Enum.take(3)
+
+    assert csv == ["a,d\r\n", "b,e\r\n", ",f\r\n"]
+  end
 end
