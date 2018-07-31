@@ -38,4 +38,14 @@ defmodule Mole.Content.MetaTest do
 
     assert csv == ["a,d\r\n", "b,e\r\n", ",f\r\n"]
   end
+
+  test "creating a real CSV with 5 items" do
+    csv =
+      TestHelper.rand_5_metas()
+      |> Enum.map(fn %{data: data} -> data end)
+      |> Meta.to_csv()
+      |> Enum.take(10)
+
+    assert csv == TestHelper.csv_first_10()
+  end
 end
