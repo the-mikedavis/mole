@@ -27,4 +27,8 @@ defmodule Mole.Content.Condition do
   @doc "Determine if a condition has feedback or not"
   @spec feedback?(integer()) :: boolean()
   def feedback?(condition), do: Integer.is_even(condition)
+
+  @doc "Give no learning and feedback for non-study users"
+  @spec normal() :: integer()
+  def normal, do: 4
 end

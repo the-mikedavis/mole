@@ -11,15 +11,14 @@ defmodule MoleWeb.Plugs.ConditionTest do
     assert Condition.init(%{}) == %{}
   end
 
-  # TODO change this to be feedback yes learning none
-  test "a conn without a user has no condition" do
+  test "a conn without a user has the normal condition" do
     conn =
       build_conn()
       |> init_test_session(%{})
       |> fetch_flash()
       |> Condition.call(%{})
 
-    assert conn.assigns.condition == nil
+    assert conn.assigns.condition == Mole.Content.Condition.normal()
   end
 
   test "a conn with a user with no condition has a condition" do
@@ -53,16 +52,5 @@ defmodule MoleWeb.Plugs.ConditionTest do
       |> Condition.put_random()
 
     assert is_integer(conn.assigns.condition)
-  end
-
-  test "putting a random when there is one doesn't do anything" do
-    conn =
-      build_conn()
-      |> init_test_session(%{})
-      |> fetch_flash()
-      |> assign(:condition, 5)
-      |> Condition.put_random()
-
-    assert conn.assigns.condition == 5
   end
 end

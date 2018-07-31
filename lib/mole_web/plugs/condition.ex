@@ -11,7 +11,9 @@ defmodule MoleWeb.Plugs.Condition do
 
   def call(conn, _opts) do
     user = conn.assigns[:current_user]
-    condition = (user && user.condition) || get_session(conn, @key)
+
+    condition =
+      (user && user.condition) || get_session(conn, @key) || Condition.normal()
 
     with %User{@key => nil} <- user,
          do: Accounts.update_user(user, %{@key => condition})
@@ -21,15 +23,11 @@ defmodule MoleWeb.Plugs.Condition do
 
   # give a random condition to a user
   def put_random(conn) do
-    if conn.assigns[:condition] do
-      conn
-    else
-      condition = Condition.random()
+    condition = Condition.random()
 
-      conn
-      |> put_session(@key, condition)
-      |> assign(@key, condition)
-    end
+    conn
+    |> put_session(@key, condition)
+    |> assign(@key, condition)
   end
 
   # def redirect(conn) do
