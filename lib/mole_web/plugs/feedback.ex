@@ -1,4 +1,6 @@
 defmodule MoleWeb.Plugs.Feedback do
+  @moduledoc "Decide whether or not the user should have feedback"
+
   import Plug.Conn
 
   alias Mole.{Accounts.User, Content.Condition}
