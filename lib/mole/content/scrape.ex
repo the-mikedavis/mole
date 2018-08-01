@@ -5,7 +5,7 @@ defmodule Mole.Content.Scrape do
   use GenServer
   use Private
   require Logger
-  alias Mole.{Content, Content.Isic, Content.Meta}
+  alias Mole.{Content, Content.Image, Content.Isic, Content.Meta, Repo}
 
   @db_module Isic
   @std_chunk_size 20
@@ -18,6 +18,8 @@ defmodule Mole.Content.Scrape do
   @malignant_range Application.get_env(:mole, :malignant_range)
 
   @auto_start Application.get_env(:mole, :auto_start)
+
+  @csv_name "image_metadata.csv"
 
   @doc "Start the scraper as a worker"
   @spec start_link(any()) :: GenServer.on_start()
@@ -81,6 +83,21 @@ defmodule Mole.Content.Scrape do
     Process.send_after(self(), :chunk, @time_buffer)
 
     {:noreply, offset + amount}
+  end
+
+  def handle_cast(:csv, offset) do
+    file = File.open!("./priv/static/#{@csv_name}", [:write, :utf8])
+
+    Image
+    |> Repo.all()
+    |> Enum.map(fn %Image{data: data} -> data end)
+    |> Enum.reject(&is_nil/1)
+    |> Meta.to_csv()
+    |> Enum.each(&IO.write(file, &1))
+
+    Logger.debug("Finished writing metadata to file")
+
+    {:noreply, offset}
   end
 
   private do
@@ -174,6 +191,8 @@ defmodule Mole.Content.Scrape do
     @spec enforce_ratio(integer(), integer()) :: :ok
     def enforce_ratio(percent, _total) when percent in @malignant_range do
       Logger.info("Percent was in range, done...")
+
+      GenServer.cast(__MODULE__, :csv)
 
       :ok
     end

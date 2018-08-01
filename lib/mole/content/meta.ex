@@ -56,6 +56,7 @@ defmodule Mole.Content.Meta do
       maps
       |> Enum.reduce(&Map.merge/2)
       |> Map.keys()
+      |> Enum.sort()
 
     CSV.encode(maps, headers: headers)
   end
