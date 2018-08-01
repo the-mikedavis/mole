@@ -4,6 +4,8 @@ defmodule Mole.Content.Condition do
 
   require Integer
 
+  defp normal, do: 4
+
   @eds [:abcde, :duckling, :none]
   @feedback [true, false]
   # the cartesian product of the above
@@ -22,21 +24,21 @@ defmodule Mole.Content.Condition do
   def random, do: Enum.random(0..(@no_conditions - 1))
 
   @doc "Return a tuple with the type of education and the feedback predicate."
-  @spec to_tuple(integer()) :: {ed(), feedback()}
+  @spec to_tuple(nil | integer()) :: {ed(), feedback()}
+  def to_tuple(nil), do: to_tuple(normal())
   def to_tuple(index), do: Enum.at(@conditions, index)
 
   @doc "Determine if a condition has feedback or not"
-  @spec feedback?(integer()) :: boolean()
+  @spec feedback?(nil | integer()) :: boolean()
+  def feedback?(nil), do: true
   def feedback?(condition), do: Integer.is_even(condition)
 
-  @doc "Give no learning and feedback for non-study users"
-  @spec normal() :: integer()
-  def normal, do: 4
-
   @doc "Give a user friendly string for the doctors."
-  @spec to_string(integer() | tuple()) :: String.t()
+  @spec to_string(nil | integer() | tuple()) :: String.t()
   def to_string(condition) when is_integer(condition),
     do: condition |> to_tuple() |> to_string()
 
   def to_string({ed, fb}), do: "learning: #{ed}, feedback?: #{fb}"
+
+  def to_string(nil), do: "N/A"
 end
