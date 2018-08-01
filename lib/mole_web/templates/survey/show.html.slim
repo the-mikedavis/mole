@@ -20,6 +20,7 @@ table
       th Correct
       th Incorrect
       th Score
+      th Randomly Assigned Condition
 
       th
   tbody
@@ -29,6 +30,7 @@ table
         td = user.correct
         td = user.incorrect
         td = user.score
+        td = condition(user)
 
         td
           = link "Show", to: Routes.user_path(@conn, :show, user)
