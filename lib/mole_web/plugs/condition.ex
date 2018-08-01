@@ -12,8 +12,7 @@ defmodule MoleWeb.Plugs.Condition do
   def call(conn, _opts) do
     user = conn.assigns[:current_user]
 
-    condition =
-      (user && user.condition) || get_session(conn, @key) || Condition.normal()
+    condition = (user && user.condition) || get_session(conn, @key)
 
     with %User{@key => nil} <- user,
          do: Accounts.update_user(user, %{@key => condition})
