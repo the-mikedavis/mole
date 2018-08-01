@@ -14,6 +14,7 @@ defmodule MoleWeb.Router do
     plug(:put_secure_browser_headers)
     plug(Plugs.Auth)
     plug(Plugs.Survey)
+    plug(Plugs.Condition)
     plug(Plugs.Consent)
     plug(:put_user_token)
   end
