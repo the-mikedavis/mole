@@ -1,9 +1,16 @@
 defmodule MoleWeb.GameController do
   use MoleWeb, :controller
 
+  alias Mole.Content
+  alias MoleWeb.Plugs.Survey
+
   # ensure the user is logged in and consents
   plug(:logged_in)
   plug(:consent)
+
+  # route to the surveys
+  plug(:pre_survey when action == :index)
+  plug(:post_survey when action == :show)
 
   alias Mole.GameplayServer
 
@@ -36,6 +43,32 @@ defmodule MoleWeb.GameController do
     if conn.assigns.survey_id && !conn.assigns.consent? do
       conn
       |> redirect(to: Routes.consent_path(conn, :index))
+      |> halt()
+    else
+      conn
+    end
+  end
+
+  defp pre_survey(conn, _opts) do
+    if Survey.pre_survey?(conn) do
+      survey = Content.get_survey!(conn.assigns.survey_id)
+
+      conn
+      |> Survey.check()
+      |> redirect(to: survey.prelink)
+      |> halt()
+    else
+      conn
+    end
+  end
+
+  defp post_survey(conn, _opts) do
+    if Survey.post_survey?(conn) do
+      survey = Content.get_survey!(conn.assigns.survey_id)
+
+      conn
+      |> Survey.check()
+      |> redirect(to: survey.postlink)
       |> halt()
     else
       conn

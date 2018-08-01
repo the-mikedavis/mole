@@ -57,19 +57,6 @@ defmodule MoleWeb.Plugs.SurveyTest do
     assert get_session(conn, :survey_id) == 2
   end
 
-  test "loading a survey puts the survey into the assigns" do
-    survey = survey_fixture()
-
-    conn =
-      build_conn()
-      |> init_test_session(%{})
-      |> Survey.put_survey(survey.id)
-      |> Survey.call(%{})
-      |> Survey.load_survey()
-
-    assert conn.assigns.current_survey == survey
-  end
-
   test "getting a pre_survey is accurate" do
     build_conn()
     |> assign(

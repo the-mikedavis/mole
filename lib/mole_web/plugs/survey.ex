@@ -2,7 +2,7 @@ defmodule MoleWeb.Plugs.Survey do
   @moduledoc false
   import Plug.Conn
 
-  alias Mole.{Accounts, Accounts.User, Content}
+  alias Mole.{Accounts, Accounts.User}
 
   @key :survey_id
 
@@ -16,12 +16,6 @@ defmodule MoleWeb.Plugs.Survey do
          do: Accounts.update_user(user, %{@key => survey_id})
 
     assign(conn, @key, survey_id)
-  end
-
-  def load_survey(conn) do
-    survey_id = conn.assigns.survey_id
-    survey = survey_id && Content.get_survey!(survey_id)
-    assign(conn, :current_survey, survey)
   end
 
   def put_survey(conn, survey_id) do
