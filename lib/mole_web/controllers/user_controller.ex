@@ -36,7 +36,8 @@ defmodule MoleWeb.UserController do
         conn
         |> MoleWeb.Plugs.Auth.login(user)
         |> put_flash(:info, "#{user.username} created!")
-        |> redirect(to: Routes.user_path(conn, :index))
+        # don't halt, this might actually go somewhere. just kinda meh
+        |> redirect(to: Routes.game_path(conn, :index))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "new.html", changeset: changeset)
