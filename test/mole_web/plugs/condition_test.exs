@@ -18,7 +18,7 @@ defmodule MoleWeb.Plugs.ConditionTest do
       |> fetch_flash()
       |> Condition.call(%{})
 
-    assert conn.assigns.condition == Mole.Content.Condition.normal()
+    assert conn.assigns.condition == nil
   end
 
   test "a conn with a user with no condition has a condition" do
