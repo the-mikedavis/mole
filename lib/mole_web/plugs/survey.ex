@@ -24,5 +24,10 @@ defmodule MoleWeb.Plugs.Survey do
     assign(conn, :current_survey, survey)
   end
 
-  def put_survey(conn, survey_id), do: put_session(conn, @key, survey_id)
+  def put_survey(conn, survey_id) do
+    conn
+    |> assign(@key, survey_id)
+    |> put_session(@key, survey_id)
+    |> configure_session(renew: true)
+  end
 end
