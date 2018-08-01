@@ -1,7 +1,9 @@
 defmodule MoleWeb.GameController do
   use MoleWeb, :controller
 
-  plug(:consent when action == :index)
+  # ensure the user is logged in and consents
+  plug(:logged_in)
+  plug(:consent)
 
   alias Mole.GameplayServer
 
@@ -16,6 +18,17 @@ defmodule MoleWeb.GameController do
 
       gameplay ->
         render(conn, "show.html", gameplay: gameplay)
+    end
+  end
+
+  # ensure the user is logged in before they access a game
+  defp logged_in(conn, _opts) do
+    if conn.assigns.current_user do
+      conn
+    else
+      conn
+      |> redirect(to: Routes.user_path(conn, :new))
+      |> halt()
     end
   end
 
