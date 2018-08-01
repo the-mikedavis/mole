@@ -25,4 +25,8 @@ defmodule Mole.Content.ConditionTest do
       assert Condition.to_tuple(condition) == Enum.at(c.conditions, condition)
     end
   end
+
+  test "condition strings", c do
+    assert Condition.to_string(List.first(c.conditions)) == "learning: abcde, feedback?: true"
+  end
 end

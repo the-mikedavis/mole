@@ -1,4 +1,5 @@
 defmodule Mole.Content.Condition do
+  import Kernel, except: [to_string: 1]
   @moduledoc "Helper functions for conditions."
 
   require Integer
@@ -31,4 +32,11 @@ defmodule Mole.Content.Condition do
   @doc "Give no learning and feedback for non-study users"
   @spec normal() :: integer()
   def normal, do: 4
+
+  @doc "Give a user friendly string for the doctors."
+  @spec to_string(integer() | tuple()) :: String.t()
+  def to_string(condition) when is_integer(condition),
+    do: condition |> to_tuple() |> to_string()
+
+  def to_string({ed, fb}), do: "learning: #{ed}, feedback?: #{fb}"
 end
