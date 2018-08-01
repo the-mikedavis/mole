@@ -6,13 +6,19 @@ defmodule MoleWeb.UserController do
 
   @page_size 20
 
-  def index(conn, %{"offset" => offset}) do
-    users = Leaderboard.get_block(@page_size, offset)
-    pagination = Leaderboard.pagination(@page_size, offset)
-    render(conn, "index.html", users: users, pagination: pagination)
+  def index(conn, %{"page" => page}) do
+    offset = page * @page_size
+
+    with [] <- Leaderboard.get_block(@page_size, offset) do
+      render(conn, "404.html")
+    else
+      users ->
+        pagination = Leaderboard.pagination(@page_size, offset)
+        render(conn, "index.html", users: users, pagination: pagination)
+    end
   end
 
-  def index(conn, _opts), do: index(conn, %{"offset" => 0})
+  def index(conn, _opts), do: index(conn, %{"page" => 0})
 
   def show(conn, %{"id" => id}) do
     user = Accounts.get_user(id)
@@ -37,8 +43,8 @@ defmodule MoleWeb.UserController do
     end
   end
 
-  def taken(conn, %{"value" => username}),
-    do: json(conn, %{taken: Accounts.username_taken?(username)})
+  # def taken(conn, %{"value" => username}),
+  #   do: json(conn, %{taken: Accounts.username_taken?(username)})
 
   defp authenticate(conn, _opts) do
     if conn.assigns.current_user do
