@@ -30,4 +30,23 @@ defmodule MoleWeb.Plugs.Survey do
     |> put_session(@key, survey_id)
     |> configure_session(renew: true)
   end
+
+  @sp :survey_progress
+
+  def pre_survey?(%{assigns: %{current_user: %{@sp => 0}}}), do: true
+  def pre_survey?(_conn), do: false
+
+  def post_survey?(%{assigns: %{current_user: %{@sp => n}}}) when n in 0..1,
+    do: true
+
+  def post_survey?(_conn), do: false
+
+  def check(%{assigns: %{current_user: %{@sp => n} = user}} = conn)
+      when is_integer(n) do
+    {:ok, user} = Accounts.update_user(user, %{@sp => n + 1})
+
+    assign(conn, :current_user, user)
+  end
+
+  def check(conn), do: conn
 end

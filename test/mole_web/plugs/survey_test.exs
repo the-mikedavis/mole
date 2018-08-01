@@ -69,4 +69,81 @@ defmodule MoleWeb.Plugs.SurveyTest do
 
     assert conn.assigns.current_survey == survey
   end
+
+  test "getting a pre_survey is accurate" do
+    build_conn()
+    |> assign(
+      :current_user,
+      user_fixture(%{username: "user0", survey_progress: 0})
+    )
+    |> Survey.pre_survey?()
+    |> assert()
+
+    build_conn()
+    |> assign(
+      :current_user,
+      user_fixture(%{username: "user1", survey_progress: 1})
+    )
+    |> Survey.pre_survey?()
+    |> Kernel.not()
+    |> assert()
+
+    build_conn()
+    |> assign(
+      :current_user,
+      user_fixture(%{username: "user2", survey_progress: 2})
+    )
+    |> Survey.pre_survey?()
+    |> Kernel.not()
+    |> assert()
+
+    build_conn()
+    |> Survey.pre_survey?()
+    |> Kernel.not()
+    |> assert()
+  end
+
+  test "getting a post_survey is accurate" do
+    build_conn()
+    |> assign(
+      :current_user,
+      user_fixture(%{username: "user0", survey_progress: 0})
+    )
+    |> Survey.post_survey?()
+    |> assert()
+
+    build_conn()
+    |> assign(
+      :current_user,
+      user_fixture(%{username: "user1", survey_progress: 1})
+    )
+    |> Survey.post_survey?()
+    |> assert()
+
+    build_conn()
+    |> assign(
+      :current_user,
+      user_fixture(%{username: "user2", survey_progress: 2})
+    )
+    |> Survey.post_survey?()
+    |> Kernel.not()
+    |> assert()
+
+    build_conn()
+    |> Survey.post_survey?()
+    |> Kernel.not()
+    |> assert()
+  end
+
+  test "checking updates the user" do
+    user = user_fixture(%{survey_progress: 0})
+
+    conn =
+      build_conn()
+      |> assign(:current_user, user)
+
+    checked = Survey.check(conn)
+
+    assert checked.assigns.current_user.survey_progress == 1
+  end
 end
