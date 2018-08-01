@@ -133,4 +133,12 @@ defmodule MoleWeb.Plugs.SurveyTest do
 
     assert checked.assigns.current_user.survey_progress == 1
   end
+
+  test "if the user doesn't exist, it won't be checked" do
+    conn = build_conn()
+
+    checked = Survey.check(conn)
+
+    assert conn == checked
+  end
 end
