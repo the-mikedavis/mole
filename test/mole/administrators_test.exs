@@ -18,7 +18,10 @@ defmodule Mole.AdministratorsTest do
   end
 
   test "the agent all/0 gets all default administrators", c do
-    assert Administrators.all() == c.default_admins
+    assert MapSet.equal?(
+             MapSet.new(Administrators.all()),
+             MapSet.new(c.default_admins)
+           )
   end
 
   test "the agent is?/1 gets a default administrator", c do
