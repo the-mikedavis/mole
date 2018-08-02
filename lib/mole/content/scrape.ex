@@ -105,9 +105,10 @@ defmodule Mole.Content.Scrape do
     files =
       (@image_path <> "*.jpeg")
       |> Path.wildcard()
+      |> Enum.map(fn "priv/static/images/" <> image -> image end)
       |> Enum.map(&String.to_charlist/1)
 
-    case :zip.create(@image_path <> "images.zip", files) do
+    case :zip.create(@image_path <> "images.zip", files, cwd: @image_path) do
       {:ok, filename} ->
         Logger.debug("Zip #{filename} created.")
 
