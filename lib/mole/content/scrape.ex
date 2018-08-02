@@ -19,7 +19,8 @@ defmodule Mole.Content.Scrape do
 
   @auto_start Application.get_env(:mole, :auto_start)
 
-  @csv_name "image_metadata.csv"
+  @image_path "./priv/static/images/"
+  @csv_name "metadata.csv"
 
   @doc "Start the scraper as a worker"
   @spec start_link(any()) :: GenServer.on_start()
@@ -86,7 +87,7 @@ defmodule Mole.Content.Scrape do
   end
 
   def handle_cast(:csv, offset) do
-    file = File.open!("./priv/static/#{@csv_name}", [:write, :utf8])
+    file = File.open!(@image_path <> @csv_name, [:write, :utf8])
 
     Image
     |> Repo.all()
@@ -96,6 +97,23 @@ defmodule Mole.Content.Scrape do
     |> Enum.each(&IO.write(file, &1))
 
     Logger.debug("Finished writing metadata to file")
+
+    {:noreply, offset}
+  end
+
+  def handle_cast(:zip, offset) do
+    files =
+      (@image_path <> "*.jpeg")
+      |> Path.wildcard()
+      |> Enum.map(&String.to_charlist/1)
+
+    case :zip.create(@image_path <> "images.zip", files) do
+      {:ok, filename} ->
+        Logger.debug("Zip #{filename} created.")
+
+      {:error, reason} ->
+        Logger.error("Zip couldn't be created. Reason: #{reason}")
+    end
 
     {:noreply, offset}
   end
@@ -193,6 +211,7 @@ defmodule Mole.Content.Scrape do
       Logger.info("Percent was in range, done...")
 
       GenServer.cast(__MODULE__, :csv)
+      GenServer.cast(__MODULE__, :zip)
 
       :ok
     end

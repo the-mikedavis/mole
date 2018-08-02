@@ -98,7 +98,7 @@ defmodule Mole.MixProject do
 
   defp clean_images(_) do
     Mix.shell().cmd(
-      "rm -rf priv/static/images/*.jpeg priv/static/image_metadata.csv",
+      "rm -rf priv/static/images/*.jpeg priv/static/images/metadata.csv priv/static/images/images.zip",
       env: [{"MIX_ENV", "dev"}]
     )
   end
