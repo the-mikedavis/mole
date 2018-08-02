@@ -20,9 +20,7 @@ defmodule Mole.GameplayServer do
   ```
   %{
     "the-mikedavis" => %{
-      id: 1, (?)
-      correct: 0,
-      incorrect: 4
+  .... gameplay ....
     },
     ...
   }

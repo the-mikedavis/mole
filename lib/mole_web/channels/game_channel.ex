@@ -1,7 +1,7 @@
 defmodule MoleWeb.GameChannel do
   use Phoenix.Channel
 
-  alias Mole.{Content, GameplayServer}
+  alias Mole.{Content, Content.Random, GameplayServer}
   alias MoleWeb.{Endpoint, Router.Helpers}
 
   @moduledoc """
@@ -53,10 +53,7 @@ defmodule MoleWeb.GameChannel do
   end
 
   defp assign_new_gameplay(socket) do
-    images =
-      @play_chunksize
-      |> Content.random_images()
-      |> Enum.map(&Map.take(&1, [:origin_id, :malignant]))
+    images = Random.pool()
 
     assign(socket, :gameplay, %{playable: images, played: []})
   end

@@ -7,14 +7,16 @@ defmodule Mole.Content.Random do
   The random server, which gives random images.
   """
 
+  @type t_pool :: {[%{}], [%{}]}
+
   ## Client API
 
   @doc "Give a pool of images with correct distributions"
-  @spec pool() :: {[%Image{}], [%Image{}]}
+  @spec pool() :: t_pool()
   def pool, do: GenServer.call(__MODULE__, :pool)
 
   @doc "Give a set of images based on the pool and the condition"
-  @spec set({[%Image{}], [%Image{}]}, integer() | nil) :: [%Image{}]
+  @spec set(t_pool(), integer() | nil) :: [%Image{}]
   def set({mals, bens}, condition) when condition in 0..1 do
     decided = Enum.take_random(mals, 2) ++ Enum.take_random(bens, 2)
 
@@ -34,6 +36,8 @@ defmodule Mole.Content.Random do
 
   def set(_pool, _condition), do: GenServer.call(__MODULE__, :random)
 
+  def refresh, do: GenServer.cast(__MODULE__, :refresh)
+
   ## Server API
 
   @doc """
@@ -41,10 +45,11 @@ defmodule Mole.Content.Random do
 
   This will need to be called _after_ the scraper is done collecting images.
   """
-  @spec init(any()) :: {[%Image{}], [%Image{}]}
+  @spec init(any()) :: t_pool()
   def init(_args) do
     Image
     |> Repo.all()
+    |> Enum.map(&Map.take(&1, [:origin_id, :malignant]))
     |> Enum.split_with(fn %Image{malignant: mal?} -> mal? end)
   end
 
@@ -53,6 +58,7 @@ defmodule Mole.Content.Random do
     {:ok, opts}
   end
 
+  @impl true
   def handle_call(:pool, _caller, {mals, bens} = state) do
     {:reply, {Enum.take_random(mals, 16), Enum.take_random(bens, 16)}, state}
   end
@@ -60,4 +66,8 @@ defmodule Mole.Content.Random do
   def handle_call(:random, _caller, {mals, bens} = state) do
     {:reply, Enum.take_random(mals ++ bens, 5), state}
   end
+
+  # reload the images in the state
+  @impl true
+  def handle_cast(:refresh, _state), do: {:noreply, init(nil)}
 end
