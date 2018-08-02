@@ -17,7 +17,7 @@ config :mole,
   play_chunksize: 4,
   user_socket_secret:
     "aEv4XpOMzHrn/EWs/yYqMEiRG4D7SgSUt08mQyasbyUp6kNkJOAcTY9hhVcJmi7w",
-  default_admins: ["the-mikedavis"]
+  default_admins: ["the-mikedavis", "soyoonk", "nickc", "zhuangq"]
 
 # Configures the endpoint
 config :mole, MoleWeb.Endpoint,
