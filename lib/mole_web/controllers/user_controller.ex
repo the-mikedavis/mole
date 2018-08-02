@@ -7,10 +7,13 @@ defmodule MoleWeb.UserController do
   @page_size 20
 
   def index(conn, %{"page" => page}) do
-    offset = page * @page_size
+    offset = (String.to_integer(page) - 1) * @page_size
 
     with [] <- Leaderboard.get_block(@page_size, offset) do
-      render(conn, "404.html")
+      conn
+      |> put_status(:not_found)
+      |> put_view(MoleWeb.ErrorView)
+      |> render(:"404")
     else
       users ->
         pagination = Leaderboard.pagination(@page_size, offset)
