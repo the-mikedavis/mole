@@ -1,12 +1,7 @@
-h1 Here's how you did:
+h1 Nice work!
 
-= for image <- Enum.reverse(@gameplay.played) do
-  = if image.correct? do
-    div.correct
-      i.far.fa-check-circle
-  - else
-    div.incorrect
-      i.far.fa-times-circle
-  img.recap_card src="#{image_path(image)}"
+= if @sets_left do
+  p = "You have #{@sets_left} sets left. Keep playing or take a break."
 
-a href="#{Routes.game_path(@conn, :index)}" Play again?
+= link("Keep playing", Routes.game_path(@conn, :index))
+= link("Home", Routes.page_path(@conn, :index))

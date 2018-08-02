@@ -19,18 +19,14 @@ defmodule MoleWeb.GameController do
   end
 
   def show(conn, _params) do
-    case GameplayServer.get_done(conn.assigns.current_user.username) do
-      nil ->
-        redirect(conn, to: "/play")
+    sets_left = GameplayServer.sets_left(conn.assigns.current_user.username)
 
-      gameplay ->
-        render(conn, "show.html", gameplay: gameplay)
-    end
+    render(conn, "show.html", sets_left: sets_left)
   end
 
   # ensure the user is logged in before they access a game
   defp logged_in(conn, _opts) do
-    if conn.assigns.current_user do
+    if conn.assigns[:current_user] do
       conn
     else
       conn

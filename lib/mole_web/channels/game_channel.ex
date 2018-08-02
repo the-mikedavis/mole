@@ -1,8 +1,16 @@
 defmodule MoleWeb.GameChannel do
   use Phoenix.Channel
 
-  alias Mole.{Content, Content.Random, GameplayServer}
-  alias MoleWeb.{Endpoint, Router.Helpers}
+  alias Mole.{Content, GameplayServer}
+  alias MoleWeb.Endpoint
+  alias MoleWeb.Router.Helpers, as: Routes
+
+  @type gameplay :: %{
+          playable: [%{}],
+          played: [%{}],
+          correct: integer(),
+          incorrect: integer()
+        }
 
   @moduledoc """
   Socket channel for games.
@@ -11,18 +19,17 @@ defmodule MoleWeb.GameChannel do
   those images from clients.
   """
 
-  @play_chunksize Application.get_env(:mole, :play_chunksize)
-
   @doc """
-  Join a new game, which involves assigning a user a new image
+  Join a new game, which involves assigning a socket a new set and giving
+  the first image.
   """
   def join("game:new", _params, socket) do
-    # recover gameplay that's in progress (part way through images)
+    {condition, set} = GameplayServer.new_set(socket.assigns.username)
+
     socket =
-      case GameplayServer.get_in_progress(socket.assigns.username) do
-        nil -> assign_new_gameplay(socket)
-        gameplay -> assign(socket, :gameplay, gameplay)
-      end
+      socket
+      |> assign(:condition, condition)
+      |> assign(:gameplay, gameplay(set))
 
     {:ok, %{path: current_image_path(socket)}, socket}
   end
@@ -30,17 +37,15 @@ defmodule MoleWeb.GameChannel do
   @doc """
   Handle things the user says.
 
-  When the user has played for the proper chunk size, they'll be finished with
-  one set and will be re-routed to the results page.
+  Figure out if they're correct or not and mark that in the gameplay.
+  Update the gameplay for the next image.
   """
   def handle_in("answer", malignant?, socket) do
     with correct? <- current_image(socket).malignant == malignant?,
          socket <- update_gameplay(socket, correct?) do
-      GameplayServer.update(socket.assigns.username, socket.assigns.gameplay)
-
       case socket.assigns.gameplay.playable do
         [] ->
-          recap_path = Helpers.game_path(Endpoint, :show)
+          recap_path = Routes.game_path(Endpoint, :show)
 
           {:reply, {:ok, %{"reroute" => true, "path" => recap_path}}, socket}
 
@@ -52,11 +57,8 @@ defmodule MoleWeb.GameChannel do
     end
   end
 
-  defp assign_new_gameplay(socket) do
-    images = Random.pool()
-
-    assign(socket, :gameplay, %{playable: images, played: []})
-  end
+  @spec gameplay(GameplayServer.set()) :: gameplay()
+  defp gameplay(set), do: %{playable: set, correct: 0, incorrect: 0}
 
   defp current_image(%{assigns: %{gameplay: %{playable: []}}}),
     do: raise("GameChannel tried to get the next image after all ran out!")
@@ -69,13 +71,16 @@ defmodule MoleWeb.GameChannel do
     |> Content.static_path()
   end
 
-  defp update_gameplay(socket, correct?) do
-    with gameplay <- socket.assigns.gameplay,
-         [just_played | to_play] <- gameplay.playable,
-         just_played <- Map.put(just_played, :correct?, correct?),
-         # N.B. the `played` list will need to be reversed at the end
-         gameplay <-
-           %{playable: to_play, played: [just_played | gameplay.played]},
-         do: assign(socket, :gameplay, gameplay)
+  # remove the head of the gameplay list, update correct/incorrect
+  defp update_gameplay(%{assigns: %{gameplay: gameplay}} = socket, correct?) do
+    correctness = if correct?, do: :correct, else: :incorrect
+    [_just_played | to_play] = gameplay.playable
+
+    new_gameplay =
+      gameplay
+      |> Map.put(:playable, to_play)
+      |> Map.update!(correctness, &(&1 + 1))
+
+    assign(socket, :gameplay, new_gameplay)
   end
 end

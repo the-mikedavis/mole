@@ -34,7 +34,7 @@ defmodule Mole.Content.Random do
     |> Enum.shuffle()
   end
 
-  def set(_pool, _condition), do: GenServer.call(__MODULE__, :random)
+  def set({mals, bens}, _condition), do: Enum.take_random(mals ++ bens, 5)
 
   def refresh, do: GenServer.cast(__MODULE__, :refresh)
 
@@ -45,7 +45,7 @@ defmodule Mole.Content.Random do
 
   This will need to be called _after_ the scraper is done collecting images.
   """
-  @spec init(any()) :: t_pool()
+  @impl true
   def init(_args) do
     Image
     |> Repo.all()

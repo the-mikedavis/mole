@@ -1,7 +1,11 @@
 defmodule Mole.GameplayServer do
   use GenServer
 
+  alias Mole.{Accounts, Content.Random}
+
   @type gameplay :: %{correct: integer(), incorrect: integer()}
+
+  @type set :: [%{}]
 
   @moduledoc """
   A server for holding game information. It holds the gameplay of users of the
@@ -32,51 +36,70 @@ defmodule Mole.GameplayServer do
 
   # Client API
 
-  @doc "Get a user's gameplay by username"
-  @spec get(binary()) :: map() | nil
-  def get(username), do: GenServer.call(__MODULE__, {:get, username})
-
-  @doc "Return a user's gameplay if and only if it's in progress"
-  @spec get_in_progress(binary()) :: map() | nil
-  def get_in_progress(username) do
-    case get(username) do
-      # non existant
+  def new_set(username) do
+    case GenServer.call(__MODULE__, {:get, username}) do
       nil ->
-        nil
+        user = Accounts.get_user_by_uname(username)
+        condition = user.condition
+        pool = Random.pool()
+        set = Random.set(pool, condition)
+        sets_left = 5
 
-      # done
-      %{playable: []} ->
-        nil
+        GenServer.call(
+          __MODULE__,
+          {:put, username, {sets_left, condition, pool}}
+        )
 
-      # in progress
-      gameplay ->
-        gameplay
+        {condition, set}
+
+      {_sets_left, condition, pool} ->
+        set = Random.set(pool, condition)
+
+        {condition, set}
     end
   end
 
-  @doc "Return a user's gameplay if and only if it's done"
-  @spec get_done(binary()) :: map() | nil
-  def get_done(username) do
-    case get(username) do
-      # non existant
-      nil ->
-        nil
+  @doc """
+  Save a set of play (to the database for that user)
 
-      # done
-      %{playable: []} = gameplay ->
-        gameplay
+  If that user has played through all of their sets, they're done and can
+  be deleted from the server.
+  """
+  @spec save_set(String.t(), %{}) :: :ok | :error
+  def save_set(username, gameplay) do
+    case GenServer.call(__MODULE__, {:get, username}) do
+      {1, _condition, _pool} ->
+        {status, _} = Accounts.save_gameplay(username, gameplay)
+        GenServer.call(__MODULE__, {:delete, username})
 
-      # in progress
-      _gameplay ->
-        nil
+        status
+
+      {sets_left, condition, pool} ->
+        {status, _} = Accounts.save_gameplay(username, gameplay)
+
+        GenServer.call(
+          __MODULE__,
+          {:put, username, {sets_left - 1, condition, pool}}
+        )
+
+        status
+
+      _ ->
+        :error
     end
   end
 
-  @spec update(binary(), gameplay()) :: gameplay()
-  def update(username, gameplay),
-    do: GenServer.call(__MODULE__, {:update, username, gameplay})
+  @doc "get the remaining set count for a user"
+  @spec sets_left(String.t()) :: integer()
+  def sets_left(username) do
+    case GenServer.call(__MODULE__, {:get, username}) do
+      {sets_left, _condition, _pool} -> sets_left
+      _ -> nil
+    end
+  end
 
   # Server API
+  # TODO yeah only really need an Agent
 
   def start_link(args),
     do: GenServer.start_link(__MODULE__, args, name: __MODULE__)
@@ -88,6 +111,9 @@ defmodule Mole.GameplayServer do
   def handle_call({:get, username}, _caller, state),
     do: {:reply, Map.get(state, username), state}
 
-  def handle_call({:update, username, gameplay}, _caller, state),
-    do: {:reply, gameplay, Map.put(state, username, gameplay)}
+  def handle_call({:put, username, attrs}, _caller, state),
+    do: {:reply, attrs, Map.put(state, username, attrs)}
+
+  def handle_call({:delete, username}, _caller, state),
+    do: {:reply, username, Map.delete(state, username)}
 end
