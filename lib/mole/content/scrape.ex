@@ -5,7 +5,15 @@ defmodule Mole.Content.Scrape do
   use GenServer
   use Private
   require Logger
-  alias Mole.{Content, Content.Image, Content.Isic, Content.Meta, Repo}
+
+  alias Mole.{
+    Content,
+    Content.Image,
+    Content.Isic,
+    Content.Meta,
+    Content.Random,
+    Repo
+  }
 
   @db_module Isic
   @std_chunk_size 20
@@ -213,6 +221,7 @@ defmodule Mole.Content.Scrape do
 
       GenServer.cast(__MODULE__, :csv)
       GenServer.cast(__MODULE__, :zip)
+      Random.refresh()
 
       :ok
     end
