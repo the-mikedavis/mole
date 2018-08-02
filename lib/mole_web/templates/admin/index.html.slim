@@ -17,3 +17,10 @@ h2 Remove an existing administrator
   div
     = text_input f, :username, placeholder: "username"
   = submit "remove administrator"
+
+h2 Useful Links
+
+ul
+  li = link("Images (zip)", to: Routes.static_path(@conn, "/images/images.zip"))
+  li = link("Image metadata (csv)", to: Routes.static_path(@conn, "/images/metadata.csv"))
+  li = link("Create Surveys", to: Routes.survey_path(@conn, :index))
