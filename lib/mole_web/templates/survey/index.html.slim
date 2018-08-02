@@ -1,25 +1,28 @@
-h2 Listing Surveys
+h2 Surveys
 
-table
-  thead
-    tr
-      th Slug
-      th Prelink
-      th Postlink
+= if length(@surveys) == 0 do
+  p There are no surveys yet...
+- else
+  table
+    thead
+      tr
+        th Slug
+        th Prelink
+        th Postlink
 
-      th
-  tbody
-    = for survey <- @surveys do
-        tr
-          td = survey.slug
-          td = survey.prelink
-          td = survey.postlink
+        th
+    tbody
+      = for survey <- @surveys do
+          tr
+            td = survey.slug
+            td = survey.prelink
+            td = survey.postlink
 
-          td
-            = link "Show", to: Routes.survey_path(@conn, :show, survey)
-            br
-            = link "Edit", to: Routes.survey_path(@conn, :edit, survey)
-            br
-            = link "Delete", to: Routes.survey_path(@conn, :delete, survey), method: :delete, data: [confirm: "Are you sure?"]
+            td
+              = link "Show", to: Routes.survey_path(@conn, :show, survey)
+              br
+              = link "Edit", to: Routes.survey_path(@conn, :edit, survey)
+              br
+              = link "Delete", to: Routes.survey_path(@conn, :delete, survey), method: :delete, data: [confirm: "Are you sure?"]
 
 span = link "New Survey", to: Routes.survey_path(@conn, :new)

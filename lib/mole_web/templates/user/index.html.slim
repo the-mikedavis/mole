@@ -1,24 +1,27 @@
 h1 Leaderboard
 
-table
-  thead
-    tr
-      th Rank
-      th Username
-      th Score
-      th Correct
-      th Incorrect
-
-      th
-  tbody
-    = for {user, rank} <- @users do
+= if length(@users) == 0 do
+  p There aren't any users yet...
+- else
+  table
+    thead
       tr
-        td = rank
-        td = user.username
-        td = user.score
-        td = user.correct
-        td = user.incorrect
+        th Rank
+        th Username
+        th Score
+        th Correct
+        th Incorrect
 
-        td = link("View", to: Routes.user_path(@conn, :show, user.id))
+        th
+    tbody
+      = for {user, rank} <- @users do
+        tr
+          td = rank
+          td = user.username
+          td = user.score
+          td = user.correct
+          td = user.incorrect
+
+          td = link("View", to: Routes.user_path(@conn, :show, user.id))
 
 = pagination(@conn, @pagination)
