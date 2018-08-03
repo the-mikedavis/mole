@@ -2,6 +2,10 @@ div#type-tell
   span.left BENIGN
   span &#47
   span.right MALIGNANT
+  = if @feedback do
+    span &mdash;
+    span.fas.fa-check-circle#correct.correctness
+    span.fas.fa-times-circle#incorrect.correctness
 
 div#holster
   img#card
