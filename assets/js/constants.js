@@ -3,6 +3,7 @@ const FADE_TIME = 3000  // 3 seconds
 const constants = {
   tinder_event_name: 'trigger',
   image_event_name: 'new_image',
+  brief_event_name: 'brief',
   next_event_name: 'answer_reply',
   activate_element: function (element) {
     element.classList.add('active')

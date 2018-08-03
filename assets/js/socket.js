@@ -1,10 +1,12 @@
 import {Socket} from "phoenix"
 import constants from './constants'
 import brief_listener from './brief_listener'
+import image_listener from './image_listener'
 import next_listener from './next_listener'
 
 let socket = null
 
+const BRIEF_EVENT = constants.brief_event_name
 const IMAGE_EVENT = constants.image_event_name
 const NEXT_EVENT = constants.next_event_name
 
@@ -18,7 +20,7 @@ if (window.userToken) {
   channel.join()
     .receive("ok", resp => {
       console.log("Joined successfully", resp)
-      document.dispatchEvent(new CustomEvent(IMAGE_EVENT, {detail: resp}))
+      document.dispatchEvent(new CustomEvent(BRIEF_EVENT, {detail: resp}))
     })
     .receive("error", resp => { console.log("Unable to join", resp) })
 
@@ -29,7 +31,8 @@ if (window.userToken) {
       })
   })
 
-  document.addEventListener(IMAGE_EVENT, brief_listener)
+  document.addEventListener(BRIEF_EVENT, brief_listener)
+  document.addEventListener(IMAGE_EVENT, image_listener)
   document.addEventListener(NEXT_EVENT, next_listener)
 }
 
