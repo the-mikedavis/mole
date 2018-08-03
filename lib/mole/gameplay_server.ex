@@ -30,7 +30,7 @@ defmodule Mole.GameplayServer do
         condition = user.condition
         pool = Random.pool()
         set = Random.set(pool, condition)
-        sets_left = 5
+        sets_left = 20
 
         GenServer.call(
           __MODULE__,
