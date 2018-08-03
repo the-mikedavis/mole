@@ -5,6 +5,7 @@ defmodule MoleWeb.Plugs.Survey do
   alias Mole.{Accounts, Accounts.User}
 
   @key :survey_id
+  @sp :survey_progress
 
   def init(opts), do: opts
 
@@ -13,7 +14,7 @@ defmodule MoleWeb.Plugs.Survey do
     survey_id = (user && user.survey_id) || get_session(conn, @key)
 
     with %User{@key => nil} <- user,
-         do: Accounts.update_user(user, %{@key => survey_id})
+         do: Accounts.update_user(user, %{@key => survey_id, @sp => 0})
 
     assign(conn, @key, survey_id)
   end
@@ -25,7 +26,7 @@ defmodule MoleWeb.Plugs.Survey do
     |> configure_session(renew: true)
   end
 
-  @sp :survey_progress
+  # survey progress things
 
   def pre_survey?(%{assigns: %{current_user: %{@sp => 0}}}), do: true
   def pre_survey?(_conn), do: false

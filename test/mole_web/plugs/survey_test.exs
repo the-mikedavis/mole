@@ -48,6 +48,20 @@ defmodule MoleWeb.Plugs.SurveyTest do
     assert conn.assigns.survey_id == survey.id
   end
 
+  test "an assigned user with no survey_id is given survey_progress on visit" do
+    user = user_fixture(%{survey_id: nil})
+    survey = survey_fixture()
+
+    build_conn()
+    |> init_test_session(%{})
+    |> assign(:current_user, user)
+    |> put_session(:survey_id, survey.id)
+    |> Survey.call(%{})
+
+    assert Accounts.get_user(user.id).survey_id == survey.id
+    assert Accounts.get_user(user.id).survey_progress == 0
+  end
+
   test "putting a survey adds it to the session" do
     conn =
       build_conn()
