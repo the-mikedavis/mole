@@ -5,12 +5,13 @@ div#type-tell
   span &#47
   span.right MALIGNANT
 
-img#card
+div#holster
+  img#card
 
 div#help.far.fa-question-circle onclick="toggleHelp(this)"
   p.details Swipe left if you think the mole is benign (non-cancerous).
   p.details Swipe right if you think the mole is malignant (cancerous).
 
-= if assigns[:user_token] do
+= if @user_token do
   javascript:
-    window.userToken = "#{assigns[:user_token]}";
+    window.userToken = "#{@user_token}";

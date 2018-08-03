@@ -31,7 +31,7 @@ defmodule MoleWeb.GameChannel do
       |> assign(:condition, condition)
       |> assign(:gameplay, gameplay(set))
 
-    {:ok, %{path: current_image_path(socket)}, socket}
+    {:ok, %{paths: all_image_paths(socket)}, socket}
   end
 
   @doc """
@@ -70,6 +70,9 @@ defmodule MoleWeb.GameChannel do
     |> current_image()
     |> Content.static_path()
   end
+
+  defp all_image_paths(socket),
+    do: Enum.map(socket.assigns.gameplay.playable, &Content.static_path/1)
 
   # remove the head of the gameplay list, update correct/incorrect
   defp update_gameplay(%{assigns: %{gameplay: gameplay}} = socket, correct?) do

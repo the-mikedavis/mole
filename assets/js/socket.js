@@ -1,6 +1,6 @@
 import {Socket} from "phoenix"
 import constants from './constants'
-import image_listener from './image_listener'
+import brief_listener from './brief_listener'
 import next_listener from './next_listener'
 
 let socket = null
@@ -29,7 +29,7 @@ if (window.userToken) {
       })
   })
 
-  document.addEventListener(IMAGE_EVENT, image_listener)
+  document.addEventListener(IMAGE_EVENT, brief_listener)
   document.addEventListener(NEXT_EVENT, next_listener)
 }
 
