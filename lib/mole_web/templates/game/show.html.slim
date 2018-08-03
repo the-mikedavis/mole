@@ -3,5 +3,6 @@ h1 Nice work!
 = if @sets_left do
   p = "You have #{@sets_left} sets left. Keep playing or take a break."
 
-= link("Keep playing", Routes.game_path(@conn, :index))
-= link("Home", Routes.page_path(@conn, :index))
+= button("Keep playing", to: Routes.game_path(@conn, :index), method: "get")
+br
+= button("Home", to: Routes.page_path(@conn, :index), method: "get")
