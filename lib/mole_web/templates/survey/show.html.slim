@@ -3,7 +3,7 @@ h2 = "Survey \"#{@survey.slug}\""
 ul
   li
     strong Join Link:
-    = " #{@survey.slug}"
+    = link(" " <> @survey.slug, to: Routes.survey_path(@conn, :join, @survey.slug))
   li
     strong Pre-play Survey:
     = " #{@survey.prelink}"
