@@ -1,7 +1,7 @@
 defmodule MoleWeb.GameChannel do
   use Phoenix.Channel
 
-  alias Mole.{Content, GameplayServer}
+  alias Mole.{Content, Content.Condition, GameplayServer}
   alias MoleWeb.Endpoint
   alias MoleWeb.Router.Helpers, as: Routes
 
@@ -50,9 +50,14 @@ defmodule MoleWeb.GameChannel do
           {:reply, {:ok, %{"reroute" => true, "path" => recap_path}}, socket}
 
         _list ->
-          {:reply,
-           {:ok, %{"reroute" => false, "path" => current_image_path(socket)}},
-           socket}
+          reply =
+            if(Condition.feedback?(socket.assigns.condition),
+              do: %{"correct" => correct?},
+              else: %{}
+            )
+            |> Map.put("path", current_image_path(socket))
+
+          {:reply, {:ok, reply}, socket}
       end
     end
   end
