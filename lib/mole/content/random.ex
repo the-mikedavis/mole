@@ -47,27 +47,28 @@ defmodule Mole.Content.Random do
   """
   @impl true
   def init(_args) do
-    Image
-    |> Repo.all()
-    |> Enum.map(&Map.take(&1, [:origin_id, :malignant]))
-    |> Enum.split_with(fn %Image{malignant: mal?} -> mal? end)
+    starting_data =
+      Image
+      |> Repo.all()
+      |> Enum.map(&Map.take(&1, [:origin_id, :malignant]))
+      |> Enum.split_with(fn %{malignant: mal?} -> mal? end)
+
+    {:ok, starting_data}
   end
 
-  def start_link(opts) do
-    GenServer.start_link(__MODULE__, {[], []}, name: __MODULE__)
-    {:ok, opts}
-  end
+  def start_link(_opts),
+    do: GenServer.start_link(__MODULE__, {[], []}, name: __MODULE__)
 
   @impl true
   def handle_call(:pool, _caller, {mals, bens} = state) do
     {:reply, {Enum.take_random(mals, 16), Enum.take_random(bens, 16)}, state}
   end
 
-  def handle_call(:random, _caller, {mals, bens} = state) do
-    {:reply, Enum.take_random(mals ++ bens, 5), state}
-  end
-
   # reload the images in the state
   @impl true
-  def handle_cast(:refresh, _state), do: {:noreply, init(nil)}
+  def handle_cast(:refresh, _state) do
+    {:ok, data} = init(nil)
+
+    {:noreply, data}
+  end
 end

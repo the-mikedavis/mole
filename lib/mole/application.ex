@@ -17,7 +17,8 @@ defmodule Mole.Application do
       {Mole.Content.Scrape, 0},
       {Mole.Accounts.Leaderboard, []},
       {Mole.GameplayServer, %{}},
-      {Mole.Administrators, %{}}
+      {Mole.Administrators, %{}},
+      {Mole.Content.Random, %{}}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
