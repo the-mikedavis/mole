@@ -11,16 +11,6 @@ defmodule Mole.GameplayServer do
   A server for holding game information. It holds the gameplay of users of the
   game, which involves the number of correct and incorrect.
 
-  Gameplay 'sessions' should expire and be saved after a half hour or so.
-  After a certain number of plays, the gameplay should be saved to the database.
-
-  This will avoid many operations on the database. The number of database
-  operations will be divided by the number of plays allowed before saving.
-  This will also make the gameplay more extensible to things like surveys and
-  anonymous play.
-
-  The state of the machine should be a map of maps.
-
   ```
   %{
     "the-mikedavis" => %{
@@ -29,9 +19,6 @@ defmodule Mole.GameplayServer do
     ...
   }
   ```
-
-  And perhaps an `id` of `nil` can be an anonymous user (not saved to the
-  database).
   """
 
   # Client API
