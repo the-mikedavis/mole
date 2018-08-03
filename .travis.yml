@@ -6,11 +6,7 @@ elixir:
 otp_release:
   - 21.0
 addons:
-  postgresql: "10"
-  apt:
-    packages:
-      - postgresql-10
-      - postgresql-client-10
+  postgresql: '10.4'
 
 env:
   - MIX_ENV=test VERBOSE_TEST=true
