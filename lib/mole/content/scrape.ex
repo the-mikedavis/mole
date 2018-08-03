@@ -104,7 +104,7 @@ defmodule Mole.Content.Scrape do
     |> Meta.to_csv()
     |> Enum.each(&IO.write(file, &1))
 
-    Logger.debug(fn -> "Finished writing metadata to file" end)
+    Logger.info(fn -> "Finished writing metadata to file" end)
 
     {:noreply, offset}
   end
@@ -118,7 +118,7 @@ defmodule Mole.Content.Scrape do
 
     case :zip.create(@image_path <> "images.zip", files, cwd: @image_path) do
       {:ok, filename} ->
-        Logger.debug(fn -> "Zip #{filename} created." end)
+        Logger.info(fn -> "Zip #{filename} created." end)
 
       {:error, reason} ->
         Logger.error(fn -> "Zip couldn't be created. Reason: #{reason}" end)
