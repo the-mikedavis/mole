@@ -104,7 +104,7 @@ defmodule Mole.Content.Scrape do
     |> Meta.to_csv()
     |> Enum.each(&IO.write(file, &1))
 
-    Logger.debug("Finished writing metadata to file")
+    Logger.debug(fn -> "Finished writing metadata to file" end)
 
     {:noreply, offset}
   end
@@ -118,10 +118,10 @@ defmodule Mole.Content.Scrape do
 
     case :zip.create(@image_path <> "images.zip", files, cwd: @image_path) do
       {:ok, filename} ->
-        Logger.debug("Zip #{filename} created.")
+        Logger.debug(fn -> "Zip #{filename} created." end)
 
       {:error, reason} ->
-        Logger.error("Zip couldn't be created. Reason: #{reason}")
+        Logger.error(fn -> "Zip couldn't be created. Reason: #{reason}" end)
     end
 
     {:noreply, offset}
@@ -217,7 +217,7 @@ defmodule Mole.Content.Scrape do
 
     @spec enforce_ratio(integer(), integer()) :: :ok
     def enforce_ratio(percent, _total) when percent in @malignant_range do
-      Logger.info("Percent was in range, done...")
+      Logger.info(fn -> "Percent was in range, done..." end)
 
       GenServer.cast(__MODULE__, :csv)
       GenServer.cast(__MODULE__, :zip)
