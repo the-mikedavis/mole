@@ -16,6 +16,7 @@ defmodule MoleWeb.Router do
     plug(Plugs.Survey)
     plug(Plugs.Condition)
     plug(Plugs.Consent)
+    plug(Plugs.Feedback)
     plug(:put_user_token)
   end
 
