@@ -1,27 +1,15 @@
 section class="phx-hero"
-  h2 = gettext "Welcome to %{name}!", name: "Phoenix"
+  h2 = gettext "Welcome to %{name}!", name: "Whack-a-Mole"
   p
-    | A productive web framework that
+    | We're still under development
     br
-    | does not compromise speed and maintainability.
+    | so please use at your own risk
 
 
 section class="row"
   article class="column"
-    h4 Resources
+    h4 Links
     ul
-      li
-        a href="https://hexdocs.pm/phoenix/overview.html" Guides &amp; Docs
-      li
-        a href="https://github.com/phoenixframework/phoenix" Source
-      li
-        a href="https://github.com/phoenixframework/phoenix/blob/v1.3/CHANGELOG.md" v1.3 Changelog
-  article class="column"
-    h4 Help
-    ul
-      li
-        a href="https://elixirforum.com/c/phoenix-forum" Forum
-      li
-        a href="https://webchat.freenode.net/?channels=elixir-lang" #elixir-lang on Freenode IRC
-      li
-        a href="https://twitter.com/elixirphoenix" Twitter @elixirphoenix
+      li = link("Play", to: Routes.game_path(@conn, :index))
+      li = link("Admins (admins only)", to: Routes.admin_path(@conn, :index))
+      li = link("Surveys (admins only)", to: Routes.survey_path(@conn, :index))
