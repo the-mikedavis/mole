@@ -14,7 +14,8 @@ defmodule MoleWeb.Plugs.Survey do
     survey_id = (user && user.survey_id) || get_session(conn, @key)
 
     with %User{@key => nil} <- user,
-         do: Accounts.update_user(user, %{@key => survey_id, @sp => 0})
+         id when not is_nil(id) <- survey_id,
+         do: Accounts.update_user(user, %{@key => id, @sp => 0})
 
     assign(conn, @key, survey_id)
   end
