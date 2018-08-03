@@ -71,8 +71,11 @@ defmodule MoleWeb.GameChannel do
     |> Content.static_path()
   end
 
-  defp all_image_paths(socket),
-    do: Enum.map(socket.assigns.gameplay.playable, &Content.static_path/1)
+  defp all_image_paths(socket) do
+    socket.assigns.gameplay.playable
+    |> Enum.shuffle()
+    |> Enum.map(&Content.static_path/1)
+  end
 
   # remove the head of the gameplay list, update correct/incorrect
   defp update_gameplay(%{assigns: %{gameplay: gameplay}} = socket, correct?) do
