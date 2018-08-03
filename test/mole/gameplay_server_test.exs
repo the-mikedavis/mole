@@ -14,27 +14,5 @@ defmodule Mole.GameplayServerTest do
     ]
   end
 
-  test "getting a username", c do
-    assert GS.get(c.uname) == nil
-
-    assert GS.update(c.uname, c.in_progress) == c.in_progress
-
-    assert GS.get(c.uname) == c.in_progress
-  end
-
-  test "getting a username in progress", c do
-    assert GS.get(c.uname) == nil
-
-    assert GS.update(c.uname, c.in_progress) == c.in_progress
-
-    assert GS.get_in_progress(c.uname) == c.in_progress
-  end
-
-  test "getting a username done", c do
-    assert GS.get(c.uname) == nil
-
-    assert GS.update(c.uname, c.done) == c.done
-
-    assert GS.get_done(c.uname) == c.done
-  end
+  # TODO
 end
