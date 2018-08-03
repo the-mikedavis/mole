@@ -1,5 +1,6 @@
 /* Handle the message of what to do next */
 import image_listener from './image_listener'
+import constants from './constants'
 
 function listener(event) {
   if (event.detail.reroute) {
@@ -13,7 +14,7 @@ function listener(event) {
 
     console.log("Was I correct?", correct)
 
-    // TODO: correctness listener
+    constants.activate_element(el)
     image_listener(event)
   } else {
     image_listener(event)
