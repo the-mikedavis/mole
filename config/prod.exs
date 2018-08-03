@@ -17,7 +17,8 @@ config :mole, min_amount: 2000
 
 config :mole, MoleWeb.Endpoint,
   load_from_system_env: true,
-  url: [host: "example.com", port: 80],
+  url: [host: "mcarsondavis.com", port: "${MOLE_PORT}"],
+  http: [port: "${MOLE_PORT}"],
   cache_static_manifest: "priv/static/cache_manifest.json"
 
 # Do not print debug messages in production
