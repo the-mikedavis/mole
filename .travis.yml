@@ -16,8 +16,8 @@ env:
 
 before_script:
   # - psql -c 'create database mole_test;' -U postgres
-  - sudo service postgresql status
-  - cp .travis/test.exs config/
+  # - sudo service postgresql status
+  # - cp .travis/test.exs config/
 
 script:
   - mix ecto.setup
