@@ -12,7 +12,7 @@ function listener(event) {
   p.innerHTML = 'These are your moles. Study them carefully before proceeding.'
   container_el.appendChild(p)
 
-  for (let src of event.detail.paths) {
+  for (let src of shuffleArray(event.detail.paths)) {
     var i = document.createElement('img')
     i.className = "card brief"
     i.src = src
@@ -29,5 +29,11 @@ function listener(event) {
   container_el.appendChild(button)
 }
 
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
 
 export default listener

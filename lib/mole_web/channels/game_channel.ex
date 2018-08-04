@@ -78,7 +78,6 @@ defmodule MoleWeb.GameChannel do
 
   defp all_image_paths(socket) do
     socket.assigns.gameplay.playable
-    |> Enum.shuffle()
     |> Enum.map(&Content.static_path/1)
   end
 
