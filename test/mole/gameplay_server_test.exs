@@ -3,16 +3,8 @@ defmodule Mole.GameplayServerTest do
   alias Mole.GameplayServer, as: GS
 
   setup do
-    # start_supervised!(GS)
-
-    on_exit(fn -> GS.update("username", nil) end)
-
-    [
-      in_progress: %{playable: [3, 4], played: [1, 2]},
-      done: %{playable: [], played: [1, 2, 3, 4]},
-      uname: "username"
-    ]
+    on_exit(fn -> Agent.update(__MODULE__, fn _ -> %{} end) end)
   end
 
-  # TODO
+  # TODO this will involve database operations (at least a user_fixture)
 end
