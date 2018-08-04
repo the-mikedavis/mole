@@ -48,8 +48,6 @@ defmodule MoleWeb.GameController do
   end
 
   defp pre_survey(conn, _opts) do
-    Logger.debug(fn -> "Pre survey: #{inspect(conn)}" end)
-
     if Survey.pre_survey?(conn) do
       survey = Content.get_survey!(conn.assigns.survey_id)
       link = "#{survey.prelink}?username=#{conn.assigns.current_user.username}"
