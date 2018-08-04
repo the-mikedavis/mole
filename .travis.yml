@@ -7,17 +7,10 @@ otp_release:
   - 21.0
 addons:
   postgresql: '9.5'
-  # services:
-  # - postgresql
 env:
   global:
     - PGPORT=5432
     - MIX_ENV=test VERBOSE_TEST=true
-
-before_script:
-  # - psql -c 'create database mole_test;' -U postgres
-  # - sudo service postgresql status
-  # - cp .travis/test.exs config/
 
 script:
   - mix ecto.setup
