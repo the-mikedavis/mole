@@ -12,7 +12,12 @@ function listener(event) {
   p.innerHTML = 'These are your moles. Study them carefully before proceeding.'
   container_el.appendChild(p)
 
-  for (let src of shuffleArray(event.detail.paths)) {
+  var imageArray = event.detail.paths
+  var first = imageArray[0]
+
+  shuffleArray(imageArray)
+
+  for (let src of imageArray) {
     var i = document.createElement('img')
     i.className = "card brief"
     i.src = src
@@ -23,7 +28,7 @@ function listener(event) {
   button.innerHTML = 'READY'
   button.onclick = () => {
     document.dispatchEvent(
-      new CustomEvent(IMAGE_EVENT, {detail: {path: event.detail.paths[0]}})
+      new CustomEvent(IMAGE_EVENT, {detail: {path: first}})
     )
   }
   container_el.appendChild(button)
