@@ -108,7 +108,7 @@ defmodule Mole.ContentTest do
     setup do
       [
         static: "/images/X.jpeg",
-        download: "./priv/static/images/X.jpeg"
+        download: "priv/static/images/X.jpeg"
       ]
     end
 
@@ -122,9 +122,9 @@ defmodule Mole.ContentTest do
     end
 
     test "the download path", c do
-      assert Content.download_path("X") == c.download
-      assert Content.download_path(%{id: "X"}) == c.download
-      assert Content.download_path(%{origin_id: "X"}) == c.download
+      assert Content.download_path("X") =~ c.download
+      assert Content.download_path(%{id: "X"}) =~ c.download
+      assert Content.download_path(%{origin_id: "X"}) =~ c.download
     end
   end
 
