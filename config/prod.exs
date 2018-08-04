@@ -15,11 +15,22 @@ use Mix.Config
 # which you typically run after static files are built.
 config :mole, min_amount: 1000
 
+# Configure your database
+config :mole, Mole.Repo,
+  adapter: Ecto.Adapters.Postgres,
+  username: "postgres",
+  password: "${MOLE_POSTGRESQL_PASSWORD}",
+  database: "${MOLE_POSTGRESQL_DATABASE}",
+  pool_size: 15
+
 config :mole, MoleWeb.Endpoint,
   load_from_system_env: true,
   url: [host: "mcarsondavis.com", port: "${MOLE_PORT}"],
   http: [port: "${MOLE_PORT}"],
-  cache_static_manifest: "priv/static/cache_manifest.json"
+  cache_static_manifest: "priv/static/cache_manifest.json",
+  secret_key_base: "${MOLE_SECRET_KEYBASE}"
+    "Y/wkSQ6ZoZB0wTf6UndDMI9NfOSxUxwhIAWpUAiVIx9brkSTjJBeqjAdVbB8GUPu"
+
 
 # Do not print debug messages in production
 config :logger, level: :info
@@ -64,4 +75,3 @@ config :logger, level: :info
 
 # Finally import the config/prod.secret.exs
 # which should be versioned separately.
-import_config "prod.secret.exs"
