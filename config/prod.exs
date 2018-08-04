@@ -29,8 +29,8 @@ config :mole, MoleWeb.Endpoint,
   http: [port: "${MOLE_PORT}"],
   cache_static_manifest: "priv/static/cache_manifest.json",
   secret_key_base: "${MOLE_SECRET_KEYBASE}"
-    "Y/wkSQ6ZoZB0wTf6UndDMI9NfOSxUxwhIAWpUAiVIx9brkSTjJBeqjAdVbB8GUPu"
 
+"Y/wkSQ6ZoZB0wTf6UndDMI9NfOSxUxwhIAWpUAiVIx9brkSTjJBeqjAdVbB8GUPu"
 
 # Do not print debug messages in production
 config :logger, level: :info
