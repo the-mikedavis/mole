@@ -10,7 +10,12 @@ addons:
 services:
   - postgresql
 env:
-  - MIX_ENV=test VERBOSE_TEST=true
+  global:
+    - PGPORT=5432
+    - MIX_ENV=test VERBOSE_TEST=true
+
+before_script:
+  - psql -c 'create database mole_test;' -U postgres
 
 script:
   - mix ecto.setup
