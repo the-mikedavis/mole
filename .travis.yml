@@ -1,5 +1,5 @@
 dist: trusty
-sudo: false
+sudo: required
 language: elixir
 elixir:
   - 1.7.1
@@ -7,11 +7,13 @@ otp_release:
   - 21.0
 addons:
   postgresql: '10.4'
-
+services:
+  - postgresql
 env:
   - MIX_ENV=test VERBOSE_TEST=true
 
 script:
+  - mix ecto.setup
   - mix format --check-formatted
   - mix compile --warnings-as-errors
   - mix coveralls
@@ -20,3 +22,4 @@ script:
 branches:
   only:
     - master
+    - /^v[\d.]+/
