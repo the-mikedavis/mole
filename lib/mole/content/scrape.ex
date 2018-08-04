@@ -27,7 +27,7 @@ defmodule Mole.Content.Scrape do
 
   @auto_start Application.get_env(:mole, :auto_start)
 
-  @image_path "./priv/static/images/"
+  @image_path Path.join(["#{:code.priv_dir(:mole)}", "static", "images"])
   @csv_name "metadata.csv"
 
   @doc "Start the scraper as a worker"
@@ -45,6 +45,8 @@ defmodule Mole.Content.Scrape do
   @impl true
   def init(_offset) do
     offset = Content.count_images()
+
+    File.mkdir_p!(@image_path)
 
     if @auto_start do
       # Logger.info("Starting the scraper")

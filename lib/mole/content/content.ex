@@ -152,10 +152,11 @@ defmodule Mole.Content do
   def static_path(%{origin_id: id}), do: static_path(id)
   def static_path(%{id: id}), do: static_path(id)
 
+  @app_static_dir Path.join(["#{:code.priv_dir(:mole)}", "static"])
   @doc "Produce a download path in which to save the image"
   @spec download_path(String.t() | map()) :: String.t()
   def download_path(id) when is_binary(id),
-    do: "./priv/static" <> static_path(id)
+    do: Path.join([@app_static_dir, static_path(id)])
 
   def download_path(%{origin_id: id}), do: download_path(id)
   def download_path(%{id: id}), do: download_path(id)
