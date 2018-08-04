@@ -4,9 +4,9 @@ defmodule Mole.AccountsTest do
   alias Mole.{Accounts, Accounts.User, Content, Repo}
 
   describe "accounts -> user" do
-    @user_valid_attrs %{username: "some username", password: "some password"}
+    @user_valid_attrs %{username: "someusername", password: "some password"}
     @user_update_attrs %{
-      username: "another username",
+      username: "anotherusername",
       password: "another password"
     }
     @user_invalid_attrs %{username: "", password: ""}
@@ -45,7 +45,7 @@ defmodule Mole.AccountsTest do
 
     test "create_user/1 with valid data creates a user" do
       assert {:ok, %User{} = user} = Accounts.create_user(@user_valid_attrs)
-      assert user.username == "some username"
+      assert user.username == "someusername"
       assert user.password == "some password"
     end
 
@@ -61,7 +61,7 @@ defmodule Mole.AccountsTest do
       assert {:ok, %User{id: ^id} = gotten} =
                Accounts.update_user(user, @user_update_attrs)
 
-      assert gotten.username == "another username"
+      assert gotten.username == "anotherusername"
       assert gotten.password == "another password"
     end
 
@@ -77,6 +77,49 @@ defmodule Mole.AccountsTest do
     test "change_user/1 returns a user changeset" do
       user = user_fixture()
       assert %Ecto.Changeset{} = Accounts.change_user(user)
+    end
+
+    test "trying to create a user with a duped username -> changeset error" do
+      user = user_fixture()
+
+      assert {:error, changeset} =
+               %{username: user.username}
+               |> Enum.into(@user_valid_attrs)
+               |> Accounts.create_user()
+
+      assert [username: {"has already been taken", []}] == changeset.errors
+    end
+
+    test "creating a non-alphanumeric username gives changeset errors" do
+      assert {:error, changeset} =
+               %{username: "I have a space"}
+               |> Enum.into(@user_valid_attrs)
+               |> Accounts.create_user()
+    end
+
+    test "basic usernames work" do
+      [
+        "the-mikedavis",
+        "shakate",
+        "nickc"
+      ]
+      |> Enum.each(fn uname ->
+        assert %User{} = user_fixture(%{username: uname})
+      end)
+    end
+
+    test "weird usernames fail" do
+      [
+        "the mikedavis",
+        "$hakate",
+        "nick+c",
+        "====="
+      ]
+      |> Enum.each(fn uname ->
+        assert_raise MatchError, fn ->
+          %User{} = user_fixture(%{username: uname})
+        end
+      end)
     end
   end
 
@@ -119,7 +162,7 @@ defmodule Mole.AccountsTest do
 
       {:ok, gotten} =
         Accounts.authenticate_by_uname_and_pass(
-          "some username",
+          "someusername",
           "some password"
         )
 
@@ -130,7 +173,7 @@ defmodule Mole.AccountsTest do
       _user = user_fixture()
 
       assert Accounts.authenticate_by_uname_and_pass(
-               "some username",
+               "someusername",
                "another password"
              ) == {:error, :unauthorized}
     end
@@ -139,7 +182,7 @@ defmodule Mole.AccountsTest do
       _user = user_fixture()
 
       assert Accounts.authenticate_by_uname_and_pass(
-               "another username",
+               "anotherusername",
                "another password"
              ) == {:error, :not_found}
     end
@@ -149,7 +192,7 @@ defmodule Mole.AccountsTest do
     test "username_taken?" do
       user = user_fixture()
       assert Accounts.username_taken?(user.username)
-      assert not Accounts.username_taken?("another username")
+      assert not Accounts.username_taken?("anotherusername")
     end
   end
 

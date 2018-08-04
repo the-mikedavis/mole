@@ -33,9 +33,11 @@ defmodule Mole.Accounts.User do
     |> foreign_key_constraint(:survey_id)
     |> validate_required([:username])
     |> validate_length(:username, min: 3, max: 20)
+    |> validate_format(:username, ~r/^[\w\-]*$/)
     |> validate_length(:password, min: 6, max: 30)
     |> validate_number(:correct, greater_than: -1)
     |> validate_number(:incorrect, greater_than: -1)
+    |> unique_constraint(:username)
     |> put_pass_hash()
   end
 

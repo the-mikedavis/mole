@@ -4,7 +4,7 @@ defmodule Mole.Accounts.LeaderboardTest do
   alias Mole.{Accounts, Accounts.Leaderboard}
 
   describe "the main functionality" do
-    @user_valid_attrs %{username: "some username", password: "some password"}
+    @user_valid_attrs %{username: "someusername", password: "some password"}
 
     def user_fixture(attrs \\ %{}) do
       {:ok, user} =
@@ -19,7 +19,7 @@ defmodule Mole.Accounts.LeaderboardTest do
   describe "the leaderboard" do
     test "getting a block with multiple users" do
       user1 = user_fixture(%{score: 20})
-      user2 = user_fixture(%{username: "another username", score: 40})
+      user2 = user_fixture(%{username: "anotherusername", score: 40})
 
       Leaderboard.update()
 
@@ -31,7 +31,7 @@ defmodule Mole.Accounts.LeaderboardTest do
 
     test "pagination with multiple users" do
       user_fixture(%{score: 20})
-      user_fixture(%{username: "another username", score: 40})
+      user_fixture(%{username: "anotherusername", score: 40})
 
       Leaderboard.update()
 
