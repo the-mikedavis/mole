@@ -62,7 +62,7 @@ defmodule Mole.MixProject do
       {:private, "~> 0.1.1"},
 
       # deploy
-      {:distillery, "~> 1.5", runtime: false}
+      {:distillery, github: "bitwalker/distillery"}
     ]
   end
 
