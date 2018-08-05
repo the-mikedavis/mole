@@ -51,7 +51,9 @@ release :mole do
   set version: git_describe_version
 
   set applications: [
-    :runtime_tools
+    :runtime_tools,
+    :neotoma,
+    :phoenix_html
   ]
 
   set commands: [
