@@ -49,14 +49,6 @@ defmodule MoleWeb.Endpoint do
   plug(MoleWeb.Router)
 
   def init(_key, config) do
-    if config[:load_from_system_env] do
-      port =
-        System.get_env("MOLE_PORT") ||
-          raise "expected the PORT environment variable to be set"
-
-      {:ok, Keyword.put(config, :http, [:inet6, port: port])}
-    else
-      {:ok, config}
-    end
+    {:ok, config}
   end
 end
