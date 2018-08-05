@@ -99,10 +99,11 @@ defmodule Mole.Content.Scrape do
   end
 
   def handle_cast(:csv, offset) do
-    file =
+    filename =
       [image_path(), @csv_name]
       |> Path.join()
-      |> File.open!([:write, :utf8])
+
+    file = File.open!(filename, [:write, :utf8])
 
     Image
     |> Repo.all()
@@ -111,7 +112,7 @@ defmodule Mole.Content.Scrape do
     |> Meta.to_csv()
     |> Enum.each(&IO.write(file, &1))
 
-    Logger.info(fn -> "Finished writing metadata to file" end)
+    Logger.info(fn -> "Finished writing metadata to #{filename}" end)
 
     {:noreply, offset}
   end
