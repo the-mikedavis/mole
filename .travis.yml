@@ -12,6 +12,9 @@ env:
     - PGPORT=5432
     - MIX_ENV=test VERBOSE_TEST=true
 
+before_script:
+  - nvm install 8.9.0
+
 script:
   - mix format --check-formatted
   - mix compile --warnings-as-errors
@@ -19,7 +22,7 @@ script:
   - mix credo
 
 before_deploy:
-  - cd ./assets/ && ./node_modules/.bin/webpack -p && cd -
+  - cd ./assets/ && npm i && ./node_modules/.bin/webpack -p && cd -
   - MIX_ENV=prod mix release --env=prod
 
 branches:
