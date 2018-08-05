@@ -25,7 +25,7 @@ config :mole, Mole.Repo,
 
 config :mole, MoleWeb.Endpoint,
   load_from_system_env: true,
-  url: [host: "mcarsondavis.com"],
+  url: [host: "${MOLE_HOST}", port: "${MOLE_PORT}"],
   http: [port: "${MOLE_PORT}"],
   cache_static_manifest: "priv/static/cache_manifest.json",
   secret_key_base: "${MOLE_SECRET_KEYBASE}",
