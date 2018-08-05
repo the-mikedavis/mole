@@ -57,7 +57,7 @@ release :mole do
   ]
 
   set commands: [
-    "migrate": "rel/commands/migrate.sh"
+    migrate: "rel/commands/migrate.sh"
   ]
 end
 
