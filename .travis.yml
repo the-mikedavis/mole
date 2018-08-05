@@ -23,6 +23,7 @@ script:
 
 before_deploy:
   - cd ./assets/ && npm i && ./node_modules/.bin/webpack -p && cd -
+  - MIX_ENV=prod mix phx.digest
   - MIX_ENV=prod mix release --env=prod
 
 branches:
