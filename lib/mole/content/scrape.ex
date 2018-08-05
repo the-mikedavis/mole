@@ -27,7 +27,9 @@ defmodule Mole.Content.Scrape do
 
   @auto_start Application.get_env(:mole, :auto_start)
 
-  @image_path Path.join(["#{:code.priv_dir(:mole)}", "static", "images"])
+  def image_path,
+    do: Path.join(["#{:code.priv_dir(:mole)}", "static", "images"])
+
   @csv_name "metadata.csv"
 
   @doc "Start the scraper as a worker"
@@ -46,7 +48,7 @@ defmodule Mole.Content.Scrape do
   def init(_offset) do
     offset = Content.count_images()
 
-    File.mkdir_p!(@image_path)
+    File.mkdir_p!(image_path())
 
     if @auto_start do
       # Logger.info("Starting the scraper")
@@ -97,7 +99,10 @@ defmodule Mole.Content.Scrape do
   end
 
   def handle_cast(:csv, offset) do
-    file = File.open!(@image_path <> @csv_name, [:write, :utf8])
+    file =
+      [image_path(), @csv_name]
+      |> Path.join()
+      |> File.open!([:write, :utf8])
 
     Image
     |> Repo.all()
@@ -113,12 +118,20 @@ defmodule Mole.Content.Scrape do
 
   def handle_cast(:zip, offset) do
     files =
-      (@image_path <> "*.jpeg")
+      [image_path(), "*.jpeg"]
+      |> Path.join()
       |> Path.wildcard()
-      |> Enum.map(fn "priv/static/images/" <> image -> image end)
+      |> Enum.map(fn path ->
+        ~r(images/)
+        |> Regex.split(path)
+        |> List.last()
+      end)
       |> Enum.map(&String.to_charlist/1)
 
-    case :zip.create(@image_path <> "images.zip", files, cwd: @image_path) do
+    [image_path(), "images.zip"]
+    |> Path.join()
+    |> :zip.create(files, cwd: image_path())
+    |> case do
       {:ok, filename} ->
         Logger.info(fn -> "Zip #{filename} created." end)
 
