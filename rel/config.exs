@@ -45,10 +45,15 @@ end
 # will be used by default
 
 release :mole do
-  set version: current_version(:mole)
+  {git_describe_version_raw, _} = System.cmd("git", ["describe", "--tags", "--long", "--always"])
+  git_describe_version = String.trim(git_describe_version_raw)
+
+  set version: git_describe_version
+
   set applications: [
     :runtime_tools
   ]
+
   set commands: [
     "migrate": "rel/commands/migrate.sh"
   ]

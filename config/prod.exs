@@ -28,9 +28,8 @@ config :mole, MoleWeb.Endpoint,
   url: [host: "mcarsondavis.com", port: "${MOLE_PORT}"],
   http: [port: "${MOLE_PORT}"],
   cache_static_manifest: "priv/static/cache_manifest.json",
-  secret_key_base: "${MOLE_SECRET_KEYBASE}"
-
-"Y/wkSQ6ZoZB0wTf6UndDMI9NfOSxUxwhIAWpUAiVIx9brkSTjJBeqjAdVbB8GUPu"
+  secret_key_base: "${MOLE_SECRET_KEYBASE}",
+  root: "."
 
 # Do not print debug messages in production
 config :logger, level: :info
