@@ -14,7 +14,7 @@ defmodule Mole.ReleaseTasks do
     me = app()
 
     IO.puts("Loading #{me}...")
-    :ok = Application.load(me)
+    Application.load(me)
 
     IO.puts("Starting dependencies...")
     Enum.each(@start_apps, &Application.ensure_all_started/1)
