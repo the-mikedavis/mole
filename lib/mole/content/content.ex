@@ -111,7 +111,7 @@ defmodule Mole.Content do
   # Ecto query to select malignant images
   @malignant_query from(
                      i in "images",
-                     where: [malignant: "TRUE"],
+                     where: [malignant: true],
                      select: i.id
                    )
 
