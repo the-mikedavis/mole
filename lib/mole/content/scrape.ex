@@ -27,6 +27,8 @@ defmodule Mole.Content.Scrape do
 
   @auto_start Application.get_env(:mole, :auto_start)
 
+  @doc "Path to save images"
+  @spec image_path() :: Path.t()
   def image_path,
     do: Path.join(["#{:code.priv_dir(:mole)}", "static", "images"])
 
@@ -99,25 +101,19 @@ defmodule Mole.Content.Scrape do
   end
 
   def handle_cast(:csv, offset) do
-    filename =
-      [image_path(), @csv_name]
-      |> Path.join()
+    filename = Path.join([image_path(), @csv_name])
 
-    file = File.open!(filename, [:write, :utf8])
-
-    Image
-    |> Repo.all()
-    |> Enum.map(fn %Image{data: data} -> data end)
-    |> Enum.reject(&is_nil/1)
-    |> Meta.to_csv()
-    |> Enum.each(&IO.write(file, &1))
-
-    Logger.info(fn -> "Finished writing metadata to #{filename}" end)
+    if File.exists?(filename) do
+      Logger.info(fn -> "#{filename} already exists" end)
+    else
+      csv(filename)
+    end
 
     {:noreply, offset}
   end
 
   def handle_cast(:zip, offset) do
+    # gather list of images
     files =
       [image_path(), "*.jpeg"]
       |> Path.join()
@@ -129,18 +125,39 @@ defmodule Mole.Content.Scrape do
       end)
       |> Enum.map(&String.to_charlist/1)
 
-    [image_path(), "images.zip"]
-    |> Path.join()
-    |> :zip.create(files, cwd: image_path())
-    |> case do
+    # create the zip file's name (path)
+    zip_path = Path.join([image_path(), "images.zip"])
+
+    if File.exists?(zip_path) do
+      Logger.info(fn -> "#{zip_path} already exists" end)
+    else
+      zip(zip_path, files)
+    end
+
+    {:noreply, offset}
+  end
+
+  defp csv(filename) do
+    file = File.open!(filename, [:write, :utf8])
+
+    Image
+    |> Repo.all()
+    |> Enum.map(fn %Image{data: data} -> data end)
+    |> Enum.reject(&is_nil/1)
+    |> Meta.to_csv()
+    |> Enum.each(&IO.write(file, &1))
+
+    Logger.info(fn -> "Finished writing metadata to #{filename}" end)
+  end
+
+  defp zip(out_path, files) do
+    case :zip.create(out_path, files, cwd: image_path()) do
       {:ok, filename} ->
         Logger.info(fn -> "Zip #{filename} created." end)
 
       {:error, reason} ->
         Logger.error(fn -> "Zip couldn't be created. Reason: #{reason}" end)
     end
-
-    {:noreply, offset}
   end
 
   private do
