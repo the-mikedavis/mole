@@ -28,7 +28,14 @@ defmodule Mole.MixProject do
   def application do
     [
       mod: {Mole.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [
+        :logger,
+        :runtime_tools,
+        :phoenix,
+        :cowboy,
+        :phoenix_ecto,
+        :mariaex
+      ]
     ]
   end
 
@@ -44,7 +51,7 @@ defmodule Mole.MixProject do
       {:phoenix, github: "phoenixframework/phoenix", override: true},
       {:phoenix_pubsub, "~> 1.0"},
       {:phoenix_ecto, "~> 3.2"},
-      {:postgrex, ">= 0.0.0"},
+      {:mariaex, ">= 0.0.0"},
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
@@ -54,10 +61,12 @@ defmodule Mole.MixProject do
       {:bcrypt_elixir, "~> 1.0"},
       {:httpoison, "~> 1.0"},
       {:csv, "~> 2.0.0"},
+      {:observer_cli, "~> 1.3"},
 
       # test
       {:credo, "~> 0.9", only: [:dev, :test], runtime: false},
       {:excoveralls, "~> 0.9", only: :test},
+      {:postgrex, "~> 0.13"},
       {:mox, "~> 0.3"},
       {:private, "~> 0.1.1"},
 

@@ -60,9 +60,9 @@ config :phoenix, :plug_init_mode, :runtime
 
 # Configure your database
 config :mole, Mole.Repo,
-  adapter: Ecto.Adapters.Postgres,
-  username: "postgres",
-  password: "postgres",
+  adapter: Ecto.Adapters.MySQL,
+  username: "root",
+  password: "a",
   database: "mole_dev",
   hostname: "localhost",
   pool_size: 10

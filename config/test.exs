@@ -17,7 +17,7 @@ config :mole,
 config :mole, Mole.Repo,
   adapter: Ecto.Adapters.Postgres,
   username: "postgres",
-  password: "",
+  password: "postgres",
   database: "mole_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
