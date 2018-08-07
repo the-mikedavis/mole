@@ -62,7 +62,7 @@ config :phoenix, :plug_init_mode, :runtime
 config :mole, Mole.Repo,
   adapter: Ecto.Adapters.MySQL,
   username: "root",
-  password: "a",
+  password: "FeqkPgvdI8%j",
   database: "mole_dev",
   hostname: "localhost",
   pool_size: 10
