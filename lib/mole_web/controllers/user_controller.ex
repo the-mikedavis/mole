@@ -21,7 +21,7 @@ defmodule MoleWeb.UserController do
     end
   end
 
-  def index(conn, _opts), do: index(conn, %{"page" => 0})
+  def index(conn, _opts), do: index(conn, %{"page" => "1"})
 
   def show(conn, %{"id" => id}) do
     user = Accounts.get_user(id)
