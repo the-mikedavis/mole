@@ -1,7 +1,9 @@
-html
+doctype html
+html lang="en"
   head
     title Whack-a-Mole
+
   body
-    center
-      img src=Routes.static_path(@conn, "/images/404.png") width="400px"
-      h2 Whoops, I couldn't find what you're looking for...
+    //center
+    img src="#{Routes.static_path(@conn, "/images/404.png")}" width="400px"
+    h2 Whoops, I couldn't find what you're looking for...
