@@ -21,11 +21,11 @@ html lang="en"
               li.nav-item.active = link("Home", to: Routes.page_path(@conn, :index), class: "nav-link")
               li.nav-item = link("Play", to: Routes.game_path(@conn, :index), class: "nav-link")
               = if @current_user do
-                li.nav-item = "Welcome, #{@current_user.username}"
-                li.nav-item = link("Log out", to: Routes.session_path(@conn, :delete, @current_user), method: "delete")
+                li.nav-item = link("Leaderboard", to: Routes.user_path(@conn, :index), class: "nav-link")
+                li.nav-item = link("Log out", to: Routes.session_path(@conn, :delete, @current_user), method: "delete", class: "nav-link")
               - else
-                li.nav-item = link("Register", to: Routes.user_path(@conn, :new))
-                li.nav-item = link("Log in", to: Routes.session_path(@conn, :new))
+                li.nav-item = link("Register", to: Routes.user_path(@conn, :new), class: "nav-link")
+                li.nav-item = link("Log in", to: Routes.session_path(@conn, :new), class: "nav-link")
 
     main role="main" class="container"
       p class="alert alert-info" role="alert" = get_flash(@conn, :info)
