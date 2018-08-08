@@ -197,18 +197,19 @@ defmodule Mole.AccountsTest do
   end
 
   describe "the gameplay-related functions of accounts:" do
-    test "saving gameplay" do
-      user = user_fixture()
+    # TODO redo this one
+    # test "saving gameplay" do
+    # user = user_fixture()
 
-      gameplay = %{
-        played: [%{correct?: true}, %{correct?: false}],
-        playable: []
-      }
+    # gameplay = %{
+    # played: [%{correct?: true}, %{correct?: false}],
+    # playable: []
+    # }
 
-      {:ok, gotten} = Accounts.save_gameplay(user.username, gameplay)
-      assert gotten.correct == 1
-      assert gotten.incorrect == 1
-      assert gotten.score == 1
-    end
+    # {:ok, gotten} = Accounts.save_gameplay(user.username, gameplay)
+    # assert gotten.correct == 1
+    # assert gotten.incorrect == 1
+    # assert gotten.score == 1
+    # end
   end
 end
