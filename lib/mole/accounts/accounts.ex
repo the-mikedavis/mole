@@ -81,15 +81,10 @@ defmodule Mole.Accounts do
     )
   end
 
-  defp total_gameplay(%User{} = user, gameplay) do
-    {correct, incorrect} =
-      Enum.reduce(gameplay.played, {0, 0}, fn image, {cor, incor} ->
-        if image.correct?, do: {cor + 1, incor}, else: {cor, incor + 1}
-      end)
-
+  defp total_gameplay(%User{} = user, %{correct: cor, incorrect: incor}) do
     %{
-      correct: user.correct + correct,
-      incorrect: user.incorrect + incorrect
+      correct: user.correct + cor,
+      incorrect: user.incorrect + incor
     }
   end
 end

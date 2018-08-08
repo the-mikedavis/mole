@@ -47,6 +47,8 @@ defmodule MoleWeb.GameChannel do
         [] ->
           recap_path = Routes.game_path(Endpoint, :show)
 
+          GameplayServer.save_set(socket.assigns.username, socket.assigns.gameplay)
+
           {:reply, {:ok, %{"reroute" => true, "path" => recap_path}}, socket}
 
         _list ->
