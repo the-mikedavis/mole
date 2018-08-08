@@ -1,3 +1,6 @@
+import 'jquery'
+import 'bootstrap'
+import 'bootstrap/dist/css/bootstrap.min.css'
 import sass from "../css/master.sass"
 
 import "phoenix_html"
