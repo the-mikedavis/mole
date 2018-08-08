@@ -26,6 +26,7 @@ function listener(event) {
 
   var button = document.createElement('button')
   button.innerHTML = 'READY'
+  button.className = 'btn btn-primary btn-block brief'
   button.onclick = () => {
     document.dispatchEvent(
       new CustomEvent(IMAGE_EVENT, {detail: {path: first}})
