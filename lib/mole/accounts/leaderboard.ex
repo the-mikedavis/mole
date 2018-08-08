@@ -31,6 +31,9 @@ defmodule Mole.Accounts.Leaderboard do
 
   # Server API
 
+  # every 2 min
+  @time_buffer 2 * 60 * 1_000
+
   @doc "Start the leaderboard server"
   @spec start_link(any()) :: GenServer.on_start()
   def start_link(args) do
@@ -40,14 +43,18 @@ defmodule Mole.Accounts.Leaderboard do
   @doc "Initialize the leaderboard"
   @impl true
   def init(args) do
-    GenServer.cast(__MODULE__, :update)
+    Process.send_after(self(), :update, @time_buffer)
 
     {:ok, args}
   end
 
   @doc "Handle a call to update the leaderboard index, asynchronosly"
   @impl true
-  def handle_cast(:update, _leaderboard), do: {:noreply, do_update()}
+  def handle_info(:update, _leaderboard) do
+    Process.send_after(self(), :update, @time_buffer)
+
+    {:noreply, do_update()}
+  end
 
   @doc """
   Get a block of users from the leaderboard. Offset is measured from top of the
