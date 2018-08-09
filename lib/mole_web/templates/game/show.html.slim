@@ -4,7 +4,7 @@ h1 Nice work!
   p = "You have #{@sets_left - 1} sets left. Keep playing or take a break."
 
 = if assigns[:feedback] do
-  p = "Now your score is #{@current_user.score}!"
+  p = "Your new score is #{@current_user.score}!"
 
 = link("Keep playing", to: Routes.game_path(@conn, :index))
 br
