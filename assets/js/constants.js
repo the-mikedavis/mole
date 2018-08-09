@@ -1,4 +1,4 @@
-const FADE_TIME = 3000  // 3 seconds
+const FADE_TIME = 1000  // 1 seconds
 
 const constants = {
   tinder_event_name: 'trigger',
