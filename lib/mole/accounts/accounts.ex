@@ -40,8 +40,8 @@ defmodule Mole.Accounts do
 
   def save_gameplay(username, gameplay) do
     user = get_user_by_uname(username)
-    total_gameplay = total_gameplay(user, gameplay)
-    new_scores = compute_score(total_gameplay)
+
+    new_scores = compute_score(user, gameplay)
 
     update_user(user, new_scores)
   end
@@ -72,19 +72,15 @@ defmodule Mole.Accounts do
   def username_taken?(username),
     do: Repo.get_by(User, username: username) != nil
 
-  # floor of 0
-  defp compute_score(%{correct: correct, incorrect: incorrect} = gameplay) do
-    Map.put(
-      gameplay,
-      :score,
-      @correct_mult * correct - @incorrect_mult * incorrect
-    )
-  end
-
-  defp total_gameplay(%User{} = user, %{correct: cor, incorrect: incor}) do
-    %{
-      correct: user.correct + cor,
-      incorrect: user.incorrect + incor
-    }
+  @spec compute_score(%User{}, %{}) :: %{}
+  defp compute_score(
+    %User{score: s, incorrect: pi, correct: pc} = user,
+    %{bonus: b, correct: c, incorrect: i}
+  ) do
+    user
+    |> Map.from_struct()
+    |> Map.put(:score, s + @correct_mult * c - @incorrect_mult * i + b)
+    |> Map.put(:incorrect, pi + i)
+    |> Map.put(:correct, pc + c)
   end
 end

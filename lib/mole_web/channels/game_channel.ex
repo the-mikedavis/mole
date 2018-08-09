@@ -68,7 +68,7 @@ defmodule MoleWeb.GameChannel do
   end
 
   @spec gameplay(GameplayServer.set()) :: gameplay()
-  defp gameplay(set), do: %{playable: set, correct: 0, incorrect: 0}
+  defp gameplay(set), do: %{playable: set, correct: 0, incorrect: 0, bonus: 0}
 
   defp current_image(%{assigns: %{gameplay: %{playable: []}}}),
     do: raise("GameChannel tried to get the next image after all ran out!")
