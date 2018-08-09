@@ -41,30 +41,28 @@ defmodule MoleWeb.GameChannel do
   Update the gameplay for the next image.
   """
   def handle_in("answer", malignant?, socket) do
-    with correct? <- current_image(socket).malignant == malignant?,
-         socket <- update_gameplay(socket, correct?) do
-      case socket.assigns.gameplay.playable do
-        [] ->
-          recap_path = Routes.game_path(Endpoint, :show)
+    correct? = current_image(socket).malignant == malignant?
+    socket = update_gameplay(socket, correct?)
+    feedback? = Condition.feedback?(socket.assigns.condition)
 
-          GameplayServer.save_set(
-            socket.assigns.username,
-            socket.assigns.gameplay
-          )
+    reply = if(feedback?, do: %{"correct" => correct?}, else: %{})
 
-          {:reply, {:ok, %{"reroute" => true, "path" => recap_path}}, socket}
+    reply = case socket.assigns.gameplay.playable do
+      [] ->
+        recap_path = Routes.game_path(Endpoint, :show)
 
-        _list ->
-          reply =
-            if(Condition.feedback?(socket.assigns.condition),
-              do: %{"correct" => correct?},
-              else: %{}
-            )
-            |> Map.put("path", current_image_path(socket))
+        GameplayServer.save_set(
+          socket.assigns.username,
+          socket.assigns.gameplay
+        )
 
-          {:reply, {:ok, reply}, socket}
-      end
+        Map.merge(reply, %{"reroute" => true, "path" => recap_path})
+
+      _list ->
+        Map.put(reply, "path", current_image_path(socket))
     end
+
+    {:reply, {:ok, reply}, socket}
   end
 
   @spec gameplay(GameplayServer.set()) :: gameplay()

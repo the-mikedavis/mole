@@ -9,6 +9,7 @@ const constants = {
     element.classList.add('active')
     fade(element)
   },
+  time_buffer: FADE_TIME,
   // TODO: implement if I really want this
   forms: []
 }

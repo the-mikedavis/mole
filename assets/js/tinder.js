@@ -5,9 +5,11 @@ const TRIGGER_WIDTH = 60
 const TRANSFORM_CUTTER = 10
 const SWIPE_EVENT = constants.tinder_event_name
 
-function tinder (el) {
+let hammertime;
+
+function on(el) {
   // pull in hammer.js
-  const hammertime = new Hammer(el, {})
+  hammertime = new Hammer(el, {})
   // only allow horizontal panning
   hammertime.get('pan').set({ direction: Hammer.DIRECTION_HORIZONTAL })
   // handle the event of swiping
@@ -39,4 +41,8 @@ function tinder (el) {
   });
 }
 
-export default tinder;
+function off() {
+  hammertime.destroy()
+}
+
+export default {on: on, off: off};
