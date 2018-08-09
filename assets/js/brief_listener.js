@@ -9,6 +9,7 @@ function listener(event) {
     container_el.removeChild(container_el.firstChild)
   }
   var p = document.createElement('p')
+  p.className = 'brief-text'
   p.innerHTML = 'These are your moles. Study them carefully before proceeding.'
   container_el.appendChild(p)
 
@@ -26,7 +27,7 @@ function listener(event) {
 
   var button = document.createElement('button')
   button.innerHTML = 'READY'
-  button.className = 'btn btn-primary btn-block brief'
+  button.className = 'btn btn-primary btn-block'
   button.onclick = () => {
     document.dispatchEvent(
       new CustomEvent(IMAGE_EVENT, {detail: {path: first}})
