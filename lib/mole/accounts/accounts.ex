@@ -38,6 +38,10 @@ defmodule Mole.Accounts do
     |> Repo.update()
   end
 
+  # give a 5 point bonus for getting all correct
+  def save_gameplay(username, %{incorrect: 0, bonus: 0} = gameplay) do
+    save_gameplay(username, Map.put(gameplay, :bonus, 5))
+  end
   def save_gameplay(username, gameplay) do
     user = get_user_by_uname(username)
 
