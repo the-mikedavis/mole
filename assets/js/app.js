@@ -10,3 +10,8 @@ import socket from "./socket"
 
 import form_feedback from './form_feedback'
 if (document.querySelector('form')) form_feedback()
+
+$(document).ready(function() {
+  $('li.active').removeClass('active')
+  $('a[href="' + location.pathname + '"]').closest('li').addClass('active')
+})
