@@ -1,4 +1,5 @@
 defmodule Mole.Content.Condition do
+  use Private
   import Kernel, except: [to_string: 1]
   @moduledoc "Helper functions for conditions."
 
@@ -6,7 +7,7 @@ defmodule Mole.Content.Condition do
 
   defp normal, do: 4
 
-  @eds [:abcde, :duckling, :none]
+  @eds [:abcd, :duckling, :none]
   @feedback [true, false]
   # the cartesian product of the above
   @conditions for ed <- @eds, fb <- @feedback, do: {ed, fb}
@@ -42,6 +43,32 @@ defmodule Mole.Content.Condition do
 
   def to_string(nil), do: "N/A"
 
-  def image_for(condition, page) do
+  @doc "Return the learning image for the condition at the page number"
+  @spec image_for(integer(), String.t()) :: String.t()
+  def image_for(condition, page) when is_integer(condition) do
+    learning =
+      condition
+      |> to_tuple()
+      |> elem(0)
+      |> Atom.to_string()
+      |> Kernel.<>("_#{page}.png")
+
+    images_available()
+    |> Enum.filter(fn image -> image =~ learning end)
+    |> case do
+      [match] -> match
+
+      _ -> nil
+    end
+  end
+
+  @spec images_available() :: [String.t()]
+  defp images_available do
+    ["#{:code.priv_dir(:mole)}", "static", "images", "*.png"]
+    |> Path.join()
+    |> Path.wildcard()
+    |> Enum.map(fn abs_name ->
+      "/#{abs_name |> Path.split() |> Enum.take(-2) |> Path.join()}"
+    end)
   end
 end
