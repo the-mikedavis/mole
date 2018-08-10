@@ -41,4 +41,7 @@ defmodule Mole.Content.Condition do
   def to_string({ed, fb}), do: "learning: #{ed}, feedback?: #{fb}"
 
   def to_string(nil), do: "N/A"
+
+  def image_for(condition, page) do
+  end
 end

@@ -45,6 +45,7 @@ defmodule MoleWeb.Router do
     resources("/surveys", SurveyController)
     get("/consent", ConsentController, :index)
     post("/consent", ConsentController, :agree)
+    get("/learn/:condition", LearningController, :index)
   end
 
   defp put_user_token(conn, _) do
