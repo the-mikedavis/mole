@@ -49,7 +49,7 @@ defmodule MoleWeb.GameController do
   end
 
   defp learn(conn, _opts) do
-    if conn.assigns.survey_id && !conn.assigns.learned? do
+    if !conn.assigns[:learned?] do
       conn
       |> redirect(to: Routes.learning_path(conn, :show, 0))
       |> halt()
