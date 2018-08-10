@@ -3,6 +3,9 @@ defmodule MoleWeb.LearningController do
 
   alias Mole.Content.Condition
   alias MoleWeb.Router.Helpers, as: Routes
+  alias MoleWeb.Plugs.Learning
+
+  plug(:learn)
 
   # showing how to play
   def index(conn, _params) do
@@ -24,6 +27,8 @@ defmodule MoleWeb.LearningController do
         |> render("show.html")
     end
   end
+
+  defp learn(conn, _opts), do: Learning.learn(conn)
 
   defp next(conn, id) do
     link =

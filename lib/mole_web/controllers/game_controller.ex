@@ -9,6 +9,7 @@ defmodule MoleWeb.GameController do
   # ensure the user is logged in and consents
   plug(:logged_in)
   plug(:consent)
+  plug(:learn)
 
   # route to the surveys
   plug(:pre_survey when action == :index)
@@ -41,6 +42,16 @@ defmodule MoleWeb.GameController do
     if conn.assigns.survey_id && !conn.assigns.consent? do
       conn
       |> redirect(to: Routes.consent_path(conn, :index))
+      |> halt()
+    else
+      conn
+    end
+  end
+
+  defp learn(conn, _opts) do
+    if conn.assigns.survey_id && !conn.assigns.learned? do
+      conn
+      |> redirect(to: Routes.learning_path(conn, :show, 0))
       |> halt()
     else
       conn
