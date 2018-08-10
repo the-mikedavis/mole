@@ -1,15 +1,3 @@
-section class="phx-hero"
-  h2 = gettext "Welcome to %{name}!", name: "Whack-a-Mole"
-  p
-    | We're still under development
-    br
-    | so please use at your own risk
+img.bottom-ridge src="#{Routes.static_path(@conn, "/images/welcome.png")}"
 
-
-section
-  article
-    h4 Links
-    ul
-      li = link("Play", to: Routes.game_path(@conn, :index))
-      li = link("Admins (admins only)", to: Routes.admin_path(@conn, :index))
-      li = link("Surveys (admins only)", to: Routes.survey_path(@conn, :index))
+= link("Ready to play?", to: Routes.game_path(@conn, :index))

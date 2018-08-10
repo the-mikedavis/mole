@@ -1,10 +1,12 @@
 defmodule MoleWeb.SurveyController do
   use MoleWeb, :controller
 
-  alias Mole.{Content, Content.Survey, Repo}
+  alias Mole.{Administrators, Content, Content.Survey, Repo}
   alias MoleWeb.Plugs
+  alias MoleWeb.Router.Helpers, as: Routes
 
-  plug(Plugs.Admin when action != :join)
+  # plug(Plugs.Admin when action != :join)
+  plug(:admin when action != :join)
 
   def index(conn, _params) do
     surveys = Content.list_surveys()
@@ -77,6 +79,20 @@ defmodule MoleWeb.SurveyController do
         |> Plugs.Survey.put_survey(id)
         |> put_flash(:info, "You have joined survey \"#{slug}\".")
         |> redirect(to: Routes.game_path(conn, :index))
+    end
+  end
+
+  defp admin(conn, _opts) do
+    if conn.assigns[:admin?] do
+      conn
+    else
+      conn
+      |> put_flash(
+        :error,
+        "You do not have proper permissions to access that page."
+      )
+      |> redirect(to: Routes.session_path(conn, :new))
+      |> halt()
     end
   end
 end

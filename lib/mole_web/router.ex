@@ -13,6 +13,7 @@ defmodule MoleWeb.Router do
     plug(:protect_from_forgery)
     plug(:put_secure_browser_headers)
     plug(Plugs.Auth)
+    plug(Plugs.Admin)
     plug(Plugs.Survey)
     plug(Plugs.Condition)
     plug(Plugs.Consent)

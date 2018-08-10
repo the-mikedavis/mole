@@ -4,23 +4,15 @@ defmodule MoleWeb.Plugs.Admin do
   import Plug.Conn
 
   alias Mole.Administrators
-  alias MoleWeb.Router.Helpers, as: Routes
 
   def init(opts), do: opts
 
   def call(conn, _opts) do
     with %{username: username} <- conn.assigns[:current_user],
          true <- Administrators.is?(username) do
-      conn
+      assign(conn, :admin?, true)
     else
-      _ ->
-        conn
-        |> put_flash(
-          :error,
-          "You do not have proper permissions to access that page."
-        )
-        |> redirect(to: Routes.session_path(conn, :new))
-        |> halt()
+      _ -> assign(conn, :admin?, false)
     end
   end
 end

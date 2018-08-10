@@ -1,7 +1,8 @@
 defmodule MoleWeb.AdminController do
   use MoleWeb, :controller
-  plug(MoleWeb.Plugs.Admin)
+  plug(:admin)
 
+  alias MoleWeb.Router.Helpers, as: Routes
   alias Mole.Administrators
 
   def index(conn, _params) do
@@ -27,5 +28,19 @@ defmodule MoleWeb.AdminController do
     conn
     |> put_flash(:info, message)
     |> redirect(to: Routes.admin_path(conn, :index))
+  end
+
+  defp admin(conn, _opts) do
+    if conn.assigns[:admin?] do
+      conn
+    else
+      conn
+      |> put_flash(
+        :error,
+        "You do not have proper permissions to access that page."
+      )
+      |> redirect(to: Routes.session_path(conn, :new))
+      |> halt()
+    end
   end
 end

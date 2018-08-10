@@ -26,6 +26,9 @@ html lang="en"
               - else
                 li.nav-item = link("Register", to: Routes.user_path(@conn, :new), class: "nav-link")
                 li.nav-item = link("Log in", to: Routes.session_path(@conn, :new), class: "nav-link")
+              = if assigns[:admin?] do
+                li.nav-item = link("Admins (admins only)", to: Routes.admin_path(@conn, :index), class: "nav-link")
+                li.nav-item = link("Surveys (admins only)", to: Routes.survey_path(@conn, :index), class: "nav-link")
 
     main role="main" class="container"
       p class="alert alert-info" role="alert" = get_flash(@conn, :info)
