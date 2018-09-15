@@ -16,7 +16,7 @@ h1 Leaderboard
     tbody
       = for {user, rank} <- @users do
         tr
-          td = rank
+          td = rank + 1
           td = user.username
           td = user.score
           td = user.correct
