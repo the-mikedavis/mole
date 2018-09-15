@@ -19,12 +19,10 @@ function on(el) {
 
   // record the start of the 'delta' when starting a pan
   hammertime.on('panstart', evt => {
-    console.log('starting to pan!')
     starting_x = evt.center.x
   })
 
   hammertime.on('pan', function (evt) {
-    console.log('panning!')
     // determine the amount panned
     const delta = evt.center.x - starting_x
     // determine a good rotation amount for the image
