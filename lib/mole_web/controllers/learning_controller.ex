@@ -9,8 +9,14 @@ defmodule MoleWeb.LearningController do
 
   # showing how to play
   def index(conn, _params) do
+    image =
+      case Condition.to_tuple(conn.assigns.condition) do
+        {:none, _} -> "/images/instruction_control.png"
+        _ -> "/images/instruction_condition.png"
+      end
+
     conn
-    |> assign(:image, "/images/instruction.png")
+    |> assign(:image, image)
     |> render("show.html", next: Routes.game_path(conn, :index))
   end
 

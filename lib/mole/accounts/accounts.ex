@@ -42,6 +42,7 @@ defmodule Mole.Accounts do
   def save_gameplay(username, %{incorrect: 0, bonus: 0} = gameplay) do
     save_gameplay(username, Map.put(gameplay, :bonus, 5))
   end
+
   def save_gameplay(username, gameplay) do
     user = get_user_by_uname(username)
 
@@ -78,9 +79,9 @@ defmodule Mole.Accounts do
 
   @spec compute_score(%User{}, %{}) :: %{}
   defp compute_score(
-    %User{score: s, incorrect: pi, correct: pc} = user,
-    %{bonus: b, correct: c, incorrect: i}
-  ) do
+         %User{score: s, incorrect: pi, correct: pc} = user,
+         %{bonus: b, correct: c, incorrect: i}
+       ) do
     user
     |> Map.from_struct()
     |> Map.put(:score, s + @correct_mult * c - @incorrect_mult * i + b)

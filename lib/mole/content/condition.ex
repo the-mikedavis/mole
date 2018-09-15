@@ -57,7 +57,6 @@ defmodule Mole.Content.Condition do
     |> Enum.filter(fn image -> image =~ learning end)
     |> case do
       [match] -> match
-
       _ -> nil
     end
   end

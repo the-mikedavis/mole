@@ -47,20 +47,21 @@ defmodule MoleWeb.GameChannel do
 
     reply = if(feedback?, do: %{"correct" => correct?}, else: %{})
 
-    reply = case socket.assigns.gameplay.playable do
-      [] ->
-        recap_path = Routes.game_path(Endpoint, :show)
+    reply =
+      case socket.assigns.gameplay.playable do
+        [] ->
+          recap_path = Routes.game_path(Endpoint, :show)
 
-        GameplayServer.save_set(
-          socket.assigns.username,
-          socket.assigns.gameplay
-        )
+          GameplayServer.save_set(
+            socket.assigns.username,
+            socket.assigns.gameplay
+          )
 
-        Map.merge(reply, %{"reroute" => true, "path" => recap_path})
+          Map.merge(reply, %{"reroute" => true, "path" => recap_path})
 
-      _list ->
-        Map.put(reply, "path", current_image_path(socket))
-    end
+        _list ->
+          Map.put(reply, "path", current_image_path(socket))
+      end
 
     {:reply, {:ok, reply}, socket}
   end
