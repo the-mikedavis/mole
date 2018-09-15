@@ -120,12 +120,6 @@ defmodule Mole.ContentTest do
       assert Content.static_path(%{id: "X"}) == c.static
       assert Content.static_path(%{origin_id: "X"}) == c.static
     end
-
-    test "the download path", c do
-      assert Content.download_path("X") =~ c.download
-      assert Content.download_path(%{id: "X"}) =~ c.download
-      assert Content.download_path(%{origin_id: "X"}) =~ c.download
-    end
   end
 
   describe "surveys" do

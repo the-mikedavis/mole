@@ -148,17 +148,9 @@ defmodule Mole.Content do
 
   @doc "Produce a static path in which to access the image"
   @spec static_path(String.t() | map()) :: String.t()
-  def static_path(id) when is_binary(id), do: "/images/#{id}.jpeg"
+  def static_path(id) when is_binary(id), do: "/images/moles/#{id}.jpeg"
   def static_path(%{origin_id: id}), do: static_path(id)
   def static_path(%{id: id}), do: static_path(id)
-
-  @doc "Produce a download path in which to save the image"
-  @spec download_path(String.t() | map()) :: String.t()
-  def download_path(id) when is_binary(id),
-    do: Path.join(["#{:code.priv_dir(:mole)}", "static", static_path(id)])
-
-  def download_path(%{origin_id: id}), do: download_path(id)
-  def download_path(%{id: id}), do: download_path(id)
 
   alias Mole.Content.Survey
 
