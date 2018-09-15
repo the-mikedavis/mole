@@ -8,9 +8,15 @@ function listener(event) {
   while (container_el.firstChild) {
     container_el.removeChild(container_el.firstChild)
   }
+  var h3 = document.createElement('h3')
+  h3.className = 'brief-text'
+  h3.innerHTML = 'Study these moles carefully'
+    //h3.innerHTML = 'These are your moles. Study them carefully before proceeding.'
+  container_el.appendChild(h3)
+
   var p = document.createElement('p')
   p.className = 'brief-text'
-  p.innerHTML = 'These are your moles. Study them carefully before proceeding.'
+  p.innerHTML = "You'll be ask to indentify them as either benign (non-cancerous) or malignant (cancerous)."
   container_el.appendChild(p)
 
   var imageArray = event.detail.paths
