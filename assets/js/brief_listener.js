@@ -35,6 +35,8 @@ function listener(event) {
   button.innerHTML = 'READY'
   button.className = 'btn btn-primary btn-block'
   button.onclick = () => {
+    document.getElementById('type-tell').style.display = 'block'
+
     document.dispatchEvent(
       new CustomEvent(IMAGE_EVENT, {detail: {path: first}})
     )
