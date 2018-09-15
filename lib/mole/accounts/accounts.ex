@@ -33,6 +33,8 @@ defmodule Mole.Accounts do
   end
 
   def update_user(%User{} = user, attrs) do
+    Mole.Accounts.Leaderboard.mark()
+
     user
     |> User.changeset(attrs)
     |> Repo.update()

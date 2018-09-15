@@ -29,6 +29,11 @@ defmodule Mole.Accounts.Leaderboard do
   def update(repo \\ Repo.all(User)),
     do: GenServer.call(__MODULE__, {:update, repo})
 
+  @doc "Say that the leaderboard is ready for update"
+  @spec mark() :: :ok
+  def mark, do: GenServer.cast(__MODULE__, :mark)
+
+
   # Server API
 
   # every 30 seconds
@@ -42,18 +47,27 @@ defmodule Mole.Accounts.Leaderboard do
 
   @doc "Initialize the leaderboard"
   @impl true
-  def init(args) do
+  def init(_args) do
     Process.send_after(self(), :update, @time_buffer)
 
-    {:ok, args}
+    {:ok, %{marked: false, leaderboard: do_update()}}
   end
+
+  @impl true
+  def handle_cast(:mark, state), do: {:noreply, Map.put(state, :marked, true)}
 
   @doc "Handle a call to update the leaderboard index, asynchronosly"
   @impl true
-  def handle_info(:update, _leaderboard) do
+  def handle_info(:update, %{marked: false} = state) do
     Process.send_after(self(), :update, @time_buffer)
 
-    {:noreply, do_update()}
+    {:noreply, state}
+  end
+
+  def handle_info(:update, _state) do
+    Process.send_after(self(), :update, @time_buffer)
+
+    {:noreply, %{leaderboard: do_update(), marked: false}}
   end
 
   @doc """
@@ -61,21 +75,21 @@ defmodule Mole.Accounts.Leaderboard do
   leaderboard.
   """
   @impl true
-  def handle_call({:block, size, offset}, _caller, leaderboard) do
-    {:reply, Enum.slice(leaderboard, offset, size), leaderboard}
+  def handle_call({:block, size, offset}, _from, %{leaderboard: ldb} = state) do
+    {:reply, Enum.slice(ldb, offset, size), state}
   end
 
-  def handle_call({:pages, size, offset}, _caller, leaderboard) do
+  def handle_call({:pages, size, offset}, _from, %{leaderboard: ldb} = state) do
     {:reply,
      %{
-       current: current_page(leaderboard, size, offset),
-       last: last_page(leaderboard, size, offset)
-     }, leaderboard}
+       current: current_page(ldb, size, offset),
+       last: last_page(ldb, size, offset)
+     }, state}
   end
 
   # sync update
-  def handle_call({:update, repo}, _caller, _leaderboard),
-    do: {:reply, :ok, do_update(repo)}
+  def handle_call({:update, repo}, _caller, state),
+    do: {:reply, :ok, Map.put(state, :leaderboard, do_update(repo))}
 
   private do
     defp do_update(repo \\ Repo.all(User)) do
