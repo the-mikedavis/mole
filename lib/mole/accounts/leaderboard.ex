@@ -31,8 +31,8 @@ defmodule Mole.Accounts.Leaderboard do
 
   # Server API
 
-  # every 2 min
-  @time_buffer 2 * 60 * 1_000
+  # every 30 seconds
+  @time_buffer 30 * 1_000
 
   @doc "Start the leaderboard server"
   @spec start_link(any()) :: GenServer.on_start()
