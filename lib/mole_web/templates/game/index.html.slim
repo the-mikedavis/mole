@@ -10,6 +10,12 @@ div#type-tell
 div#holster
   img#card
 
+span.far.fa-question-circle
+div#help
+  p Swipe left if you think the mole is benign (non-cancerous). Swipe right
+    if you think the mole is malignant (cancerous). To swipe, click and drag
+    the image to the left or right.
+
 = if @user_token do
   javascript:
     window.userToken = "#{@user_token}";

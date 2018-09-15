@@ -37,6 +37,9 @@
   :transition opacity 0.25s
   :opacity 1
   :cursor grab
+  :-moz-user-select none
+  :user-select none
+  :user-drag none
 
 .brief
   :margin 0 2.5% 30px 2.5%
@@ -47,3 +50,13 @@
 .brief-text
   :width 100%
   :text-align center
+
+.far.fa-question-circle
+  :margin-top 30px
+  :font-size 20px
+  :color #999
+
+#help
+  :display none
+  &.active
+    :display unset

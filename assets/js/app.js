@@ -14,4 +14,7 @@ if (document.querySelector('form')) form_feedback()
 $(document).ready(function() {
   $('li.active').removeClass('active')
   $('a[href="' + location.pathname + '"]').closest('li').addClass('active')
+  if (document.querySelector('#help'))
+    $('span.far.fa-question-circle').click(() => $('#help').toggleClass('active'))
+  window.ondragstart = () => false
 })
