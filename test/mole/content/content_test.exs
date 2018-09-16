@@ -241,14 +241,19 @@ defmodule Mole.ContentTest do
 
     test "update_answer/2 with valid data updates the answer" do
       answer = answer_fixture()
-      assert {:ok, %Answer{} = answer} = Content.update_answer(answer, @update_attrs)
-      
+
+      assert {:ok, %Answer{} = answer} =
+               Content.update_answer(answer, @update_attrs)
+
       assert answer.correct == false
     end
 
     test "update_answer/2 with invalid data returns error changeset" do
       answer = answer_fixture()
-      assert {:error, %Ecto.Changeset{}} = Content.update_answer(answer, @invalid_attrs)
+
+      assert {:error, %Ecto.Changeset{}} =
+               Content.update_answer(answer, @invalid_attrs)
+
       assert answer == Content.get_answer!(answer.id)
     end
 

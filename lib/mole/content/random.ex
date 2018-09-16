@@ -17,30 +17,35 @@ defmodule Mole.Content.Random do
 
   @doc "Give a set of images based on the pool and the condition"
   @spec set(t_pool(), integer() | nil) :: {[%Image{}], t_pool()}
-  def set({[mal1, mal2, mal3 | mals], [ben1, ben2, ben3, ben4, ben5 | bens]}, _condition) do
-    {Enum.shuffle([mal1, mal2, mal3, ben1, ben2, ben3, ben4, ben5]), {mals, bens}}
+  def set(
+        {[mal1, mal2, mal3 | mals], [ben1, ben2, ben3, ben4, ben5 | bens]},
+        _condition
+      ) do
+    {Enum.shuffle([mal1, mal2, mal3, ben1, ben2, ben3, ben4, ben5]),
+     {mals, bens}}
   end
+
   def set({mals, bens}, _condition) do
     raise "tried to take a set of #{mals} and #{bens} and failed..."
   end
 
   # # abcde
   # def set({mals, bens}, condition) when condition in 0..1 do
-    # decided = Enum.take_random(mals, 2) ++ Enum.take_random(bens, 2)
-    # 
-    # undecided =
-      # case :rand.uniform() do
-        # n when n < 0.5 -> Enum.random(mals)
-        # _ -> Enum.random(bens)
-          # end
-      # 
-      # Enum.shuffle([undecided | decided])
-    # end
+  # decided = Enum.take_random(mals, 2) ++ Enum.take_random(bens, 2)
+  # 
+  # undecided =
+  # case :rand.uniform() do
+  # n when n < 0.5 -> Enum.random(mals)
+  # _ -> Enum.random(bens)
+  # end
+  # 
+  # Enum.shuffle([undecided | decided])
+  # end
   # 
   # def set({mals, bens}, condition) when condition in 2..3 do
-    # [Enum.random(mals) | Enum.take_random(bens, 4)]
-    # |> Enum.shuffle()
-    # end
+  # [Enum.random(mals) | Enum.take_random(bens, 4)]
+  # |> Enum.shuffle()
+  # end
   # 
   # def set({mals, bens}, _condition), do: Enum.take_random(mals ++ bens, 5)
 

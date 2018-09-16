@@ -33,7 +33,6 @@ defmodule Mole.Accounts.Leaderboard do
   @spec mark() :: :ok
   def mark, do: GenServer.cast(__MODULE__, :mark)
 
-
   # Server API
 
   # every 30 seconds

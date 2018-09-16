@@ -2,11 +2,10 @@ defmodule Mole.Content.Answer do
   use Ecto.Schema
   import Ecto.Changeset
 
-
   schema "answers" do
-    field :correct, :boolean, default: false
-    field :user_id, :id
-    field :image_id, :id
+    field(:correct, :boolean, default: false)
+    field(:user_id, :id)
+    field(:image_id, :id)
 
     timestamps()
   end

@@ -107,14 +107,22 @@ defmodule MoleWeb.GameChannel do
   # 3. the image was malignant
   @spec give_feedback(boolean(), boolean(), boolean()) :: %{}
   defp give_feedback(false, _, _), do: %{}
+
   defp give_feedback(true, correct?, malignant?) do
     give_feedback(correct?, malignant?)
     |> Map.put("correct", correct?)
   end
 
   @spec give_feedback(boolean(), boolean()) :: %{String.t() => String.t()}
-  defp give_feedback(true, true), do: %{"feedbackpath" => "/images/correct_malignant.png"}
-  defp give_feedback(true, false), do: %{"feedbackpath" => "/images/correct_normal.png"}
-  defp give_feedback(false, true), do: %{"feedbackpath" => "/images/incorrect_malignant.png"}
-  defp give_feedback(false, false), do: %{"feedbackpath" => "/images/incorrect_normal.png"}
+  defp give_feedback(true, true),
+    do: %{"feedbackpath" => "/images/correct_malignant.png"}
+
+  defp give_feedback(true, false),
+    do: %{"feedbackpath" => "/images/correct_normal.png"}
+
+  defp give_feedback(false, true),
+    do: %{"feedbackpath" => "/images/incorrect_malignant.png"}
+
+  defp give_feedback(false, false),
+    do: %{"feedbackpath" => "/images/incorrect_normal.png"}
 end
