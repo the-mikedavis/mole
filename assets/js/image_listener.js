@@ -45,11 +45,22 @@ function feedback(img, event) {
 
   tinder.off()
 
-  img.src = event.detail.feedbackpath
+  const fbp = event.detail.feedbackpath
+
+  // highlight the feedback text
+  const feedback_txt_id = fbp.substring(8, fbp.length - 4)
+  console.log(feedback_txt_id)
+  document.getElementById(feedback_txt_id).classList.add('active')
+
+  img.src = fbp
 
   setTimeout(() => {
     tinder.on(img)
     img.src = event.detail.path
+
+    const feedbacks = document.getElementsByClassName('feedback')
+    for (let i = 0; i < feedbacks.length; i++)
+      feedbacks[i].classList.remove('active')
   }, constants.time_buffer * 3)
 }
 

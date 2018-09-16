@@ -32,9 +32,11 @@
       :color $red
 
 #card, .card
+  :object-fit cover
   :width 100%
   :background-color #ccc
-  :border-radius 5px
+  //:border-radius 5px
+  :background transparent
   :transition opacity 0.25s
   :opacity 1
   :cursor grab
@@ -71,6 +73,15 @@ button#ready
   :display none
   &.briefing
     :display unset
+
+.feedback
+  :display none
+  &.active
+    :display unset
+
+.feedbackholder
+  :margin-bottom 30px
+  :height 30px
 
 div#holster
   :background-size cover
