@@ -7,19 +7,20 @@ div#type-tell
     span.fas.fa-check-circle#correct.correctness
     span.fas.fa-times-circle#incorrect.correctness
 
-div#describe
+div#describe.briefing
   h3 Study these moles carefully
   p Swipe right on moles you think are safe, and swipe left on moles that should
     be checked by a dermatologist.
 
-div#holster
+div#holster.briefing
   img#card
+
+button#ready.btn.btn-primary.btn-block.briefing READY
 
 span.far.fa-question-circle
 div#help
-  p Swipe left if you think the mole is benign (non-cancerous). Swipe right
-    if you think the mole is malignant (cancerous). To swipe, click and drag
-    the image to the left or right.
+  p Swipe right on moles you think are safe, and swipe left on moles that should
+    be checked by a dermatologist. Swipe by clicking and dragging.
 
 = if @user_token do
   javascript:

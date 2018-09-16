@@ -43,14 +43,13 @@
   :user-drag none
 
 .brief
-  :margin 0 2.5% 30px 2.5%
-  :width 45%
   :display inline
   :cursor default
-
-.brief-text
-  :width 100%
-  :text-align center
+  :margin 20px 5%
+  :width 40%
+  @include desktop
+    :margin 20px 2.5%
+    :width 20%
 
 .far.fa-question-circle
   :margin-top 30px
@@ -62,9 +61,26 @@ div#help
   &.active
     :display unset
 
+div#describe
+  :display none
+  &.briefing
+    :display unset
+
+button#ready
+  :margin-top 30px
+  :display none
+  &.briefing
+    :display unset
+
 div#holster
-  :background-image url(/images/back_tall.png)
-  :background-size contain
+  :background-size cover
   :background-repeat no-repeat
+  :background-image url(/images/back_tall.png)
+  :padding 50px 10%
+  &.briefing
+    :padding 45px 7.5%
   @include desktop
+    :padding 50px 15%
+    &.briefing
+      :padding 100px 7.5%
     :background-image url(/images/back_wide.png)

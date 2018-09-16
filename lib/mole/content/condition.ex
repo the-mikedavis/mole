@@ -15,7 +15,7 @@ defmodule Mole.Content.Condition do
   @no_conditions length(@conditions)
 
   @typedoc "A type of education. Always an atom"
-  @type ed :: :abcde | :duckling | :none
+  @type ed :: :abcd | :duckling | :none
 
   @typedoc "Feedback? `true` or `false`"
   @type feedback :: boolean()

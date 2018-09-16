@@ -12,6 +12,8 @@ defmodule Mole.GameplayServer do
 
   @type set :: [%{}]
 
+  @sets 7
+
   # Client API
 
   def new_set(username) do
@@ -20,15 +22,15 @@ defmodule Mole.GameplayServer do
         user = Accounts.get_user_by_uname(username)
         condition = user.condition
         pool = Random.pool()
-        set = Random.set(pool, condition)
-        sets_left = 20
+        {set, pool} = Random.set(pool, condition)
+        sets_left = @sets
 
         put(username, {sets_left, condition, pool})
 
         {condition, set}
 
       {_sets_left, condition, pool} ->
-        set = Random.set(pool, condition)
+        {set, pool} = Random.set(pool, condition)
 
         {condition, set}
     end

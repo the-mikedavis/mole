@@ -1,5 +1,6 @@
 /* handle the briefing of 5 images in the beginning */
 import constants from './constants'
+import ready_up from './ready_up_event'
 const container_el = document.getElementById('holster')
 const IMAGE_EVENT = constants.image_event_name
 
@@ -21,17 +22,9 @@ function listener(event) {
     container_el.appendChild(i)
   }
 
-  var button = document.createElement('button')
-  button.innerHTML = 'READY'
-  button.className = 'btn btn-primary btn-block'
-  button.onclick = () => {
-    document.getElementById('type-tell').style.display = 'block'
-
-    document.dispatchEvent(
-      new CustomEvent(IMAGE_EVENT, {detail: {path: first}})
-    )
+  document.getElementById('ready').onclick = () => {
+    ready_up(new CustomEvent(IMAGE_EVENT, {detail: {path: first}}))
   }
-  container_el.appendChild(button)
 }
 
 function shuffleArray(array) {
