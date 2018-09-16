@@ -41,11 +41,12 @@ defmodule MoleWeb.GameChannel do
   Update the gameplay for the next image.
   """
   def handle_in("answer", malignant?, socket) do
-    correct? = current_image(socket).malignant == malignant?
+    malignant = current_image(socket).malignant
+    correct? = malignant == malignant?
     socket = update_gameplay(socket, correct?)
     feedback? = Condition.feedback?(socket.assigns.condition)
 
-    reply = if(feedback?, do: %{"correct" => correct?}, else: %{})
+    feedback_map = give_feedback(feedback?, correct?, malignant)
 
     reply =
       case socket.assigns.gameplay.playable do
@@ -57,10 +58,10 @@ defmodule MoleWeb.GameChannel do
             socket.assigns.gameplay
           )
 
-          Map.merge(reply, %{"reroute" => true, "path" => recap_path})
+          Map.merge(feedback_map, %{"reroute" => true, "path" => recap_path})
 
         _list ->
-          Map.put(reply, "path", current_image_path(socket))
+          Map.put(feedback_map, "path", current_image_path(socket))
       end
 
     {:reply, {:ok, reply}, socket}
@@ -96,4 +97,24 @@ defmodule MoleWeb.GameChannel do
 
     assign(socket, :gameplay, new_gameplay)
   end
+
+  # TODO: this is really aweful to have codified _here_
+
+  # give a feedback map for the socket given three predicates:
+  #
+  # 1. the user should get feedback
+  # 2. the user was correct
+  # 3. the image was malignant
+  @spec give_feedback(boolean(), boolean(), boolean()) :: %{}
+  defp give_feedback(false, _, _), do: %{}
+  defp give_feedback(true, correct?, malignant?) do
+    give_feedback(correct?, malignant?)
+    |> Map.put("correct", correct?)
+  end
+
+  @spec give_feedback(boolean(), boolean()) :: %{String.t() => String.t()}
+  defp give_feedback(true, true), do: %{"feedbackpath" => "/images/correct_malignant.png"}
+  defp give_feedback(true, false), do: %{"feedbackpath" => "/images/correct_normal.png"}
+  defp give_feedback(false, true), do: %{"feedbackpath" => "/images/incorrect_malignant.png"}
+  defp give_feedback(false, false), do: %{"feedbackpath" => "/images/incorrect_normal.png"}
 end
