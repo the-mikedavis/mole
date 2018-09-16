@@ -203,4 +203,64 @@ defmodule Mole.ContentTest do
       assert Content.get_survey_by_slug("some slug") == survey.id
     end
   end
+
+  describe "answers" do
+    alias Mole.Content.Answer
+
+    @valid_attrs %{correct: true}
+    @update_attrs %{correct: false}
+    @invalid_attrs %{correct: nil}
+
+    def answer_fixture(attrs \\ %{}) do
+      {:ok, answer} =
+        attrs
+        |> Enum.into(@valid_attrs)
+        |> Content.create_answer()
+
+      answer
+    end
+
+    test "list_answers/0 returns all answers" do
+      answer = answer_fixture()
+      assert Content.list_answers() == [answer]
+    end
+
+    test "get_answer!/1 returns the answer with given id" do
+      answer = answer_fixture()
+      assert Content.get_answer!(answer.id) == answer
+    end
+
+    test "create_answer/1 with valid data creates a answer" do
+      assert {:ok, %Answer{} = answer} = Content.create_answer(@valid_attrs)
+      assert answer.correct == true
+    end
+
+    test "create_answer/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Content.create_answer(@invalid_attrs)
+    end
+
+    test "update_answer/2 with valid data updates the answer" do
+      answer = answer_fixture()
+      assert {:ok, %Answer{} = answer} = Content.update_answer(answer, @update_attrs)
+      
+      assert answer.correct == false
+    end
+
+    test "update_answer/2 with invalid data returns error changeset" do
+      answer = answer_fixture()
+      assert {:error, %Ecto.Changeset{}} = Content.update_answer(answer, @invalid_attrs)
+      assert answer == Content.get_answer!(answer.id)
+    end
+
+    test "delete_answer/1 deletes the answer" do
+      answer = answer_fixture()
+      assert {:ok, %Answer{}} = Content.delete_answer(answer)
+      assert_raise Ecto.NoResultsError, fn -> Content.get_answer!(answer.id) end
+    end
+
+    test "change_answer/1 returns a answer changeset" do
+      answer = answer_fixture()
+      assert %Ecto.Changeset{} = Content.change_answer(answer)
+    end
+  end
 end
