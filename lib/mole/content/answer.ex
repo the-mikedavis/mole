@@ -14,6 +14,8 @@ defmodule Mole.Content.Answer do
   def changeset(answer, attrs) do
     answer
     |> cast(attrs, [:correct])
+    |> foreign_key_constraint(:user_id)
+    |> foreign_key_constraint(:image_id)
     |> validate_required([:correct])
   end
 end

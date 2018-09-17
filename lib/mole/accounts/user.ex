@@ -2,7 +2,7 @@ defmodule Mole.Accounts.User do
   @moduledoc "A user, including name and username"
   use Ecto.Schema
   import Ecto.Changeset
-  alias Mole.Content.Survey
+  alias Mole.Content.{Answer, Survey}
 
   schema "users" do
     field(:username, :string)
@@ -14,6 +14,7 @@ defmodule Mole.Accounts.User do
     field(:condition, :integer)
     field(:survey_progress, :integer)
     belongs_to(:survey, Survey)
+    has_many(:answers, Answer)
 
     timestamps()
   end

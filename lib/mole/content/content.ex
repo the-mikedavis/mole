@@ -1,4 +1,6 @@
 defmodule Mole.Content do
+  use Private
+
   @moduledoc """
   The Content context. Stores interesting information about the game, like the
   images and the statistics.
@@ -347,5 +349,26 @@ defmodule Mole.Content do
   """
   def change_answer(%Answer{} = answer) do
     Answer.changeset(answer, %{})
+  end
+
+  def save_answers(gameplay, user) do
+    gameplay.played
+    |> Enum.map(fn %{id: id, correct: correct?} ->
+      %{user_id: user.id, correct: correct?, image_id: id}
+    end)
+    |> Enum.each(&insert_or_update_answer/1)
+  end
+
+  private do
+    defp insert_or_update_answer(%{user_id: uid, image_id: iid} = attrs) do
+      q = from(a in Answer, select: a, where: [user_id: ^uid, image_id: ^iid])
+
+      case Repo.one(q) do
+        nil -> struct(Answer, attrs)
+        ans -> ans
+      end
+      |> Answer.changeset(attrs)
+      |> Repo.insert_or_update()
+    end
   end
 end

@@ -50,9 +50,7 @@ defmodule Mole.Accounts do
 
     new_scores = compute_score(user, gameplay)
 
-    user
-    |> answers_from(gameplay)
-    |> Enum.each(&Content.create_answer/1)
+    if user.survey_progress in [0, 1], do: Content.save_answers(gameplay, user)
 
     update_user(user, new_scores)
   end
@@ -93,11 +91,5 @@ defmodule Mole.Accounts do
     |> Map.put(:score, s + @correct_mult * c - @incorrect_mult * i + b)
     |> Map.put(:incorrect, pi + i)
     |> Map.put(:correct, pc + c)
-  end
-
-  defp answers_from(user, gameplay) do
-    Enum.map(gameplay.played, fn %{id: id, correct: correct?} ->
-      %{user_id: user.id, correct: correct?, image_id: id}
-    end)
   end
 end
