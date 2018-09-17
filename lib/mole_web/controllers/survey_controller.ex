@@ -1,7 +1,7 @@
 defmodule MoleWeb.SurveyController do
   use MoleWeb, :controller
 
-  alias Mole.{Administrators, Content, Content.Survey, Repo}
+  alias Mole.{Content, Content.Survey, Repo}
   alias MoleWeb.Plugs
   alias MoleWeb.Router.Helpers, as: Routes
 
@@ -80,6 +80,14 @@ defmodule MoleWeb.SurveyController do
         |> put_flash(:info, "You have joined survey \"#{slug}\".")
         |> redirect(to: Routes.game_path(conn, :index))
     end
+  end
+
+  def download(conn, %{"id" => id}) do
+    filename = Content.write_survey(id)
+
+    conn
+    |> put_resp_header("content-disposition", ~s(attachment; filename="survey.csv"))
+    |> send_file(200, "/" <> filename)
   end
 
   defp admin(conn, _opts) do

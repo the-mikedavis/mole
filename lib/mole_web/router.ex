@@ -45,6 +45,7 @@ defmodule MoleWeb.Router do
     post("/admins/delete", AdminController, :delete)
     get("/join/:slug", SurveyController, :join)
     resources("/surveys", SurveyController)
+    get("/download/:id", SurveyController, :download)
     get("/consent", ConsentController, :index)
     post("/consent", ConsentController, :agree)
     resources("/learn", LearningController, only: [:index, :show])

@@ -9,7 +9,8 @@ defmodule Mole.Content do
   import Ecto.Query, warn: false
   alias Mole.Repo
 
-  alias Mole.Content.Image
+  alias Mole.Accounts.User
+  alias Mole.Content.{Answer, Image, Survey}
 
   @doc """
   Returns the list of images.
@@ -154,8 +155,6 @@ defmodule Mole.Content do
   def static_path(%{origin_id: id}), do: static_path(id)
   def static_path(%{id: id}), do: static_path(id)
 
-  alias Mole.Content.Survey
-
   @doc """
   Returns the list of surveys.
 
@@ -255,7 +254,38 @@ defmodule Mole.Content do
     |> Repo.one()
   end
 
-  alias Mole.Content.Answer
+
+  def write_survey(id) do
+    filename =
+      [static_path(), get_survey!(id).slug <> ".csv"]
+      |> Path.join()
+
+    file = File.open!(filename, [:write, :utf8])
+
+    images =
+      list_images()
+      |> Enum.map(&Map.take(&1, [:origin_id, :id]))
+      |> Enum.reduce(%{}, fn %{origin_id: oid, id: id}, acc ->
+        Map.put(acc, id, oid)
+      end)
+
+    users =
+      from(u in User, select: u, where: [survey_id: ^id], preload: [:answers])
+      |> Repo.all()
+      |> Enum.map(&Map.take(&1, [:answers, :username]))
+      |> Enum.map(fn %{answers: answers} = user ->
+        Enum.reduce(answers, user, fn %{image_id: iid, correct: cor?}, acc ->
+          Map.put(acc, images[iid], cor?)
+        end)
+        |> Map.delete(:answers)
+      end)
+
+    users
+    |> CSV.encode(headers: [:username | Map.values(images)])
+    |> Enum.each(&IO.write(file, &1))
+
+    filename
+  end
 
   @doc """
   Returns the list of answers.
@@ -370,5 +400,7 @@ defmodule Mole.Content do
       |> Answer.changeset(attrs)
       |> Repo.insert_or_update()
     end
+
+    defp static_path, do: Path.join(["#{:code.priv_dir(:mole)}", "static"])
   end
 end

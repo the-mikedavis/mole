@@ -36,4 +36,5 @@ table
           = link "Show", to: Routes.user_path(@conn, :show, user)
 
 span = link "Edit", to: Routes.survey_path(@conn, :edit, @survey)
+span = link "Download", to: Routes.survey_path(@conn, :download, @survey)
 span = link "Back", to: Routes.survey_path(@conn, :index)
