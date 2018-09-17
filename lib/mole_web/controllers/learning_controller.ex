@@ -37,6 +37,8 @@ defmodule MoleWeb.LearningController do
   defp learn(conn, _opts), do: Learning.learn(conn)
 
   defp next(conn, id) do
+    id = String.to_integer(id)
+
     link =
       case Condition.image_for(conn.assigns.condition, id + 1) do
         nil -> Routes.game_path(conn, :index)
