@@ -38,3 +38,8 @@ table
 span = link "Edit", to: Routes.survey_path(@conn, :edit, @survey)
 span = link "Download", to: Routes.survey_path(@conn, :download, @survey)
 span = link "Back", to: Routes.survey_path(@conn, :index)
+
+p
+  i Surveys are downloadable as CSVs, where image IDs are the headers and users
+    are the values. "TRUE" and "FALSE" denote whether or not the user was correct
+    when swiping for that image.
