@@ -70,7 +70,7 @@ defmodule Mole.Content.Random do
   defp starting_data do
     Image
     |> Repo.all()
-    |> Enum.map(&Map.take(&1, [:origin_id, :malignant]))
+    |> Enum.map(&Map.take(&1, [:origin_id, :id, :malignant]))
     |> Enum.split_with(fn %{malignant: mal?} -> mal? end)
   end
 end

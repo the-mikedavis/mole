@@ -88,11 +88,14 @@ defmodule MoleWeb.GameChannel do
   # remove the head of the gameplay list, update correct/incorrect
   defp update_gameplay(%{assigns: %{gameplay: gameplay}} = socket, correct?) do
     correctness = if correct?, do: :correct, else: :incorrect
-    [_just_played | to_play] = gameplay.playable
+    [just_played | to_play] = gameplay.playable
+
+    just_played = Map.put(just_played, :correct, correct?)
 
     new_gameplay =
       gameplay
       |> Map.put(:playable, to_play)
+      |> Map.update(:played, [just_played], &([just_played | &1]))
       |> Map.update!(correctness, &(&1 + 1))
 
     assign(socket, :gameplay, new_gameplay)

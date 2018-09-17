@@ -2,7 +2,7 @@ defmodule Mole.Accounts do
   use Private
 
   @moduledoc "Functions to act on accounts."
-  alias Mole.{Accounts.User, Content.Survey, Repo}
+  alias Mole.{Accounts.User, Content, Content.Survey, Repo}
   import Ecto.Query
 
   @correct_mult Application.get_env(:mole, :correct_mult)
@@ -50,6 +50,10 @@ defmodule Mole.Accounts do
 
     new_scores = compute_score(user, gameplay)
 
+    user
+    |> answers_from(gameplay)
+    |> Enum.each(&Content.create_answer/1)
+
     update_user(user, new_scores)
   end
 
@@ -89,5 +93,11 @@ defmodule Mole.Accounts do
     |> Map.put(:score, s + @correct_mult * c - @incorrect_mult * i + b)
     |> Map.put(:incorrect, pi + i)
     |> Map.put(:correct, pc + c)
+  end
+
+  defp answers_from(user, gameplay) do
+    Enum.map(gameplay.played, fn %{id: id, correct: correct?} ->
+      %{user_id: user.id, correct: correct?, image_id: id}
+    end)
   end
 end
