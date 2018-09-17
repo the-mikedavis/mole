@@ -48,6 +48,7 @@ defmodule MoleWeb.Router do
     get("/consent", ConsentController, :index)
     post("/consent", ConsentController, :agree)
     resources("/learn", LearningController, only: [:index, :show])
+    resources("/images", ImageController, only: [:index, :show])
   end
 
   defp put_user_token(conn, _) do

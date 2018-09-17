@@ -1,0 +1,15 @@
+h1 Images
+
+table
+  thead
+    tr
+      th id
+      th benign?
+      th
+  tbody
+    = for image <- @images do
+      tr
+        td = link(image.origin_id, to: Routes.image_path(@conn, :show, image.id))
+        td = not image.malignant
+        td
+          img src="#{path(image)}"
