@@ -21,6 +21,7 @@ defmodule Mole.Content.Survey do
   def changeset(survey, attrs) do
     survey
     |> cast(attrs, [:slug, :prelink, :postlink])
+    |> validate_format(:slug, ~r/^[\w]*$/)
     |> validate_required([:slug, :prelink, :postlink])
   end
 end
