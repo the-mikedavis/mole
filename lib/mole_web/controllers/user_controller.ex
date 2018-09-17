@@ -24,7 +24,13 @@ defmodule MoleWeb.UserController do
   def index(conn, _opts), do: index(conn, %{"page" => "1"})
 
   def show(conn, %{"id" => id}) do
-    user = Accounts.get_user(id)
+    user =
+      if conn.assigns[:admin?] do
+        Accounts.get_user_with_answers(id)
+      else
+        Accounts.get_user(id)
+      end
+
     render(conn, "show.html", user: user)
   end
 

@@ -22,6 +22,16 @@ defmodule Mole.Accounts do
     |> Repo.all()
   end
 
+  def get_user_with_answers(id) do
+    from(
+      u in User,
+      select: u,
+      where: [id: ^id],
+      preload: [:answers]
+    )
+    |> Repo.one()
+  end
+
   def list_users(), do: Repo.all(User)
 
   def change_user(%User{} = user), do: User.changeset(user, %{})
