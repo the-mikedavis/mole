@@ -254,7 +254,6 @@ defmodule Mole.Content do
     |> Repo.one()
   end
 
-
   def write_survey(id) do
     filename =
       [static_path(), get_survey!(id).slug <> ".csv"]

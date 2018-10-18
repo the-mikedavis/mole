@@ -86,7 +86,10 @@ defmodule MoleWeb.SurveyController do
     filename = Content.write_survey(id)
 
     conn
-    |> put_resp_header("content-disposition", ~s(attachment; filename="survey.csv"))
+    |> put_resp_header(
+      "content-disposition",
+      ~s(attachment; filename="survey.csv")
+    )
     |> send_file(200, "/" <> filename)
   end
 

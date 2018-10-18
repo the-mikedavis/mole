@@ -95,7 +95,7 @@ defmodule MoleWeb.GameChannel do
     new_gameplay =
       gameplay
       |> Map.put(:playable, to_play)
-      |> Map.update(:played, [just_played], &([just_played | &1]))
+      |> Map.update(:played, [just_played], &[just_played | &1])
       |> Map.update!(correctness, &(&1 + 1))
 
     assign(socket, :gameplay, new_gameplay)
