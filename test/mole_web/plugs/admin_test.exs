@@ -18,14 +18,7 @@ defmodule MoleWeb.Plugs.AdminTest do
       |> fetch_flash()
       |> Admin.call(%{})
 
-    assert conn.halted
-    assert redirected_to(conn) =~ "session"
-
-    assert get_flash(conn) ==
-             %{
-               "error" =>
-                 "You do not have proper permissions to access that page."
-             }
+    assert conn.assigns.admin? == false
   end
 
   test "trying with a non-admin user" do
@@ -36,19 +29,15 @@ defmodule MoleWeb.Plugs.AdminTest do
       |> assign(:current_user, %User{username: "shakate"})
       |> Admin.call(%{})
 
-    assert conn.halted
-    assert redirected_to(conn) =~ "session"
-
-    assert get_flash(conn) ==
-             %{
-               "error" =>
-                 "You do not have proper permissions to access that page."
-             }
+    assert conn.assigns.admin? == false
   end
 
   test "trying with an administrator" do
-    conn = assign(build_conn(), :current_user, %User{username: "the-mikedavis"})
+    conn =
+      build_conn()
+      |> assign(:current_user, %User{username: "the-mikedavis"})
+      |> Admin.call(%{})
 
-    assert conn == Admin.call(conn, %{})
+    assert conn.assigns.admin? == true
   end
 end

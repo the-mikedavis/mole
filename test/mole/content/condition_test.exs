@@ -6,8 +6,8 @@ defmodule Mole.Content.ConditionTest do
   setup do
     [
       conditions: [
-        abcde: true,
-        abcde: false,
+        abcd: true,
+        abcd: false,
         duckling: true,
         duckling: false,
         none: true,
@@ -28,6 +28,6 @@ defmodule Mole.Content.ConditionTest do
 
   test "condition strings", c do
     assert Condition.to_string(List.first(c.conditions)) ==
-             "learning: abcde, feedback?: true"
+             "learning: abcd, feedback?: true"
   end
 end

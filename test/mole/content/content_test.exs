@@ -107,7 +107,7 @@ defmodule Mole.ContentTest do
   describe "path building" do
     setup do
       [
-        static: "/images/X.jpeg",
+        static: "/images/moles/X.jpeg",
         download: "priv/static/images/X.jpeg"
       ]
     end
@@ -128,14 +128,14 @@ defmodule Mole.ContentTest do
     @valid_attrs %{
       postlink: "some postlink",
       prelink: "some prelink",
-      slug: "some slug"
+      slug: "someslug"
     }
     @update_attrs %{
       postlink: "some updated postlink",
       prelink: "some updated prelink",
-      slug: "some updated slug"
+      slug: "someupdatedslug"
     }
-    @invalid_attrs %{postlink: nil, prelink: nil, slug: nil}
+    @invalid_attrs %{postlink: nil, prelink: nil, slug: "some slug"}
 
     def survey_fixture(attrs \\ %{}) do
       {:ok, survey} =
@@ -160,7 +160,7 @@ defmodule Mole.ContentTest do
       assert {:ok, %Survey{} = survey} = Content.create_survey(@valid_attrs)
       assert survey.postlink == "some postlink"
       assert survey.prelink == "some prelink"
-      assert survey.slug == "some slug"
+      assert survey.slug == "someslug"
     end
 
     test "create_survey/1 with invalid data returns error changeset" do
@@ -175,7 +175,7 @@ defmodule Mole.ContentTest do
 
       assert survey.postlink == "some updated postlink"
       assert survey.prelink == "some updated prelink"
-      assert survey.slug == "some updated slug"
+      assert survey.slug == "someupdatedslug"
     end
 
     test "update_survey/2 with invalid data returns error changeset" do
@@ -200,7 +200,7 @@ defmodule Mole.ContentTest do
 
     test "get a survey by slug" do
       survey = survey_fixture()
-      assert Content.get_survey_by_slug("some slug") == survey.id
+      assert Content.get_survey_by_slug("someslug") == survey.id
     end
   end
 
