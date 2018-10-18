@@ -22,8 +22,10 @@ script:
   - mix credo
 
 before_deploy:
-  # TODO yarn
-  - cd ./assets/ && npm i && ./node_modules/.bin/webpack -p && cd -
+  - cd ./assets
+  - yarn install
+  - ./node_modules/.bin/webpack -p
+  - cd ..
   - MIX_ENV=prod mix phx.digest
   - MIX_ENV=prod mix release --env=prod
 
