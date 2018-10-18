@@ -33,6 +33,7 @@ defmodule MoleWeb.GameController do
       conn
     else
       conn
+      |> put_flash(:error, "Sorry, you must be signed in to play.")
       |> redirect(to: Routes.user_path(conn, :new))
       |> halt()
     end

@@ -6,3 +6,5 @@ h2 Login
   div
     = password_input f, :password, placeholder: "Password"
   = submit "Log in"
+
+p Don't have an account yet? #{link("Create one", to: Routes.user_path(@conn, :new))}.

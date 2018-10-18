@@ -12,3 +12,5 @@ h2 New User
     = password_input f, :password, placeholder: "Password"
     = error_tag f, :password
   = submit "Create User"
+
+p Already have an account? #{link("Sign in", to: Routes.session_path(@conn, :new))}.
