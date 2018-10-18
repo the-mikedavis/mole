@@ -21,22 +21,23 @@ script:
   - mix coveralls
   - mix credo
 
-    # before_deploy:
-    # - cd ./assets/ && npm i && ./node_modules/.bin/webpack -p && cd -
-    # - MIX_ENV=prod mix phx.digest
-    # - MIX_ENV=prod mix release --env=prod
+before_deploy:
+  # TODO yarn
+  - cd ./assets/ && npm i && ./node_modules/.bin/webpack -p && cd -
+  - MIX_ENV=prod mix phx.digest
+  - MIX_ENV=prod mix release --env=prod
 
 branches:
   only:
     - master
-    # - /^v[\d.]+/
+    - /^v[\d.]+/
 
-      # deploy:
-      # skip_cleanup: true
-      # provider: releases
-      # api_key:
-      # secure: q1ESuhq3uIda0qLayVdomgY34BMHnKz1HV0XhwQoZ1eIzymmTk6jdUHeSBFEqNFqPN7wfxGXKSxlBRFXV//+RAvQAEF0qg0IThUjmdVz2ZkKR7Gt9YiBZDxjIxwlOXh5of29x3DFXVLrTejulBZcw0eVH+jbH/dYILo8nZNu6INyDDvP6h536FmY0puN+ZHzCotW91vMJ2szxWRMZx65y/9EYvwF3Hou7tOEejpvVwRn3dddOpR2Z5VPckg8+o6i6qaAmgonx3zD3ON0Oc5YuCxkkVkIDqTdDSyoqxLb+d29oj21cdu+4CgSQMHu55958Jc0J3vMJANZ7TP0fOXYcoU7TnAl7PjTeX9jpwoZq/3aqt1XRPB6IoiT9V7s1bsjT09PSOBLScx8+eJzh3m5d+DmLgocHp3Gxwxse8lbO6+jDBDMKgDjjatRoiA5ppF+C5QS1xCBdQBAtqarb31hAkvYZ42s7/2ySO4vFEd+SfeB+yB3PpLCKTZh3rJjW2QJHVNawBSa/zdrOrYXL22sIJhRFakbKzqXtpBGp983FhG5Aghj2HjGNZvH9oRBV8GXXpmuO5gsuSgXNaSfdTrSRAOndRDhxjGo0LY/FPUYQXQlhA83vJJqI5015QNzmVTvAEG1H0RowZ4WOsRYsKvxPEY0QIJZplK4lZvCqk4g808=
-      # file_glob: true
-      # file: _build/prod/rel/mole/releases/*/*.tar.gz
-      # on:
-      # tags: true
+deploy:
+  skip_cleanup: true
+  provider: releases
+  api_key:
+    secure: q1ESuhq3uIda0qLayVdomgY34BMHnKz1HV0XhwQoZ1eIzymmTk6jdUHeSBFEqNFqPN7wfxGXKSxlBRFXV//+RAvQAEF0qg0IThUjmdVz2ZkKR7Gt9YiBZDxjIxwlOXh5of29x3DFXVLrTejulBZcw0eVH+jbH/dYILo8nZNu6INyDDvP6h536FmY0puN+ZHzCotW91vMJ2szxWRMZx65y/9EYvwF3Hou7tOEejpvVwRn3dddOpR2Z5VPckg8+o6i6qaAmgonx3zD3ON0Oc5YuCxkkVkIDqTdDSyoqxLb+d29oj21cdu+4CgSQMHu55958Jc0J3vMJANZ7TP0fOXYcoU7TnAl7PjTeX9jpwoZq/3aqt1XRPB6IoiT9V7s1bsjT09PSOBLScx8+eJzh3m5d+DmLgocHp3Gxwxse8lbO6+jDBDMKgDjjatRoiA5ppF+C5QS1xCBdQBAtqarb31hAkvYZ42s7/2ySO4vFEd+SfeB+yB3PpLCKTZh3rJjW2QJHVNawBSa/zdrOrYXL22sIJhRFakbKzqXtpBGp983FhG5Aghj2HjGNZvH9oRBV8GXXpmuO5gsuSgXNaSfdTrSRAOndRDhxjGo0LY/FPUYQXQlhA83vJJqI5015QNzmVTvAEG1H0RowZ4WOsRYsKvxPEY0QIJZplK4lZvCqk4g808=
+  file_glob: true
+  file: _build/prod/rel/mole/releases/*/*.tar.gz
+  on:
+    tags: true

@@ -17,8 +17,8 @@ config :mole, min_amount: 1000
 
 # Configure your database
 config :mole, Mole.Repo,
-  adapter: Ecto.Adapters.MySQL,
-  username: "${MOLE_DB_USERNAME}",
+  adapter: Ecto.Adapters.Postgres,
+  username: "username",
   password: "${MOLE_DB_PASSWORD}",
   database: "${MOLE_DB_DATABASE}",
   pool_size: 15

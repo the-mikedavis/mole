@@ -33,8 +33,7 @@ defmodule Mole.MixProject do
         :runtime_tools,
         :phoenix,
         :cowboy,
-        :phoenix_ecto,
-        :mariaex
+        :phoenix_ecto
       ]
     ]
   end
@@ -51,7 +50,7 @@ defmodule Mole.MixProject do
       {:phoenix, github: "phoenixframework/phoenix", override: true},
       {:phoenix_pubsub, "~> 1.0"},
       {:phoenix_ecto, "~> 3.2"},
-      {:mariaex, ">= 0.0.0"},
+      {:postgrex, "~> 0.13"},
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
@@ -66,7 +65,6 @@ defmodule Mole.MixProject do
       # test
       {:credo, "~> 0.9", only: [:dev, :test], runtime: false},
       {:excoveralls, "~> 0.9", only: :test},
-      {:postgrex, "~> 0.13"},
       {:mox, "~> 0.3"},
       {:private, "~> 0.1.1"},
 
@@ -75,20 +73,12 @@ defmodule Mole.MixProject do
     ]
   end
 
-  # Aliases are shortcuts or tasks specific to the current project.
-  # For example, to create, migrate and run the seeds file at once:
-  #
-  #     $ mix ecto.setup
-  #
-  # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate", "test"],
-      bless: [&bless/1],
-      clean_images: [&clean_images/1],
-      reset_scraper: [&clean_images/1, "ecto.reset"]
+      bless: [&bless/1]
     ]
   end
 
@@ -102,13 +92,6 @@ defmodule Mole.MixProject do
         credo
       """,
       env: [{"MIX_ENV", "test"}]
-    )
-  end
-
-  defp clean_images(_) do
-    Mix.shell().cmd(
-      "rm -rf priv/static/images/*.jpeg priv/static/images/metadata.csv priv/static/images/images.zip",
-      env: [{"MIX_ENV", "dev"}]
     )
   end
 end
