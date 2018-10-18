@@ -16,7 +16,8 @@ defmodule Mole.MixProject do
         "coveralls.detail": :test,
         "coveralls.travis": :test,
         "coveralls.post": :test,
-        "coveralls.html": :test
+        "coveralls.html": :test,
+        bless: :test
       ],
       test_coverage: [tool: ExCoveralls]
     ]
@@ -83,15 +84,18 @@ defmodule Mole.MixProject do
   end
 
   defp bless(_) do
-    Mix.shell().cmd(
-      """
-      mix do \
-        format --check-formatted, \
-        compile --warnings-as-errors, \
-        coveralls.html, \
-        credo
-      """,
-      env: [{"MIX_ENV", "test"}]
-    )
+    [
+      {"compile", ["--warnings-as-errors", "--force"]},
+      {"coveralls.html", []},
+      {"format", ["--check-formatted"]},
+      {"credo", []}
+    ]
+    |> Enum.each(fn {task, args} ->
+      [:cyan, "Running #{task} with args #{inspect(args)}"]
+      |> IO.ANSI.format()
+      |> IO.puts()
+
+      Mix.Task.run(task, args)
+    end)
   end
 end

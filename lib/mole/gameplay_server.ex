@@ -30,7 +30,7 @@ defmodule Mole.GameplayServer do
         {condition, set}
 
       {_sets_left, condition, pool} ->
-        {set, pool} = Random.set(pool, condition)
+        {set, _pool} = Random.set(pool, condition)
 
         {condition, set}
     end

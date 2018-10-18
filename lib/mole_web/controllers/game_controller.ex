@@ -49,12 +49,12 @@ defmodule MoleWeb.GameController do
   end
 
   defp learn(conn, _opts) do
-    if !conn.assigns[:learned?] do
+    if conn.assigns[:learned?] do
+      conn
+    else
       conn
       |> redirect(to: Routes.learning_path(conn, :show, 0))
       |> halt()
-    else
-      conn
     end
   end
 

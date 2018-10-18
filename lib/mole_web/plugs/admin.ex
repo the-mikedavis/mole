@@ -1,6 +1,5 @@
 defmodule MoleWeb.Plugs.Admin do
   @moduledoc false
-  import Phoenix.Controller
   import Plug.Conn
 
   alias Mole.Administrators
