@@ -9,6 +9,7 @@ defmodule Mole.Content.Image do
   schema "images" do
     field(:malignant, :boolean, default: false)
     field(:origin_id, :string)
+    field(:type, :string)
 
     timestamps()
   end
