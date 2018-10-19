@@ -10,7 +10,6 @@ function listener(event) {
       nofeedback(img, event)
     else
       feedback(img, event)
-      console.log("feedback")
   } else {
     while (container_el.firstChild) {
       container_el.removeChild(container_el.firstChild)

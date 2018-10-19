@@ -19,7 +19,6 @@ if (window.userToken) {
   let channel = socket.channel("game:new", {})
   channel.join()
     .receive("ok", resp => {
-      console.log("Joined successfully", resp)
       document.dispatchEvent(new CustomEvent(BRIEF_EVENT, {detail: resp}))
     })
     .receive("error", resp => { console.log("Unable to join", resp) })
