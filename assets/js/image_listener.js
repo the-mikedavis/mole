@@ -10,6 +10,7 @@ function listener(event) {
       nofeedback(img, event)
     else
       feedback(img, event)
+      console.log("feedback")
   } else {
     while (container_el.firstChild) {
       container_el.removeChild(container_el.firstChild)
@@ -39,8 +40,6 @@ function feedback(img, event) {
   const correct = event.detail.correct
   const el = document.getElementById(correct ? 'correct' : 'incorrect')
 
-  console.log("Was I correct?", correct)
-
   constants.activate_element(el)
 
   tinder.off()
@@ -49,7 +48,6 @@ function feedback(img, event) {
 
   // highlight the feedback text
   const feedback_txt_id = fbp.substring(8, fbp.length - 4)
-  console.log(feedback_txt_id)
   document.getElementById(feedback_txt_id).classList.add('active')
 
   img.src = fbp
