@@ -1,11 +1,5 @@
 use Mix.Config
 
-# For development, we disable any cache and enable
-# debugging and code reloading.
-#
-# The watchers configuration can be used to run external
-# watchers to your application. For example, we use it
-# with webpack to recompile .js and .css sources.
 config :mole, MoleWeb.Endpoint,
   http: [port: System.get_env("PORT") || 4004],
   debug_errors: true,
@@ -35,7 +29,6 @@ config :logger, :console, format: "[$level] $message\n"
 config :phoenix, :stacktrace_depth, 20
 config :phoenix, :plug_init_mode, :runtime
 
-# Configure your database
 config :mole, Mole.Repo,
   adapter: Ecto.Adapters.Postgres,
   username: "postgres",
