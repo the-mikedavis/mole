@@ -55,7 +55,10 @@ defmodule Mole.GameplayServer do
       {sets_left, condition, pool} ->
         {status, _} = Accounts.save_gameplay(username, gameplay)
 
-        put(username, {sets_left - 1, condition, remove_gameplay(pool, gameplay)})
+        put(
+          username,
+          {sets_left - 1, condition, remove_gameplay(pool, gameplay)}
+        )
 
         status
 

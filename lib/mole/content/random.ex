@@ -20,7 +20,7 @@ defmodule Mole.Content.Random do
   def set({mals, bens}, _condition) do
     rand_mals = Enum.take_random(mals, 4)
     rand_bens = Enum.take_random(bens, 4)
-    
+
     {
       Enum.shuffle(rand_mals ++ rand_bens),
       {mals -- rand_mals, bens -- rand_bens}
