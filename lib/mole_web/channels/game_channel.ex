@@ -101,8 +101,6 @@ defmodule MoleWeb.GameChannel do
     assign(socket, :gameplay, new_gameplay)
   end
 
-  # TODO: this is really aweful to have codified _here_
-
   # give a feedback map for the socket given three predicates:
   #
   # 1. the user should get feedback
