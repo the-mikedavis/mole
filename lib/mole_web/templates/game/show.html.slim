@@ -1,7 +1,7 @@
 h1 Nice work!
 
 = if @sets_left do
-  p = "You have #{@sets_left - 1} sets left. Keep playing or take a break."
+  p = "You have #{@sets_left} sets left. Keep playing or take a break."
 
 = if assigns[:feedback] do
   p = "Your new score is #{@current_user.score}!"
