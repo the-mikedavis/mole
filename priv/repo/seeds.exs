@@ -60,5 +60,5 @@ moles = %{
 }
 
 for {id, mal?} <- moles do
-  Repo.insert!(%Image{origin_id: id, malignant: mal?})
+  Repo.get_by(Image, origin_id: id) || Repo.insert!(%Image{origin_id: id, malignant: mal?})
 end
