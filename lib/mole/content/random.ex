@@ -18,10 +18,10 @@ defmodule Mole.Content.Random do
   @doc "Give a set of images based on the pool and the condition"
   @spec set(t_pool(), integer() | nil) :: {[%Image{}], t_pool()}
   def set(
-        {[mal1, mal2, mal3 | mals], [ben1, ben2, ben3, ben4, ben5 | bens]},
+        {[mal1, mal2, mal3, mal4 | mals], [ben1, ben2, ben3, ben4 | bens]},
         _condition
       ) do
-    {Enum.shuffle([mal1, mal2, mal3, ben1, ben2, ben3, ben4, ben5]),
+    {Enum.shuffle([mal1, mal2, mal3, mal4, ben1, ben2, ben3, ben4]),
      {mals, bens}}
   end
 
