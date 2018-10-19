@@ -55,7 +55,7 @@ defmodule Mole.GameplayServer do
       {sets_left, condition, pool} ->
         {status, _} = Accounts.save_gameplay(username, gameplay)
 
-        put(username, {sets_left - 1, condition, pool})
+        put(username, {sets_left - 1, condition, remove_gameplay(pool, gameplay)})
 
         status
 
@@ -82,4 +82,8 @@ defmodule Mole.GameplayServer do
     do: Agent.update(__MODULE__, &Map.put(&1, username, gameplay))
 
   def delete(username), do: Agent.update(__MODULE__, &Map.delete(&1, username))
+
+  defp remove_gameplay({mals, bens}, %{played: last_set}) do
+    {mals -- last_set, bens -- last_set}
+  end
 end

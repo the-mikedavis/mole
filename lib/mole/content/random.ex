@@ -17,16 +17,14 @@ defmodule Mole.Content.Random do
 
   @doc "Give a set of images based on the pool and the condition"
   @spec set(t_pool(), integer() | nil) :: {[%Image{}], t_pool()}
-  def set(
-        {[mal1, mal2, mal3, mal4 | mals], [ben1, ben2, ben3, ben4 | bens]},
-        _condition
-      ) do
-    {Enum.shuffle([mal1, mal2, mal3, mal4, ben1, ben2, ben3, ben4]),
-     {mals, bens}}
-  end
-
   def set({mals, bens}, _condition) do
-    raise "tried to take a set of #{mals} and #{bens} and failed..."
+    rand_mals = Enum.take_random(mals, 4)
+    rand_bens = Enum.take_random(bens, 4)
+    
+    {
+      Enum.shuffle(rand_mals ++ rand_bens),
+      {mals -- rand_mals, bens -- rand_bens}
+    }
   end
 
   # # abcde
