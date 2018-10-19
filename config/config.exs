@@ -25,6 +25,7 @@ config :logger, :console,
 
 config :phoenix, :json_library, Jason
 config :ecto, :json_library, Jason
+
 config :phoenix, :template_engines,
   slim: PhoenixSlime.Engine,
   slime: PhoenixSlime.Engine
