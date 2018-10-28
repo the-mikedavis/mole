@@ -9,6 +9,10 @@ defmodule Mole.Content.Random do
 
   @type t_pool :: {[%{}], [%{}]}
 
+  # half of the total set size will be taken from the pool of malignants and
+  # benigns
+  @half_size 6
+
   ## Client API
 
   @doc "Give a pool of images with correct distributions"
@@ -18,8 +22,8 @@ defmodule Mole.Content.Random do
   @doc "Give a set of images based on the pool and the condition"
   @spec set(t_pool(), integer() | nil) :: {[%Image{}], t_pool()}
   def set({mals, bens}, _condition) do
-    rand_mals = Enum.take_random(mals, 4)
-    rand_bens = Enum.take_random(bens, 4)
+    rand_mals = Enum.take_random(mals, @half_size)
+    rand_bens = Enum.take_random(bens, @half_size)
 
     {
       Enum.shuffle(rand_mals ++ rand_bens),

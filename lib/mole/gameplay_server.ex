@@ -12,7 +12,7 @@ defmodule Mole.GameplayServer do
 
   @type set :: [%{}]
 
-  @sets 6
+  @sets 4
 
   # Client API
 
