@@ -77,8 +77,10 @@ defmodule MoleWeb.GameController do
          0 <- GameplayServer.sets_left(conn.assigns.current_user.username),
          %{postlink: post} <- Content.get_survey(conn.assigns.survey_id),
          link <- "#{post}?username=#{conn.assigns.current_user.username}" do
-      survey = Content.get_survey!(conn.assigns.survey_id)
-      link = "#{survey.postlink}?username=#{conn.assigns.current_user.username}"
+      conn
+      |> Survey.check()
+      |> redirect(external: link)
+      |> halt()
     else
       _ -> conn
     end
