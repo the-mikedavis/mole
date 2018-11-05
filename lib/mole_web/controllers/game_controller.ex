@@ -60,29 +60,25 @@ defmodule MoleWeb.GameController do
   end
 
   defp pre_survey(conn, _opts) do
-    if Survey.pre_survey?(conn) do
-      survey = Content.get_survey!(conn.assigns.survey_id)
-      link = "#{survey.prelink}?username=#{conn.assigns.current_user.username}"
-
+    with true <- Survey.pre_survey?(conn),
+         %{prelink: prelink} <- Content.get_survey(conn.assigns.survey_id),
+         link <- "#{prelink}?username=#{conn.assigns.current_user.username}" do
       conn
       |> Survey.check()
       |> redirect(external: link)
       |> halt()
     else
-      conn
+      _ -> conn
     end
   end
 
   defp post_survey(conn, _opts) do
     with true <- Survey.post_survey?(conn),
-         0 <- GameplayServer.sets_left(conn.assigns.current_user.username) do
+         0 <- GameplayServer.sets_left(conn.assigns.current_user.username),
+         %{postlink: post} <- Content.get_survey(conn.assigns.survey_id),
+         link <- "#{post}?username=#{conn.assigns.current_user.username}" do
       survey = Content.get_survey!(conn.assigns.survey_id)
       link = "#{survey.postlink}?username=#{conn.assigns.current_user.username}"
-
-      conn
-      |> Survey.check()
-      |> redirect(external: link)
-      |> halt()
     else
       _ -> conn
     end
