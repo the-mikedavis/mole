@@ -184,6 +184,8 @@ defmodule Mole.Content do
   """
   def get_survey!(id), do: Repo.get!(Survey, id)
 
+  def get_survey(id), do: Repo.get(Survey, id)
+
   @doc """
   Creates a survey.
 
