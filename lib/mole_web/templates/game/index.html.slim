@@ -1,7 +1,11 @@
 div#type-tell
-  span.left It's Safe
+  span.left
+    i.fas.fa-caret-left
+    text It's Safe
   span &#47
-  span.right I'm Concerned
+  span.right
+    text I'm Concerned
+    i.fas.fa-caret-right
   = if @feedback do
     span &mdash;
     span.fas.fa-check-circle#correct.correctness
