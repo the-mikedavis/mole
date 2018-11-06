@@ -22,15 +22,14 @@ defmodule MoleWeb.LearningController do
 
   # showing a condition
   def show(conn, %{"id" => id}) do
-    case conn.assigns.condition do
-      nil ->
-        redirect(conn, to: Routes.learning_path(conn, :index))
-
-      _ ->
-        conn
-        |> assign(:image, Condition.image_for(conn.assigns.condition, id))
-        |> next(id)
-        |> render("show.html")
+    with n when is_integer(n) <- conn.assigns.condition,
+         image when not is_nil(image) <- Condition.image_for(n, id) do
+      conn
+      |> assign(:image, image)
+      |> next(id)
+      |> render("show.html")
+    else
+      nil -> redirect(conn, to: Routes.learning_path(conn, :index))
     end
   end
 
