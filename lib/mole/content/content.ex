@@ -284,7 +284,9 @@ defmodule Mole.Content do
       end)
 
     users
-    |> CSV.encode(headers: [:username, :feedback, :learning | Map.values(images)])
+    |> CSV.encode(
+      headers: [:username, :feedback, :learning | Map.values(images)]
+    )
     |> Enum.each(&IO.write(file, &1))
 
     filename
