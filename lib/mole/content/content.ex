@@ -10,7 +10,7 @@ defmodule Mole.Content do
   alias Mole.Repo
 
   alias Mole.Accounts.User
-  alias Mole.Content.{Answer, Image, Survey}
+  alias Mole.Content.{Answer, Condition, Image, Survey}
 
   @doc """
   Returns the list of images.
@@ -273,16 +273,18 @@ defmodule Mole.Content do
     users =
       from(u in User, select: u, where: [survey_id: ^id], preload: [:answers])
       |> Repo.all()
-      |> Enum.map(&Map.take(&1, [:answers, :username]))
-      |> Enum.map(fn %{answers: answers} = user ->
+      |> Enum.map(&Map.take(&1, [:answers, :username, :condition]))
+      |> Enum.map(fn %{answers: answers, condition: condition} = user ->
         Enum.reduce(answers, user, fn %{image_id: iid, correct: cor?}, acc ->
           Map.put(acc, images[iid], cor?)
         end)
         |> Map.delete(:answers)
+        |> Map.put(:feedback, Condition.feedback?(condition))
+        |> Map.put(:learning, condition |> Condition.learning() |> to_string())
       end)
 
     users
-    |> CSV.encode(headers: [:username | Map.values(images)])
+    |> CSV.encode(headers: [:username, :feedback, :learning | Map.values(images)])
     |> Enum.each(&IO.write(file, &1))
 
     filename

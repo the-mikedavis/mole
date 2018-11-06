@@ -34,6 +34,12 @@ defmodule Mole.Content.Condition do
   def feedback?(nil), do: true
   def feedback?(condition), do: Integer.is_even(condition)
 
+  @spec learning(nil | integer()) :: atom()
+  def learning(nil), do: :none
+  def learning(condition) when condition in 1..2, do: :abcd
+  def learning(condition) when condition in 3..4, do: :duckling
+  def learning(condition) when condition in 5..6, do: :none
+
   @doc "Give a user friendly string for the doctors."
   @spec to_string(nil | integer() | tuple()) :: String.t()
   def to_string(condition) when is_integer(condition),
