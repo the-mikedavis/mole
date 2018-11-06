@@ -6,13 +6,11 @@ defmodule MoleWeb.GameController do
   alias Mole.Content
   alias MoleWeb.Plugs.Survey
 
-  # ensure the user is logged in and consents
+  # order matters here
   plug(:logged_in)
   plug(:consent)
-  plug(:learn)
-
-  # route to the surveys
   plug(:pre_survey when action == :index)
+  plug(:learn)
   plug(:post_survey when action == :show)
 
   alias Mole.GameplayServer
