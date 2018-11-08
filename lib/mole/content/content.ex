@@ -10,7 +10,7 @@ defmodule Mole.Content do
   alias Mole.Repo
 
   alias Mole.Accounts.User
-  alias Mole.Content.{Answer, Condition, Image, Survey}
+  alias Mole.Content.{Answer, Condition, Image, Set, Survey}
 
   @doc """
   Returns the list of images.
@@ -40,6 +40,15 @@ defmodule Mole.Content do
 
   """
   def get_image!(id), do: Repo.get!(Image, id)
+
+  @doc """
+  Get a set of images by set number
+  """
+  def get_images_by_set(set_number) do
+    from(s in Set, select: s, where: [id: ^set_number], preload: :images)
+    |> Repo.one()
+    |> Map.get(:images)
+  end
 
   @doc """
   Creates a image.
