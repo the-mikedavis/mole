@@ -9,6 +9,7 @@ h2 Surveys
         th Slug
         th Prelink
         th Postlink
+        th Force Condition
 
         th
     tbody
@@ -17,6 +18,7 @@ h2 Surveys
             td = survey.slug
             td = survey.prelink
             td = survey.postlink
+            td = Mole.Content.Condition.to_string(survey.force)
 
             td
               = link "Show", to: Routes.survey_path(@conn, :show, survey)

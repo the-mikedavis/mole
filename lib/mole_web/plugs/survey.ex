@@ -3,6 +3,7 @@ defmodule MoleWeb.Plugs.Survey do
   import Plug.Conn
 
   alias Mole.{Accounts, Accounts.User}
+  alias MoleWeb.Plugs.Condition
 
   @key :survey_id
   @sp :survey_progress
@@ -22,6 +23,7 @@ defmodule MoleWeb.Plugs.Survey do
 
   def put_survey(conn, survey_id) do
     conn
+    |> Condition.put_random(survey_id)
     |> assign(@key, survey_id)
     |> put_session(@key, survey_id)
     |> configure_session(renew: true)
