@@ -31,7 +31,7 @@ defmodule MoleWeb.GameChannel do
   the first image.
   """
   def join("game:new", _params, socket) do
-    set = GameplayServer.new_set(socket.assigns.username)
+    {set_number, set} = GameplayServer.new_set(socket.assigns.username)
 
     %User{condition: condition} =
       Accounts.get_user_by_uname(socket.assigns.username)
@@ -40,6 +40,7 @@ defmodule MoleWeb.GameChannel do
       socket
       |> assign(:condition, condition)
       |> assign(:gameplay, gameplay(set))
+      |> assign(:set_number, set_number)
 
     {:ok, %{paths: all_image_paths(socket)}, socket}
   end
@@ -54,7 +55,10 @@ defmodule MoleWeb.GameChannel do
     malignant = current_image(socket).malignant
     correct? = malignant == malignant?
     socket = update_gameplay(socket, correct?)
-    feedback? = Condition.feedback?(socket.assigns.condition)
+
+    feedback? =
+      Condition.feedback?(socket.assigns.condition) &&
+        socket.assigns.set_number == 1
 
     feedback_map = give_feedback(feedback?, correct?, malignant)
 

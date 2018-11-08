@@ -18,21 +18,26 @@ defmodule Mole.GameplayServer do
   # Client API
 
   def new_set(username) do
-    username
-    |> get()
-    # get the current set number
-    |> case do
-      nil ->
-        put(username, @sets)
+    set_number =
+      username
+      |> get()
+      |> case do
+        nil ->
+          put(username, @sets)
 
-        1
+          1
 
-      sets_left ->
-        5 - sets_left
-    end
-    |> Content.get_images_by_set()
-    |> Enum.map(&Map.take(&1, [:origin_id, :id, :malignant]))
-    |> Enum.shuffle()
+        sets_left ->
+          5 - sets_left
+      end
+
+    set =
+      set_number
+      |> Content.get_images_by_set()
+      |> Enum.map(&Map.take(&1, [:origin_id, :id, :malignant]))
+      |> Enum.shuffle()
+
+    {set_number, set}
   end
 
   # def new_set(username) do
