@@ -45,7 +45,7 @@ defmodule Mole.Content.Condition do
   def to_string(condition) when is_integer(condition),
     do: condition |> to_tuple() |> to_string()
 
-  def to_string({ed, fb}), do: "learning: #{ed}, feedback?: #{fb}"
+  def to_string({ed, fb}), do: "learning: #{ed}, feedback?: #{yesno(fb)}"
 
   def to_string(nil), do: "N/A"
 
@@ -76,4 +76,7 @@ defmodule Mole.Content.Condition do
       "/#{abs_name |> Path.split() |> Enum.take(-2) |> Path.join()}"
     end)
   end
+
+  defp yesno(true), do: "yes"
+  defp yesno(false), do: "no"
 end

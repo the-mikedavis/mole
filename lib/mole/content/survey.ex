@@ -12,6 +12,7 @@ defmodule Mole.Content.Survey do
     field(:postlink, :string)
     field(:prelink, :string)
     field(:slug, :string)
+    field(:force, :integer)
     has_many(:users, User)
 
     timestamps()
@@ -20,8 +21,9 @@ defmodule Mole.Content.Survey do
   @doc false
   def changeset(survey, attrs) do
     survey
-    |> cast(attrs, [:slug, :prelink, :postlink])
+    |> cast(attrs, [:slug, :prelink, :postlink, :force])
     |> validate_format(:slug, ~r/^[\w]*$/)
     |> validate_required([:slug])
+    |> validate_inclusion(:force, 0..5)
   end
 end

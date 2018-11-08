@@ -15,5 +15,9 @@
   = text_input(f, :postlink)
   = error_tag(f, :postlink)
 
+  = label(f, :force)
+  = select(f, :force, [{"Random Choice", nil} | force_options()])
+  = error_tag(f, :force)
+
   div
     = submit("Save")
