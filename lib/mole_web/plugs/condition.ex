@@ -34,9 +34,8 @@ defmodule MoleWeb.Plugs.Condition do
   # give a forced condition, if there is one
   def put_random(conn, survey_id) do
     condition =
-      with %Survey{force: c} when is_integer(c) <- Content.get_survey(survey_id) do
-        c
-      else
+      case Content.get_survey(survey_id) do
+        %Survey{force: c} when is_integer(c) -> c
         _ -> Condition.random()
       end
 
