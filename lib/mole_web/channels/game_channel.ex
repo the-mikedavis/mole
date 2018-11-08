@@ -1,7 +1,14 @@
 defmodule MoleWeb.GameChannel do
   use Phoenix.Channel
 
-  alias Mole.{Content, Content.Condition, GameplayServer}
+  alias Mole.{
+    Accounts,
+    Accounts.User,
+    Content,
+    Content.Condition,
+    GameplayServer
+  }
+
   alias MoleWeb.Endpoint
   alias MoleWeb.Router.Helpers, as: Routes
 
@@ -24,7 +31,10 @@ defmodule MoleWeb.GameChannel do
   the first image.
   """
   def join("game:new", _params, socket) do
-    {condition, set} = GameplayServer.new_set(socket.assigns.username)
+    set = GameplayServer.new_set(socket.assigns.username)
+
+    %User{condition: condition} =
+      Accounts.get_user_by_uname(socket.assigns.username)
 
     socket =
       socket

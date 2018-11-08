@@ -1,7 +1,8 @@
 defmodule Mole.GameplayServer do
   use Agent
 
-  alias Mole.{Accounts, Content.Random}
+  # alias Mole.{Accounts, Content, Content.Random}
+  alias Mole.{Accounts, Content}
 
   @moduledoc """
   A server for holding game information. It holds the gameplay of users of the
@@ -17,24 +18,42 @@ defmodule Mole.GameplayServer do
   # Client API
 
   def new_set(username) do
-    case get(username) do
+    username
+    |> get()
+    # get the current set number
+    |> case do
       nil ->
-        user = Accounts.get_user_by_uname(username)
-        condition = user.condition
-        pool = Random.pool()
-        {set, pool} = Random.set(pool, condition)
-        sets_left = @sets
+        put(username, @sets)
 
-        put(username, {sets_left, condition, pool})
+        1
 
-        {condition, set}
-
-      {_sets_left, condition, pool} ->
-        {set, _pool} = Random.set(pool, condition)
-
-        {condition, set}
+      sets_left ->
+        5 - sets_left
     end
+    |> Content.get_images_by_set()
+    |> Enum.map(&Map.take(&1, [:origin_id, :id, :malignant]))
+    |> Enum.shuffle()
   end
+
+  # def new_set(username) do
+  # case get(username) do
+  # nil ->
+  # user = Accounts.get_user_by_uname(username)
+  # condition = user.condition
+  # pool = Random.pool()
+  # {set, pool} = Random.set(pool, condition)
+  # sets_left = @sets
+  #
+  # put(username, {sets_left, condition, pool})
+  #
+  # {condition, set}
+  #
+  # {_sets_left, condition, pool} ->
+  # {set, _pool} = Random.set(pool, condition)
+  #
+  # {condition, set}
+  # end
+  # end
 
   @doc """
   Save a set of play (to the database for that user)
@@ -44,37 +63,53 @@ defmodule Mole.GameplayServer do
   """
   @spec save_set(String.t(), %{}) :: :ok | :error
   def save_set(username, gameplay) do
-    case get(username) do
-      {1, _condition, _pool} ->
-        {status, _} = Accounts.save_gameplay(username, gameplay)
-
+    username
+    |> get()
+    |> case do
+      1 ->
         delete(username)
 
-        status
-
-      {sets_left, condition, pool} ->
-        {status, _} = Accounts.save_gameplay(username, gameplay)
-
-        put(
-          username,
-          {sets_left - 1, condition, remove_gameplay(pool, gameplay)}
-        )
-
-        status
-
-      _ ->
-        :error
+      sets_left ->
+        put(username, sets_left - 1)
     end
+
+    {status, _} = Accounts.save_gameplay(username, gameplay)
+
+    status
   end
+
+  # def save_set(username, gameplay) do
+  # case get(username) do
+  # {1, _condition, _pool} ->
+  # {status, _} = Accounts.save_gameplay(username, gameplay)
+  #
+  # delete(username)
+  #
+  # status
+  #
+  # {sets_left, condition, pool} ->
+  # {status, _} = Accounts.save_gameplay(username, gameplay)
+  #
+  # put(
+  # username,
+  # {sets_left - 1, condition, remove_gameplay(pool, gameplay)}
+  # )
+  #
+  # status
+  #
+  # _ ->
+  # :error
+  # end
+  # end
 
   @doc "get the remaining set count for a user"
   @spec sets_left(String.t()) :: integer()
-  def sets_left(username) do
-    case get(username) do
-      {sets_left, _condition, _pool} -> sets_left
-      _ -> nil
-    end
-  end
+  def sets_left(username), do: get(username)
+  # case get(username) do
+  # {sets_left, _condition, _pool} -> sets_left
+  # _ -> nil
+  # end
+  # end
 
   # Server API
   def start_link(_), do: Agent.start_link(fn -> %{} end, name: __MODULE__)
@@ -86,7 +121,7 @@ defmodule Mole.GameplayServer do
 
   def delete(username), do: Agent.update(__MODULE__, &Map.delete(&1, username))
 
-  defp remove_gameplay({mals, bens}, %{played: last_set}) do
-    {mals -- last_set, bens -- last_set}
-  end
+  # defp remove_gameplay({mals, bens}, %{played: last_set}) do
+  # {mals -- last_set, bens -- last_set}
+  # end
 end
