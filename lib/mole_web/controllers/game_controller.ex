@@ -60,7 +60,7 @@ defmodule MoleWeb.GameController do
   defp pre_survey(conn, _opts) do
     with true <- Survey.pre_survey?(conn),
          %{prelink: prelink} <- Content.get_survey(conn.assigns.survey_id),
-         link <- "#{prelink}?username=#{conn.assigns.current_user.username}" do
+         link <- link(prelink, conn) do
       conn
       |> Survey.check()
       |> redirect(external: link)
@@ -73,8 +73,8 @@ defmodule MoleWeb.GameController do
   defp post_survey(conn, _opts) do
     with true <- Survey.post_survey?(conn),
          0 <- GameplayServer.sets_left(conn.assigns.current_user.username),
-         %{postlink: post} <- Content.get_survey(conn.assigns.survey_id),
-         link <- "#{post}?username=#{conn.assigns.current_user.username}" do
+         %{postlink: postlink} <- Content.get_survey(conn.assigns.survey_id),
+         link <- link(postlink, conn) do
       conn
       |> Survey.check()
       |> redirect(external: link)
@@ -82,5 +82,13 @@ defmodule MoleWeb.GameController do
     else
       _ -> conn
     end
+  end
+
+  # build a link that gives the username and condition as query parameters
+  defp link(link, conn) do
+    link <>
+      "?username=" <>
+      conn.assigns.current_user.username <>
+      "&condition=" <> conn.assigns.current_user.condition
   end
 end
