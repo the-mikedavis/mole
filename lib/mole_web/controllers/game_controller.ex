@@ -89,6 +89,6 @@ defmodule MoleWeb.GameController do
     link <>
       "?username=" <>
       conn.assigns.current_user.username <>
-      "&condition=" <> conn.assigns.current_user.condition
+      "&condition=#{conn.assigns.current_user.condition}"
   end
 end
