@@ -9,8 +9,8 @@ defmodule Mole.Application do
       MoleWeb.Endpoint,
       {Mole.Accounts.Leaderboard, %{}},
       {Mole.GameplayServer, %{}},
-      {Mole.Administrators, %{}}
-      # {Mole.Content.Random, %{}}
+      {Mole.Administrators, %{}},
+      {Mole.Content.SurveyServer, %{}}
     ]
 
     opts = [strategy: :one_for_one, name: Mole.Supervisor]

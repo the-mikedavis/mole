@@ -7,7 +7,8 @@ defmodule MoleWeb.Plugs.Condition do
     Accounts.User,
     Content,
     Content.Condition,
-    Content.Survey
+    Content.Survey,
+    Content.SurveyServer
   }
 
   # dry
@@ -35,7 +36,11 @@ defmodule MoleWeb.Plugs.Condition do
   def put_random(conn, survey_id) do
     condition =
       case Content.get_survey(survey_id) do
+        # forced condition
         %Survey{force: c} when is_integer(c) -> c
+        # take a random one with even cell size
+        %Survey{slug: name} -> SurveyServer.take_random(name)
+        # fall back to taking a plain random
         _ -> Condition.random()
       end
 
