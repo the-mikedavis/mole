@@ -12,17 +12,10 @@ defmodule Mole.Content do
   alias Mole.Accounts.User
   alias Mole.Content.{Answer, Condition, Image, Set, Survey}
 
-  @doc """
-  Returns the list of images.
-
-  ## Examples
-
-      iex> list_images()
-      [%Image{}, ...]
-
-  """
   def list_images do
-    Repo.all(Image)
+    1..4
+    |> Enum.map(&get_images_by_set/1)
+    |> List.flatten()
   end
 
   @doc """
