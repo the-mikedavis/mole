@@ -31,11 +31,6 @@ defmodule Mole.ContentTest do
       :ok
     end
 
-    test "list_images/0 returns all images" do
-      image = image_fixture()
-      assert Content.list_images() == [image]
-    end
-
     test "get_image!/1 returns the image with given id" do
       image = image_fixture()
       assert Content.get_image!(image.id) == image
