@@ -109,7 +109,7 @@ defmodule Mole.GameplayServer do
 
   @doc "get the remaining set count for a user"
   @spec sets_left(String.t()) :: integer()
-  def sets_left(username), do: get(username)
+  def sets_left(username), do: get(username) || 0
   # case get(username) do
   # {sets_left, _condition, _pool} -> sets_left
   # _ -> nil

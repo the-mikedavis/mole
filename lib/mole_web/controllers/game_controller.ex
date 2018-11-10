@@ -11,7 +11,7 @@ defmodule MoleWeb.GameController do
   plug(:consent)
   plug(:pre_survey when action == :index)
   plug(:learn)
-  plug(:post_survey when action == :show)
+  # plug(:post_survey when action == :show)
 
   alias Mole.GameplayServer
 

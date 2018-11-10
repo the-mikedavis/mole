@@ -65,14 +65,12 @@ defmodule MoleWeb.GameChannel do
     reply =
       case socket.assigns.gameplay.playable do
         [] ->
-          recap_path = Routes.game_path(Endpoint, :show)
-
           GameplayServer.save_set(
             socket.assigns.username,
             socket.assigns.gameplay
           )
 
-          Map.merge(feedback_map, %{"reroute" => true, "path" => recap_path})
+          Map.merge(feedback_map, %{"reroute" => true, "path" => recap_path(socket)})
 
         _list ->
           Map.put(feedback_map, "path", current_image_path(socket))
@@ -140,4 +138,17 @@ defmodule MoleWeb.GameChannel do
 
   defp give_feedback(false, false),
     do: %{"feedbackpath" => "/images/incorrect_normal.png"}
+
+  defp recap_path(%{assigns: %{username: username, set_number: set_number, condition: condition}}) do
+    with %{survey_progress: 1} = user <- Accounts.get_user_by_uname(username),
+         4 <- set_number,
+         %{postlink: postlink} <- Content.get_survey(user.survey_id),
+         link <- "#{postlink}?username=#{username}&condition=#{condition}" do
+      {:ok, _user} = Accounts.update_user(user, %{survey_progress: 2})
+
+      link
+    else
+      _ -> Routes.game_path(Endpoint, :show)
+    end
+  end
 end
