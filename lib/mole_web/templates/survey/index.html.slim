@@ -7,8 +7,6 @@ h2 Surveys
     thead
       tr
         th Slug
-        th Prelink
-        th Postlink
         th Force Condition
 
         th
@@ -16,8 +14,6 @@ h2 Surveys
       = for survey <- @surveys do
           tr
             td = survey.slug
-            td = survey.prelink
-            td = survey.postlink
             td = Mole.Content.Condition.to_string(survey.force)
 
             td
