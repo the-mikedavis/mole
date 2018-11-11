@@ -258,6 +258,8 @@ defmodule Mole.Content do
     |> Repo.one()
   end
 
+  @static_headers [:username, :feedback, :learning, :condition]
+
   def write_survey(id) do
     filename =
       [static_path(), get_survey!(id).slug <> ".csv"]
@@ -281,14 +283,13 @@ defmodule Mole.Content do
           Map.put(acc, images[iid], cor?)
         end)
         |> Map.delete(:answers)
+        |> Map.put(:condition, condition)
         |> Map.put(:feedback, Condition.feedback?(condition))
         |> Map.put(:learning, condition |> Condition.learning() |> to_string())
       end)
 
     users
-    |> CSV.encode(
-      headers: [:username, :feedback, :learning | Map.values(images)]
-    )
+    |> CSV.encode(headers: @static_headers ++ Map.values(images))
     |> Enum.each(&IO.write(file, &1))
 
     filename
