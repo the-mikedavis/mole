@@ -195,21 +195,4 @@ defmodule Mole.AccountsTest do
       assert not Accounts.username_taken?("anotherusername")
     end
   end
-
-  describe "the gameplay-related functions of accounts:" do
-    # TODO redo this one
-    # test "saving gameplay" do
-    # user = user_fixture()
-
-    # gameplay = %{
-    # played: [%{correct?: true}, %{correct?: false}],
-    # playable: []
-    # }
-
-    # {:ok, gotten} = Accounts.save_gameplay(user.username, gameplay)
-    # assert gotten.correct == 1
-    # assert gotten.incorrect == 1
-    # assert gotten.score == 1
-    # end
-  end
 end

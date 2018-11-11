@@ -84,19 +84,6 @@ defmodule Mole.ContentTest do
 
       assert Content.percent_malignant() === 50
     end
-
-    test "getting a random image" do
-      image1 = image_fixture(%{id: 1})
-      assert Content.random_images(1) == [image1]
-
-      image2 = image_fixture(@update_attrs)
-      [rand] = Content.random_images(1)
-      assert rand == image1 or rand == image2
-
-      together = MapSet.new([image1, image2])
-      rand_together = Content.random_images(2) |> MapSet.new()
-      assert MapSet.equal?(together, rand_together)
-    end
   end
 
   describe "path building" do

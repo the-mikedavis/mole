@@ -132,25 +132,6 @@ defmodule Mole.Content do
     |> round()
   end
 
-  @doc """
-  Retreive a random image from the repo.
-  """
-  @spec random_images(integer()) :: [%Image{} | :error]
-  def random_images(count) do
-    # This doesn't work because of ecto testing by giving random IDs
-    # size = count_images() + 1
-
-    # 1..size
-    # |> Enum.take_random(count * 2)
-    # |> Enum.uniq()
-    # |> Enum.take(count)
-    # |> Enum.map(&Repo.get(Image, &1))
-    Image
-    |> Repo.all()
-    |> Enum.shuffle()
-    |> Enum.take(count)
-  end
-
   @doc "Produce a static path in which to access the image"
   @spec static_path(String.t() | map()) :: String.t()
   def static_path(id) when is_binary(id), do: "/images/moles/#{id}.jpeg"
