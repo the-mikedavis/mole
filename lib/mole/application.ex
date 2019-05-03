@@ -9,7 +9,6 @@ defmodule Mole.Application do
       MoleWeb.Endpoint,
       {Mole.Accounts.Leaderboard, %{}},
       {Mole.GameplayServer, %{}},
-      {Mole.Administrators, %{}},
       {Mole.Content.SurveyServer, %{}}
     ]
 

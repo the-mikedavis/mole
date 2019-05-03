@@ -70,22 +70,6 @@ defmodule Mole.Accounts do
     |> Repo.one()
   end
 
-  def authenticate_by_uname_and_pass(uname, given_pass) do
-    user = get_user_by_uname(uname)
-
-    cond do
-      user && Comeonin.Bcrypt.checkpw(given_pass, user.password_hash) ->
-        {:ok, user}
-
-      user ->
-        {:error, :unauthorized}
-
-      true ->
-        Comeonin.Bcrypt.dummy_checkpw()
-        {:error, :not_found}
-    end
-  end
-
   @doc "Check if a username is already taken in the repo."
   @spec username_taken?(String.t()) :: boolean()
   def username_taken?(username),
@@ -103,9 +87,55 @@ defmodule Mole.Accounts do
     |> Map.put(:correct, pc + c)
   end
 
+  # Admins
+
+  def list_admins(), do: Repo.all(Admin)
+
+  def get_admin(id), do: Repo.get(Admin, id)
+
   def create_admin(attrs \\ %{}) do
     %Admin{}
     |> Admin.changeset(attrs)
     |> Repo.insert()
+  end
+
+  def change_admin(%Admin{} = user \\ %Admin{}), do: Admin.changeset(user, %{})
+
+  @spec remove_admin(String.t()) :: :ok | :error
+  def remove_admin("the-mikedavis"), do: :error
+
+  def remove_admin(username) do
+    with %Admin{} = admin <- Repo.get_by(Admin, username: username),
+         {:ok, _struct} <- Repo.delete(admin) do
+      :ok
+    else
+      nil -> :error
+
+      {:error, _reason} -> :error
+    end
+  end
+
+  @spec is_admin?(integer()) :: boolean()
+  def is_admin?(id) do
+    case Repo.get(Admin, id) do
+      nil -> false
+      _admin -> true
+    end
+  end
+
+  def authenticate_by_uname_and_pass(uname, given_pass) do
+    user = Repo.get_by(Admin, username: uname)
+
+    cond do
+      user && Comeonin.Bcrypt.checkpw(given_pass, user.password_hash) ->
+        {:ok, user}
+
+      user ->
+        {:error, :unauthorized}
+
+      true ->
+        Comeonin.Bcrypt.dummy_checkpw()
+        {:error, :not_found}
+    end
   end
 end

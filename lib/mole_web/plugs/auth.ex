@@ -9,7 +9,15 @@ defmodule MoleWeb.Plugs.Auth do
   def call(conn, _opts) do
     user_id = get_session(conn, :user_id)
     user = user_id && Accounts.get_user(user_id)
-    assign(conn, :current_user, user)
+
+    admin_id = get_session(conn, :admin_id)
+    admin = admin_id && Accounts.get_admin(admin_id)
+
+    conn
+    |> assign(:user_id, user_id)
+    |> assign(:current_user, user)
+    |> assign(:admin_id, admin_id)
+    |> assign(:current_admin, admin)
   end
 
   def login_by_uname_and_pass(conn, uname, given_pass) do
@@ -27,8 +35,8 @@ defmodule MoleWeb.Plugs.Auth do
 
   def login(conn, user) do
     conn
-    |> assign(:current_user, user)
-    |> put_session(:user_id, user.id)
+    |> assign(:current_admin, user)
+    |> put_session(:admin_id, user.id)
     |> configure_session(renew: true)
   end
 
