@@ -2,7 +2,7 @@ defmodule Mole.Accounts do
   use Private
 
   @moduledoc "Functions to act on accounts."
-  alias Mole.{Accounts.User, Content, Content.Survey, Repo}
+  alias Mole.{Accounts.User, Accounts.Admin, Content, Content.Survey, Repo}
   import Ecto.Query
 
   @correct_mult Application.get_env(:mole, :correct_mult)
@@ -101,5 +101,11 @@ defmodule Mole.Accounts do
     |> Map.put(:score, s + @correct_mult * c - @incorrect_mult * i + b)
     |> Map.put(:incorrect, pi + i)
     |> Map.put(:correct, pc + c)
+  end
+
+  def create_admin(attrs \\ %{}) do
+    %Admin{}
+    |> Admin.changeset(attrs)
+    |> Repo.insert()
   end
 end

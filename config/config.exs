@@ -10,7 +10,8 @@ config :mole,
   incorrect_mult: 2,
   user_socket_secret:
     "aEv4XpOMzHrn/EWs/yYqMEiRG4D7SgSUt08mQyasbyUp6kNkJOAcTY9hhVcJmi7w",
-  default_admins: ["the-mikedavis", "soyoonk", "nickc", "zhuangq"]
+  default_admins: ["the-mikedavis", "soyoonk", "nickc", "zhuangq"],
+  default_password: "pleasechangethis"
 
 config :mole, MoleWeb.Endpoint,
   url: [host: "localhost"],
