@@ -30,7 +30,7 @@ defmodule MoleWeb.GameController do
     if conn.assigns[:current_user] do
       conn
     else
-      user = Accounts.create_user()
+      {:ok, user} = Accounts.create_user()
 
       conn
       |> put_session(:user_id, user.id)

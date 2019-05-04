@@ -34,11 +34,17 @@ defmodule MoleWeb.Plugs.AdminTest do
   end
 
   test "trying with an administrator" do
+    {:ok, admin} = Mole.Accounts.create_admin(%{username: "adminimum", password: "password"})
+
     conn =
       build_conn()
-      |> assign(:admin_id, 1)
-      |> assign(:current_admin, %AdminUser{username: "the-mikedavis"})
+      |> assign(:admin_id, admin.id)
+      |> assign(:current_admin, admin)
       |> Admin.call(%{})
+
+    AdminUser
+    |> Mole.Repo.get(admin.id)
+    |> Mole.Repo.delete()
 
     assert conn.assigns.admin? == true
   end
