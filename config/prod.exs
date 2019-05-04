@@ -18,4 +18,10 @@ config :mole, MoleWeb.Endpoint,
   root: ".",
   server: true
 
+config :mole, Mole.Scheduler,
+  jobs: [
+    {"@daily", {Mole.Accounts, :cull_users, []}},
+    {"@daily", {Mole.Accounts, :cull_high_scores, []}}
+  ]
+
 config :logger, level: :info
