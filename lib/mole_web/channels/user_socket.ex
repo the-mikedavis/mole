@@ -20,8 +20,8 @@ defmodule MoleWeb.UserSocket do
     socket
     |> Phoenix.Token.verify(@user_socket_secret, token, max_age: 1_209_600)
     |> case do
-      {:ok, uname} ->
-        {:ok, assign(socket, :username, uname)}
+      {:ok, user_id} ->
+        {:ok, assign(socket, :user_id, user_id)}
 
       {:error, _reason} ->
         :error

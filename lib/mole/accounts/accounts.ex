@@ -62,12 +62,12 @@ defmodule Mole.Accounts do
   end
 
   # give a 5 point bonus for getting all correct
-  def save_gameplay(username, %{incorrect: 0, bonus: 0} = gameplay) do
-    save_gameplay(username, Map.put(gameplay, :bonus, 5))
+  def save_gameplay(user_id, %{incorrect: 0, bonus: 0} = gameplay) do
+    save_gameplay(user_id, Map.put(gameplay, :bonus, 5))
   end
 
-  def save_gameplay(username, gameplay) do
-    user = get_user_by_uname(username)
+  def save_gameplay(user_id, gameplay) do
+    user = get_user!(user_id)
 
     new_scores = compute_score(user, gameplay)
 
@@ -75,16 +75,6 @@ defmodule Mole.Accounts do
 
     update_user(user, new_scores)
   end
-
-  def get_user_by_uname(uname) do
-    from(u in User, where: u.username == ^uname)
-    |> Repo.one()
-  end
-
-  @doc "Check if a username is already taken in the repo."
-  @spec username_taken?(String.t()) :: boolean()
-  def username_taken?(username),
-    do: Repo.get_by(User, username: username) != nil
 
   @spec compute_score(%User{}, %{}) :: %{}
   defp compute_score(
