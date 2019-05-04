@@ -3,7 +3,7 @@ defmodule MoleWeb.GameController do
 
   require Logger
 
-  alias Mole.Content
+  alias Mole.{Accounts, Content}
   alias MoleWeb.Plugs.Survey
 
   # order matters here
@@ -20,7 +20,7 @@ defmodule MoleWeb.GameController do
   end
 
   def show(conn, _params) do
-    sets_left = GameplayServer.sets_left(conn.assigns.current_user.username)
+    sets_left = GameplayServer.sets_left(conn.assigns.current_user.id)
 
     render(conn, "show.html", sets_left: sets_left)
   end
@@ -30,10 +30,12 @@ defmodule MoleWeb.GameController do
     if conn.assigns[:current_user] do
       conn
     else
+      user = Accounts.create_user()
+
       conn
-      |> put_flash(:error, "Sorry, you must be signed in to play.")
-      |> redirect(to: Routes.user_path(conn, :new))
-      |> halt()
+      |> put_session(:user_id, user.id)
+      |> assign(:user_id, user.id)
+      |> assign(:current_user, user)
     end
   end
 

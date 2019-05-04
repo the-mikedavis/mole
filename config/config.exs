@@ -11,7 +11,8 @@ config :mole,
   user_socket_secret:
     "aEv4XpOMzHrn/EWs/yYqMEiRG4D7SgSUt08mQyasbyUp6kNkJOAcTY9hhVcJmi7w",
   default_admins: ["the-mikedavis", "soyoonk", "nickc", "zhuangq"],
-  default_password: "pleasechangethis"
+  default_password: "pleasechangethis",
+  leaderboard_limit: 10
 
 config :mole, MoleWeb.Endpoint,
   url: [host: "localhost"],

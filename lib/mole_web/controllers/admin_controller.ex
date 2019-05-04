@@ -30,6 +30,28 @@ defmodule MoleWeb.AdminController do
     end
   end
 
+  def edit(conn, _params) do
+    admin = Accounts.get_admin!(conn.assigns.admin_id)
+    changeset = Accounts.change_admin(admin)
+    render(conn, "edit.html", admin: admin, changeset: changeset)
+  end
+
+  def update(conn, %{"id" => id, "admin" => admin_params}) do
+    admin = Accounts.get_admin!(id)
+
+    case Accounts.update_admin(admin, Map.delete(admin_params, "username")) do
+      {:ok, _admin} ->
+        conn
+        |> put_flash(:info, "Password updated.")
+        |> redirect(to: Routes.admin_path(conn, :index))
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        conn
+        |> put_flash(:error, "Could not change user! See errors below.")
+        |> render(conn, "edit.html", changeset: changeset, admin: admin)
+    end
+  end
+
   def delete(conn, %{"username" => username}) do
     message =
       case Accounts.remove_admin(username) do

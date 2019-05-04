@@ -2,11 +2,12 @@ defmodule Mole.Accounts do
   use Private
 
   @moduledoc "Functions to act on accounts."
-  alias Mole.{Accounts.User, Accounts.Admin, Content, Content.Survey, Repo}
+  alias Mole.{Accounts.User, Accounts.Admin, Accounts.HighScore, Content, Content.Survey, Repo}
   import Ecto.Query
 
   @correct_mult Application.get_env(:mole, :correct_mult)
   @incorrect_mult Application.get_env(:mole, :incorrect_mult)
+  @leaderboard_limit Application.fetch_env!(:mole, :leaderboard_limit)
 
   def get_user(id), do: Repo.get(User, id)
 
@@ -43,11 +44,21 @@ defmodule Mole.Accounts do
   end
 
   def update_user(%User{} = user, attrs) do
-    Mole.Accounts.Leaderboard.mark()
-
     user
     |> User.changeset(attrs)
     |> Repo.update()
+  end
+
+  # 60 seconds * 60 minutes * 24 hours * 31 days
+  @one_month 60 * 60 * 24 * 31
+
+  def cull_users do
+    now = NaiveDateTime.utc_now()
+
+    User
+    |> Repo.all()
+    |> Enum.filter(fn user -> NaiveDateTime.diff(now, user.updated_at) > @one_month end)
+    |> Enum.each(&Repo.delete/1)
   end
 
   # give a 5 point bonus for getting all correct
@@ -92,11 +103,18 @@ defmodule Mole.Accounts do
   def list_admins(), do: Repo.all(Admin)
 
   def get_admin(id), do: Repo.get(Admin, id)
+  def get_admin!(id), do: Repo.get!(Admin, id)
 
   def create_admin(attrs \\ %{}) do
     %Admin{}
     |> Admin.changeset(attrs)
     |> Repo.insert()
+  end
+
+  def update_admin(%Admin{} = admin, params) do
+    admin
+    |> Admin.changeset(params)
+    |> Repo.update()
   end
 
   def change_admin(%Admin{} = user \\ %Admin{}), do: Admin.changeset(user, %{})
@@ -137,5 +155,41 @@ defmodule Mole.Accounts do
         Comeonin.Bcrypt.dummy_checkpw()
         {:error, :not_found}
     end
+  end
+
+  # leaderboard stuff
+
+  def list_leaderboard do
+    from(
+      s in HighScore,
+      select: s,
+      order_by: s.score,
+      limit: @leaderboard_limit
+    )
+    |> Repo.all()
+  end
+
+  # upsert the highscore based on the user id
+  def create_high_score(%{} = attrs) do
+    HighScore
+    |> Repo.get_by(user_id: attrs[:user_id])
+    |> case do
+      %HighScore{} = hs -> hs
+      nil -> %HighScore{}
+    end
+    |> HighScore.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Remove old high scores when they're replaced by newer ones.
+
+  Meant to be called periodically.
+  """
+  def cull_high_scores do
+    HighScore
+    |> Repo.all()
+    |> Enum.drop(@leaderboard_limit)
+    |> Enum.each(&Repo.delete/1)
   end
 end
