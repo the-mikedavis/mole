@@ -27,7 +27,6 @@ defmodule Mole.Content.ConditionTest do
   end
 
   test "condition strings", c do
-    assert Condition.to_string(List.first(c.conditions)) ==
-             "learning: abcd, feedback?: yes"
+    assert Condition.to_string(List.first(c.conditions)) == "learning: abcd, feedback?: yes"
   end
 end

@@ -54,8 +54,7 @@ defmodule MoleWeb.Router do
 
   defp put_user_token(conn, _) do
     if current_user = conn.assigns[:current_user] do
-      token =
-        Phoenix.Token.sign(conn, @user_socket_secret, current_user.user_id)
+      token = Phoenix.Token.sign(conn, @user_socket_secret, current_user.user_id)
 
       assign(conn, :user_token, token)
     else

@@ -118,7 +118,6 @@ defmodule Mole.Accounts do
       :ok
     else
       nil -> :error
-
       {:error, _reason} -> :error
     end
   end

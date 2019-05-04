@@ -50,16 +50,14 @@ defmodule Mole.AccountsTest do
     end
 
     test "create_user/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} =
-               Accounts.create_user(@user_invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} = Accounts.create_user(@user_invalid_attrs)
     end
 
     test "update_user/2 with valid data updates the user" do
       user = user_fixture()
       id = user.id
 
-      assert {:ok, %User{id: ^id} = gotten} =
-               Accounts.update_user(user, @user_update_attrs)
+      assert {:ok, %User{id: ^id} = gotten} = Accounts.update_user(user, @user_update_attrs)
 
       assert gotten.username == "anotherusername"
       assert gotten.password == "another password"
@@ -68,8 +66,7 @@ defmodule Mole.AccountsTest do
     test "update_user/2 with invalid data returns error changeset" do
       user = user_fixture()
 
-      assert {:error, %Ecto.Changeset{}} =
-               Accounts.update_user(user, @user_invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} = Accounts.update_user(user, @user_invalid_attrs)
 
       assert user.id == Accounts.get_user!(user.id).id
     end

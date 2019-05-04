@@ -18,7 +18,10 @@ defmodule MoleWeb.AdminController do
     case Accounts.create_admin(%{username: username, password: @default_password}) do
       {:ok, _admin} ->
         conn
-        |> put_flash(:info, "Admin #{username} has been created with default password \"#{@default_password}\"")
+        |> put_flash(
+          :info,
+          "Admin #{username} has been created with default password \"#{@default_password}\""
+        )
         |> redirect(to: Routes.admin_path(conn, :index))
 
       {:error, changeset} ->

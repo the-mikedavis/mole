@@ -55,9 +55,7 @@ defmodule MoleWeb.GameChannel do
     correct? = malignant == malignant?
     socket = update_gameplay(socket, correct?)
 
-    feedback? =
-      Condition.feedback?(socket.assigns.condition) &&
-        socket.assigns.set_number == 1
+    feedback? = Condition.feedback?(socket.assigns.condition) && socket.assigns.set_number == 1
 
     feedback_map = give_feedback(feedback?, correct?, malignant)
 

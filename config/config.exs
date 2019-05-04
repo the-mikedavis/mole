@@ -8,16 +8,14 @@ config :mole,
   auto_start: true,
   correct_mult: 3,
   incorrect_mult: 2,
-  user_socket_secret:
-    "aEv4XpOMzHrn/EWs/yYqMEiRG4D7SgSUt08mQyasbyUp6kNkJOAcTY9hhVcJmi7w",
+  user_socket_secret: "aEv4XpOMzHrn/EWs/yYqMEiRG4D7SgSUt08mQyasbyUp6kNkJOAcTY9hhVcJmi7w",
   default_admins: ["the-mikedavis", "soyoonk", "nickc", "zhuangq"],
   default_password: "pleasechangethis",
   leaderboard_limit: 10
 
 config :mole, MoleWeb.Endpoint,
   url: [host: "localhost"],
-  secret_key_base:
-    "IV0jX8QHymKlHxwrbZdV3o05C267MRG+M9VbLCzp5x4nXatSp6MFJM60+PY/4idP",
+  secret_key_base: "IV0jX8QHymKlHxwrbZdV3o05C267MRG+M9VbLCzp5x4nXatSp6MFJM60+PY/4idP",
   render_errors: [view: MoleWeb.ErrorView, accepts: ~w(html json)],
   pubsub: [name: Mole.PubSub, adapter: Phoenix.PubSub.PG2]
 

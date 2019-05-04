@@ -25,8 +25,7 @@ defmodule MoleWeb.Plugs.AuthTest do
       |> init_test_session(%{})
       |> fetch_flash()
 
-    assert {:ok, login} =
-             Auth.login_by_uname_and_pass(conn, "username", "password")
+    assert {:ok, login} = Auth.login_by_uname_and_pass(conn, "username", "password")
 
     assert get_session(login, :user_id) == user.id
     assert login.assigns.current_user.id == user.id
@@ -69,8 +68,7 @@ defmodule MoleWeb.Plugs.AuthTest do
       |> init_test_session(%{})
       |> fetch_flash()
 
-    assert {:ok, login} =
-             Auth.login_by_uname_and_pass(conn, "username", "password")
+    assert {:ok, login} = Auth.login_by_uname_and_pass(conn, "username", "password")
 
     assert Auth.logout(login).private.plug_session_info == :drop
   end
