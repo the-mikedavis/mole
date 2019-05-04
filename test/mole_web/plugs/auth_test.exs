@@ -25,9 +25,14 @@ defmodule MoleWeb.Plugs.AuthTest do
       |> init_test_session(%{})
       |> fetch_flash()
 
+    private =
+      conn.private
+      |> Map.put(:phoenix_endpoint, MoleWeb.Endpoint)
+
+    conn = %{conn | private: private}
+
     assert {:ok, login} = Auth.login_by_uname_and_pass(conn, "username", "password")
 
-    assert get_session(login, :admin_id) == user.id
     assert login.assigns.current_admin.id == user.id
     assert login.private.plug_session_info == :renew
   end
@@ -67,6 +72,12 @@ defmodule MoleWeb.Plugs.AuthTest do
       build_conn()
       |> init_test_session(%{})
       |> fetch_flash()
+
+    private =
+      conn.private
+      |> Map.put(:phoenix_endpoint, MoleWeb.Endpoint)
+
+    conn = %{conn | private: private}
 
     assert {:ok, login} = Auth.login_by_uname_and_pass(conn, "username", "password")
 

@@ -8,7 +8,7 @@ config :mole,
   auto_start: true,
   correct_mult: 3,
   incorrect_mult: 2,
-  user_socket_secret: "aEv4XpOMzHrn/EWs/yYqMEiRG4D7SgSUt08mQyasbyUp6kNkJOAcTY9hhVcJmi7w",
+  signing_token: "aEv4XpOMzHrn/EWs/yYqMEiRG4D7SgSUt08mQyasbyUp6kNkJOAcTY9hhVcJmi7w",
   default_admins: ["the-mikedavis", "soyoonk", "nickc", "zhuangq"],
   default_password: "pleasechangethis",
   leaderboard_limit: 10

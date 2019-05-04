@@ -1,6 +1,8 @@
 use Mix.Config
 
-config :mole, min_amount: 1000
+config :mole,
+  min_amount: 1000,
+  signing_token: "${MOLE_SIGNING_TOKEN}"
 
 config :mole, Mole.Repo,
   adapter: Ecto.Adapters.Postgres,

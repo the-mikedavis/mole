@@ -67,4 +67,6 @@ defmodule MoleWeb do
   defmacro __using__(which) when is_atom(which) do
     apply(__MODULE__, which, [])
   end
+
+  def signing_token, do: Application.fetch_env!(:mole, :signing_token)
 end

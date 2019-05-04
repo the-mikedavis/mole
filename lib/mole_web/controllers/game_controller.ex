@@ -33,12 +33,14 @@ defmodule MoleWeb.GameController do
       {:ok, user} = Accounts.create_user()
 
       conn
-      |> put_session(:user_id, user.id)
+      |> put_session(:user_id_token, encrypt(conn, user.id))
       |> assign(:user_id, user.id)
       |> assign(:current_user, user)
       |> configure_session(renew: true)
     end
   end
+
+  defp encrypt(conn, data), do: Phoenix.Token.sign(conn, MoleWeb.signing_token(), data)
 
   defp consent(conn, _opts) do
     if conn.assigns.survey_id && !conn.assigns.consent? do
