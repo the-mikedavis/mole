@@ -36,6 +36,7 @@ defmodule MoleWeb.GameController do
       |> put_session(:user_id, user.id)
       |> assign(:user_id, user.id)
       |> assign(:current_user, user)
+      |> configure_session(renew: true)
     end
   end
 

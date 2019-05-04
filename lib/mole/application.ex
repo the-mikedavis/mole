@@ -7,7 +7,6 @@ defmodule Mole.Application do
     children = [
       Mole.Repo,
       MoleWeb.Endpoint,
-      {Mole.Accounts.Leaderboard, %{}},
       {Mole.GameplayServer, %{}},
       {Mole.Content.SurveyServer, %{}}
     ]

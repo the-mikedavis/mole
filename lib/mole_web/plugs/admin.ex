@@ -7,6 +7,10 @@ defmodule MoleWeb.Plugs.Admin do
   def init(opts), do: opts
 
   def call(conn, _opts) do
-    assign(conn, :admin?, conn.assigns[:admin_id] && Accounts.is_admin?(conn.assigns[:admin_id]))
+    assign(
+      conn,
+      :admin?,
+      not is_nil(conn.assigns[:admin_id]) and Accounts.is_admin?(conn.assigns[:admin_id])
+    )
   end
 end

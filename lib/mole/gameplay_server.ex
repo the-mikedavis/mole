@@ -9,8 +9,8 @@ defmodule Mole.GameplayServer do
   game, which involves the number of correct and incorrect.
   """
 
-  # the identifier is the user_id
-  @typep identifier :: integer()
+  # the id is the user_id
+  @typep id :: integer()
 
   @type gameplay :: %{correct: integer(), incorrect: integer()}
 
@@ -20,7 +20,7 @@ defmodule Mole.GameplayServer do
 
   # Client API
 
-  @spec new_set(identifier()) :: {integer(), [map()]}
+  @spec new_set(id()) :: {integer(), [map()]}
   def new_set(id) do
     set_number =
       id
@@ -50,7 +50,7 @@ defmodule Mole.GameplayServer do
   If that user has played through all of their sets, they're done and can
   be deleted from the server.
   """
-  @spec save_set(identifier(), %{}) :: :ok | :error
+  @spec save_set(id(), %{}) :: :ok | :error
   def save_set(id, gameplay) do
     case get(id) do
       1 ->
@@ -66,7 +66,7 @@ defmodule Mole.GameplayServer do
   end
 
   @doc "get the remaining set count for a user"
-  @spec sets_left(identifier()) :: integer()
+  @spec sets_left(id()) :: integer()
   def sets_left(id), do: get(id) || 0
 
   # Server API
