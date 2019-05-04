@@ -3,15 +3,13 @@ defmodule Mole.Repo.Migrations.CreateUsers do
 
   def change do
     create table(:users) do
-      add :username, :string, null: false
-      add :password_hash, :string, null: false
       add :correct, :integer
       add :incorrect, :integer
       add :score, :integer
+      add :condition, :integer
+      add :survey_progress, :integer
 
       timestamps()
     end
-
-    create unique_index(:users, [:username])
   end
 end

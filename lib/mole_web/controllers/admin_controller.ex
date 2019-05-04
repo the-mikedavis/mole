@@ -2,25 +2,62 @@ defmodule MoleWeb.AdminController do
   use MoleWeb, :controller
   plug(:admin)
 
+  @default_password Application.fetch_env!(:mole, :default_password)
+
   alias MoleWeb.Router.Helpers, as: Routes
-  alias Mole.Administrators
+  alias Mole.Accounts
 
   def index(conn, _params) do
-    users = Administrators.all()
-    render(conn, "index.html", users: users)
+    users = Accounts.list_admins()
+    new_admin = Accounts.change_admin()
+
+    render(conn, "index.html", users: users, new_admin: new_admin)
   end
 
   def create(conn, %{"username" => username}) do
-    Administrators.add(username)
+    case Accounts.create_admin(%{username: username, password: @default_password}) do
+      {:ok, _admin} ->
+        conn
+        |> put_flash(
+          :info,
+          "Admin #{username} has been created with default password \"#{@default_password}\""
+        )
+        |> redirect(to: Routes.admin_path(conn, :index))
 
-    conn
-    |> put_flash(:info, "Admin access for #{username} has been granted!")
-    |> redirect(to: Routes.admin_path(conn, :index))
+      {:error, changeset} ->
+        users = Accounts.list_admins()
+
+        conn
+        |> put_flash(:error, "Could not create #{username} admin! See changes below")
+        |> render("index.html", users: users, new_admin: changeset)
+    end
+  end
+
+  def edit(conn, _params) do
+    admin = Accounts.get_admin!(conn.assigns.admin_id)
+    changeset = Accounts.change_admin(admin)
+    render(conn, "edit.html", admin: admin, changeset: changeset)
+  end
+
+  def update(conn, %{"id" => id, "admin" => admin_params}) do
+    admin = Accounts.get_admin!(id)
+
+    case Accounts.update_admin(admin, Map.delete(admin_params, "username")) do
+      {:ok, _admin} ->
+        conn
+        |> put_flash(:info, "Password updated.")
+        |> redirect(to: Routes.admin_path(conn, :index))
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        conn
+        |> put_flash(:error, "Could not change user! See errors below.")
+        |> render(conn, "edit.html", changeset: changeset, admin: admin)
+    end
   end
 
   def delete(conn, %{"username" => username}) do
     message =
-      case Administrators.remove(username) do
+      case Accounts.remove_admin(username) do
         :ok -> "Admin access for #{username} has been revoked!"
         :error -> "Admin access could not be revoked for this user."
       end

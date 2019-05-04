@@ -13,6 +13,7 @@ defmodule Mole.Content.Answer do
     field(:correct, :boolean, default: false)
     field(:user_id, :id)
     field(:image_id, :id)
+    field(:time_spent, :integer)
 
     timestamps()
   end
@@ -20,7 +21,7 @@ defmodule Mole.Content.Answer do
   @doc false
   def changeset(answer, attrs) do
     answer
-    |> cast(attrs, [:correct])
+    |> cast(attrs, [:correct, :time_spent])
     |> foreign_key_constraint(:user_id)
     |> foreign_key_constraint(:image_id)
     |> validate_required([:correct])

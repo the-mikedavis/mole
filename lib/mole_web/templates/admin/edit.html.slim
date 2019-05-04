@@ -1,0 +1,16 @@
+h2 Change Password
+
+= form_for @changeset, Routes.admin_path(@conn, :update, @admin_id), fn f ->
+  = if @changeset.action do
+    div.alert.alert-danger
+      p Oops, something went wrong! Please check the errors below.
+
+  div#username
+    = text_input f, :username, disabled: true
+    = error_tag f, :username
+    div.feedback
+  div
+    = password_input f, :password, placeholder: "************"
+    = error_tag f, :password
+
+  = submit "Update Password"

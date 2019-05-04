@@ -62,6 +62,8 @@ defmodule Mole.MixProject do
       {:httpoison, "~> 1.0"},
       {:csv, "~> 2.0.0"},
       {:observer_cli, "~> 1.3"},
+      {:quantum, "~> 2.3"},
+      {:timex, "~> 3.0"},
 
       # test
       {:credo, "~> 0.9", only: [:dev, :test], runtime: false},

@@ -9,6 +9,9 @@ defmodule Mole.GameplayServer do
   game, which involves the number of correct and incorrect.
   """
 
+  # the id is the user_id
+  @typep id :: integer()
+
   @type gameplay :: %{correct: integer(), incorrect: integer()}
 
   @type set :: [%{}]
@@ -17,13 +20,14 @@ defmodule Mole.GameplayServer do
 
   # Client API
 
-  def new_set(username) do
+  @spec new_set(id()) :: {integer(), [map()]}
+  def new_set(id) do
     set_number =
-      username
+      id
       |> get()
       |> case do
         nil ->
-          put(username, @sets)
+          put(id, @sets)
 
           1
 
@@ -40,93 +44,38 @@ defmodule Mole.GameplayServer do
     {set_number, set}
   end
 
-  # def new_set(username) do
-  # case get(username) do
-  # nil ->
-  # user = Accounts.get_user_by_uname(username)
-  # condition = user.condition
-  # pool = Random.pool()
-  # {set, pool} = Random.set(pool, condition)
-  # sets_left = @sets
-  #
-  # put(username, {sets_left, condition, pool})
-  #
-  # {condition, set}
-  #
-  # {_sets_left, condition, pool} ->
-  # {set, _pool} = Random.set(pool, condition)
-  #
-  # {condition, set}
-  # end
-  # end
-
   @doc """
   Save a set of play (to the database for that user)
 
   If that user has played through all of their sets, they're done and can
   be deleted from the server.
   """
-  @spec save_set(String.t(), %{}) :: :ok | :error
-  def save_set(username, gameplay) do
-    username
-    |> get()
-    |> case do
+  @spec save_set(id(), %{}) :: :ok | :error
+  def save_set(id, gameplay) do
+    case get(id) do
       1 ->
-        delete(username)
+        delete(id)
 
       sets_left ->
-        put(username, sets_left - 1)
+        put(id, sets_left - 1)
     end
 
-    {status, _} = Accounts.save_gameplay(username, gameplay)
+    {status, _} = Accounts.save_gameplay(id, gameplay)
 
     status
   end
 
-  # def save_set(username, gameplay) do
-  # case get(username) do
-  # {1, _condition, _pool} ->
-  # {status, _} = Accounts.save_gameplay(username, gameplay)
-  #
-  # delete(username)
-  #
-  # status
-  #
-  # {sets_left, condition, pool} ->
-  # {status, _} = Accounts.save_gameplay(username, gameplay)
-  #
-  # put(
-  # username,
-  # {sets_left - 1, condition, remove_gameplay(pool, gameplay)}
-  # )
-  #
-  # status
-  #
-  # _ ->
-  # :error
-  # end
-  # end
-
   @doc "get the remaining set count for a user"
-  @spec sets_left(String.t()) :: integer()
-  def sets_left(username), do: get(username) || 0
-  # case get(username) do
-  # {sets_left, _condition, _pool} -> sets_left
-  # _ -> nil
-  # end
-  # end
+  @spec sets_left(id()) :: integer()
+  def sets_left(id), do: get(id) || 0
 
   # Server API
   def start_link(_), do: Agent.start_link(fn -> %{} end, name: __MODULE__)
 
-  def get(username), do: Agent.get(__MODULE__, &Map.get(&1, username))
+  def get(id), do: Agent.get(__MODULE__, &Map.get(&1, id))
 
-  def put(username, gameplay),
-    do: Agent.update(__MODULE__, &Map.put(&1, username, gameplay))
+  def put(id, gameplay),
+    do: Agent.update(__MODULE__, &Map.put(&1, id, gameplay))
 
-  def delete(username), do: Agent.update(__MODULE__, &Map.delete(&1, username))
-
-  # defp remove_gameplay({mals, bens}, %{played: last_set}) do
-  # {mals -- last_set, bens -- last_set}
-  # end
+  def delete(id), do: Agent.update(__MODULE__, &Map.delete(&1, id))
 end

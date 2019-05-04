@@ -22,7 +22,6 @@ table
       th Score
       th Randomly Assigned Condition
 
-      th
   tbody
     = for user <- @survey.users do
       tr
@@ -31,9 +30,6 @@ table
         td = user.incorrect
         td = user.score
         td = condition(user)
-
-        td
-          = link "Show", to: Routes.user_path(@conn, :show, user)
 
 span = link "Edit", to: Routes.survey_path(@conn, :edit, @survey)
 span = link "Download", to: Routes.survey_path(@conn, :download, @survey)

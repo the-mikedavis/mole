@@ -20,15 +20,12 @@ html lang="en"
             ul.navbar-nav.ml-auto
               li.nav-item.active = link("Home", to: Routes.page_path(@conn, :index), class: "nav-link")
               li.nav-item = link("Play", to: Routes.game_path(@conn, :index), class: "nav-link")
-              = if @current_user do
-                li.nav-item = link("Leaderboard", to: Routes.user_path(@conn, :index), class: "nav-link")
-                li.nav-item = link("Log out", to: Routes.session_path(@conn, :delete, @current_user), method: "delete", class: "nav-link")
-              - else
-                li.nav-item = link("Register", to: Routes.user_path(@conn, :new), class: "nav-link")
-                li.nav-item = link("Log in", to: Routes.session_path(@conn, :new), class: "nav-link")
+              li.nav-item = link("Leaderboard", to: Routes.page_path(@conn, :leaderboard), class: "nav-link")
               = if assigns[:admin?] do
                 li.nav-item = link("Admins (admins only)", to: Routes.admin_path(@conn, :index), class: "nav-link")
                 li.nav-item = link("Surveys (admins only)", to: Routes.survey_path(@conn, :index), class: "nav-link")
+                li.nav-item = link("Change password", to: Routes.admin_path(@conn, :edit, @admin_id), class: "nav-link")
+                li.nav-item = link("Log out", to: Routes.session_path(@conn, :delete, @current_admin), method: "delete", class: "nav-link")
 
     main role="main" class="container"
       p class="alert alert-info" role="alert" = get_flash(@conn, :info)

@@ -31,10 +31,9 @@ defmodule MoleWeb.GameChannel do
   the first image.
   """
   def join("game:new", _params, socket) do
-    {set_number, set} = GameplayServer.new_set(socket.assigns.username)
+    {set_number, set} = GameplayServer.new_set(socket.assigns.user_id)
 
-    %User{condition: condition} =
-      Accounts.get_user_by_uname(socket.assigns.username)
+    %User{condition: condition} = Accounts.get_user!(socket.assigns.user_id)
 
     socket =
       socket
@@ -56,9 +55,7 @@ defmodule MoleWeb.GameChannel do
     correct? = malignant == malignant?
     socket = update_gameplay(socket, correct?)
 
-    feedback? =
-      Condition.feedback?(socket.assigns.condition) &&
-        socket.assigns.set_number == 1
+    feedback? = Condition.feedback?(socket.assigns.condition) && socket.assigns.set_number == 1
 
     feedback_map = give_feedback(feedback?, correct?, malignant)
 
@@ -66,7 +63,7 @@ defmodule MoleWeb.GameChannel do
       case socket.assigns.gameplay.playable do
         [] ->
           GameplayServer.save_set(
-            socket.assigns.username,
+            socket.assigns.user_id,
             socket.assigns.gameplay
           )
 
@@ -144,15 +141,15 @@ defmodule MoleWeb.GameChannel do
 
   defp recap_path(%{
          assigns: %{
-           username: username,
+           user_id: user_id,
            set_number: set_number,
            condition: condition
          }
        }) do
-    with %{survey_progress: 1} = user <- Accounts.get_user_by_uname(username),
+    with %{survey_progress: 1} = user <- Accounts.get_user!(user_id),
          4 <- set_number,
          %{postlink: postlink} <- Content.get_survey(user.survey_id),
-         link <- "#{postlink}?username=#{username}&condition=#{condition}" do
+         link <- "#{postlink}?user_id=#{user_id}&condition=#{condition}" do
       {:ok, _user} = Accounts.update_user(user, %{survey_progress: 2})
 
       link

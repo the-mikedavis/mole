@@ -6,6 +6,7 @@ defmodule Mole.Repo.Migrations.CreateAnswers do
       add :correct, :boolean, default: false, null: false
       add :user_id, references(:users, on_delete: :nothing)
       add :image_id, references(:images, on_delete: :nothing)
+      add :time_spent, :integer
 
       timestamps()
     end

@@ -49,8 +49,7 @@ defmodule Mole.ContentTest do
     test "update_image/2 with valid data updates the image" do
       image = image_fixture()
 
-      assert {:ok, %Image{} = image} =
-               Content.update_image(image, @update_attrs)
+      assert {:ok, %Image{} = image} = Content.update_image(image, @update_attrs)
 
       assert image.malignant == false
       assert image.origin_id == "some updated origin_id"
@@ -59,8 +58,7 @@ defmodule Mole.ContentTest do
     test "update_image/2 with invalid data returns error changeset" do
       image = image_fixture()
 
-      assert {:error, %Ecto.Changeset{}} =
-               Content.update_image(image, @invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} = Content.update_image(image, @invalid_attrs)
 
       assert image == Content.get_image!(image.id)
     end
@@ -152,8 +150,7 @@ defmodule Mole.ContentTest do
     test "update_survey/2 with valid data updates the survey" do
       survey = survey_fixture()
 
-      assert {:ok, %Survey{} = survey} =
-               Content.update_survey(survey, @update_attrs)
+      assert {:ok, %Survey{} = survey} = Content.update_survey(survey, @update_attrs)
 
       assert survey.postlink == "some updated postlink"
       assert survey.prelink == "some updated prelink"
@@ -163,8 +160,7 @@ defmodule Mole.ContentTest do
     test "update_survey/2 with invalid data returns error changeset" do
       survey = survey_fixture()
 
-      assert {:error, %Ecto.Changeset{}} =
-               Content.update_survey(survey, @invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} = Content.update_survey(survey, @invalid_attrs)
 
       assert survey == Content.get_survey!(survey.id)
     end
@@ -224,8 +220,7 @@ defmodule Mole.ContentTest do
     test "update_answer/2 with valid data updates the answer" do
       answer = answer_fixture()
 
-      assert {:ok, %Answer{} = answer} =
-               Content.update_answer(answer, @update_attrs)
+      assert {:ok, %Answer{} = answer} = Content.update_answer(answer, @update_attrs)
 
       assert answer.correct == false
     end
@@ -233,8 +228,7 @@ defmodule Mole.ContentTest do
     test "update_answer/2 with invalid data returns error changeset" do
       answer = answer_fixture()
 
-      assert {:error, %Ecto.Changeset{}} =
-               Content.update_answer(answer, @invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} = Content.update_answer(answer, @invalid_attrs)
 
       assert answer == Content.get_answer!(answer.id)
     end

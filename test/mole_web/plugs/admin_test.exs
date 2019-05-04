@@ -2,7 +2,7 @@ defmodule MoleWeb.Plugs.AdminTest do
   use MoleWeb.ConnCase, async: true
   import Plug.Test
 
-  alias Mole.Accounts.User
+  alias Mole.Accounts.Admin, as: AdminUser
   alias MoleWeb.Plugs.Admin
 
   test "init returns whatever it got" do
@@ -26,17 +26,25 @@ defmodule MoleWeb.Plugs.AdminTest do
       build_conn()
       |> init_test_session(%{})
       |> fetch_flash()
-      |> assign(:current_user, %User{username: "shakate"})
+      |> assign(:admin_id, 999)
+      |> assign(:current_admin, %AdminUser{username: "shakate"})
       |> Admin.call(%{})
 
     assert conn.assigns.admin? == false
   end
 
   test "trying with an administrator" do
+    {:ok, admin} = Mole.Accounts.create_admin(%{username: "adminimum", password: "password"})
+
     conn =
       build_conn()
-      |> assign(:current_user, %User{username: "the-mikedavis"})
+      |> assign(:admin_id, admin.id)
+      |> assign(:current_admin, admin)
       |> Admin.call(%{})
+
+    AdminUser
+    |> Mole.Repo.get(admin.id)
+    |> Mole.Repo.delete()
 
     assert conn.assigns.admin? == true
   end

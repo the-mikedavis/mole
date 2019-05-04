@@ -6,7 +6,7 @@ defmodule MoleWeb.Plugs.AuthTest do
   alias MoleWeb.Plugs.Auth
 
   def user_fixture(attrs \\ %{}) do
-    {:ok, user} = Accounts.create_user(attrs)
+    {:ok, user} = Accounts.create_admin(attrs)
 
     user
   end
@@ -25,11 +25,10 @@ defmodule MoleWeb.Plugs.AuthTest do
       |> init_test_session(%{})
       |> fetch_flash()
 
-    assert {:ok, login} =
-             Auth.login_by_uname_and_pass(conn, "username", "password")
+    assert {:ok, login} = Auth.login_by_uname_and_pass(conn, "username", "password")
 
-    assert get_session(login, :user_id) == user.id
-    assert login.assigns.current_user.id == user.id
+    assert get_session(login, :admin_id) == user.id
+    assert login.assigns.current_admin.id == user.id
     assert login.private.plug_session_info == :renew
   end
 
@@ -69,8 +68,7 @@ defmodule MoleWeb.Plugs.AuthTest do
       |> init_test_session(%{})
       |> fetch_flash()
 
-    assert {:ok, login} =
-             Auth.login_by_uname_and_pass(conn, "username", "password")
+    assert {:ok, login} = Auth.login_by_uname_and_pass(conn, "username", "password")
 
     assert Auth.logout(login).private.plug_session_info == :drop
   end

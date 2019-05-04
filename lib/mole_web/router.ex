@@ -38,9 +38,9 @@ defmodule MoleWeb.Router do
     get("/", PageController, :index)
     get("/play", GameController, :index)
     get("/recap", GameController, :show)
-    resources("/users", UserController, only: [:show, :new, :create, :index])
+    get("/leaderboard", PageController, :leaderboard)
     resources("/sessions", SessionController, only: [:new, :create, :delete])
-    resources("/admins", AdminController, only: [:index, :create])
+    resources("/admins", AdminController, only: [:index, :create, :edit, :update])
     # custom because :delete requires an id, so it can't be used in a form
     post("/admins/delete", AdminController, :delete)
     get("/join/:slug", SurveyController, :join)
@@ -54,8 +54,7 @@ defmodule MoleWeb.Router do
 
   defp put_user_token(conn, _) do
     if current_user = conn.assigns[:current_user] do
-      token =
-        Phoenix.Token.sign(conn, @user_socket_secret, current_user.username)
+      token = Phoenix.Token.sign(conn, @user_socket_secret, current_user.id)
 
       assign(conn, :user_token, token)
     else

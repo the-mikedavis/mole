@@ -22,13 +22,19 @@ defmodule MoleWeb.Plugs.ConditionTest do
   end
 
   test "a conn with a user with no condition has a condition" do
+    {:ok, user} = Mole.Accounts.create_user()
+
     conn =
       build_conn()
       |> init_test_session(%{})
       |> fetch_flash()
-      |> assign(:current_user, %User{condition: nil})
+      |> assign(:current_user, user)
       |> put_session(:condition, 1)
       |> Condition.call(%{})
+
+    user.id
+    |> Mole.Accounts.get_user!()
+    |> Mole.Repo.delete!()
 
     assert is_integer(conn.assigns.condition)
   end

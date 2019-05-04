@@ -1,4 +1,4 @@
-alias Mole.{Content, Content.Image, Content.Set, Repo}
+alias Mole.{Content, Content.Image, Content.Set, Accounts, Accounts.Admin, Repo}
 
 sets = 1..4
 
@@ -69,4 +69,11 @@ for image <- moles do
   else
     nil -> Content.create_image(image)
   end
+end
+
+admins = Application.fetch_env!(:mole, :default_admins)
+default_password = Application.fetch_env!(:mole, :default_password)
+
+for admin <- admins do
+  Repo.get_by(Admin, username: admin) || Accounts.create_admin(%{username: admin, password: default_password})
 end
