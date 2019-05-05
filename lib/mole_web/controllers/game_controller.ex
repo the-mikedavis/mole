@@ -20,18 +20,15 @@ defmodule MoleWeb.GameController do
 
   def show(%{assigns: %{current_user: user}} = conn, _params) do
     high_scores = Accounts.list_leaderboard()
+    sets_left = GameplayServer.sets_left(user.id)
 
-    with 0 <- GameplayServer.sets_left(user.id),
-         false <- Enum.any?(high_scores, &(&1.user_id == user.id)),
+    with false <- Enum.any?(high_scores, &(&1.user_id == user.id)),
+         0 <- sets_left,
          %{score: barrier_score} <- List.last(high_scores),
          true <- user.score > barrier_score do
       # show name entry page
       redirect(conn, to: Routes.game_path(conn, :enter_name))
     else
-      # there are sets left
-      n when is_integer(n) and n > 0 ->
-        render(conn, "show.html", sets_left: n, high_scores: high_scores)
-
       # this user is already in the list of high scores
       # we don't lead them to the name entry page because they've already entered a name
       true ->
@@ -40,7 +37,11 @@ defmodule MoleWeb.GameController do
         # re-list the leaderboard, it changed (potentially)
         high_scores = Accounts.list_leaderboard()
 
-        render(conn, "show.html", sets_left: 0, high_scores: high_scores)
+        render(conn, "show.html", sets_left: sets_left, high_scores: high_scores)
+
+      # there are sets left
+      n when is_integer(n) and n > 0 ->
+        render(conn, "show.html", sets_left: n, high_scores: high_scores)
 
       # list of high scores is empty
       nil ->
