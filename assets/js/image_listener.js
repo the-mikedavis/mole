@@ -58,7 +58,7 @@ function feedback(img, event) {
     const feedbacks = document.getElementsByClassName('feedback')
     for (let i = 0; i < feedbacks.length; i++)
       feedbacks[i].classList.remove('active')
-  }, constants.time_buffer * 3)
+  }, constants.time_buffer * 2)
 }
 
 export default listener
