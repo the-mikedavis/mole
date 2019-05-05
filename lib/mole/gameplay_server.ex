@@ -50,7 +50,7 @@ defmodule Mole.GameplayServer do
   If that user has played through all of their sets, they're done and can
   be deleted from the server.
   """
-  @spec save_set(id(), %{}) :: :ok | :error
+  @spec save_set(id(), map()) :: :ok | :error
   def save_set(id, gameplay) do
     case get(id) do
       1 ->

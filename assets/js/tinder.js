@@ -6,6 +6,8 @@ const TRANSFORM_CUTTER = 10
 const SWIPE_EVENT = constants.tinder_event_name
 
 let hammertime;
+// starts when you get a mole, ends when you answer
+let start_time;
 
 function on(el) {
   // pull in hammer.js
@@ -16,6 +18,8 @@ function on(el) {
   document.addEventListener(SWIPE_EVENT, listener)
   // where the swipe starts
   let starting_x = null
+
+  start_time = new Date().getTime()
 
   // record the start of the 'delta' when starting a pan
   hammertime.on('panstart', evt => {
@@ -34,9 +38,12 @@ function on(el) {
   hammertime.on('panend', function (evt) {
     const delta = evt.center.x - starting_x
 
-    // emit a boolean for which direction was swiped
-    if (Math.abs(delta) > TRIGGER_WIDTH)
-      document.dispatchEvent(new CustomEvent(SWIPE_EVENT, {detail: delta > 0}))
+    // emit the answer to this mole
+    if (Math.abs(delta) > TRIGGER_WIDTH) {
+      let time_delta = new Date().getTime() - start_time
+      document.dispatchEvent(
+        new CustomEvent(SWIPE_EVENT, {detail: {malignant: delta > 0, time_spent: time_delta}}))
+    }
 
     // reset the element back to center
     el.style.transform = `translate(0,0) rotate(0deg)`;

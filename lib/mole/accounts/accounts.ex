@@ -76,7 +76,8 @@ defmodule Mole.Accounts do
     update_user(user, new_scores)
   end
 
-  @spec compute_score(%User{}, %{}) :: %{}
+  # takes a user and a gameplay and updates the user's score fields ~w(score correct incorrect)a
+  @spec compute_score(%User{}, map()) :: map()
   defp compute_score(
          %User{score: s, incorrect: pi, correct: pc} = user,
          %{bonus: b, correct: c, incorrect: i}

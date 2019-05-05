@@ -372,8 +372,8 @@ defmodule Mole.Content do
 
   def save_answers(gameplay, user) do
     gameplay.played
-    |> Enum.map(fn %{id: id, correct: correct?} ->
-      %{user_id: user.id, correct: correct?, image_id: id}
+    |> Enum.map(fn %{id: id, correct?: correct?, time_spent: time} ->
+      %{user_id: user.id, correct: correct?, image_id: id, time_spent: time}
     end)
     |> Enum.each(&insert_or_update_answer/1)
   end

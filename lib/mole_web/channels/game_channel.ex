@@ -13,8 +13,8 @@ defmodule MoleWeb.GameChannel do
   alias MoleWeb.Router.Helpers, as: Routes
 
   @type gameplay :: %{
-          playable: [%{}],
-          played: [%{}],
+          playable: [map()],
+          played: [map()],
           correct: integer(),
           incorrect: integer()
         }
@@ -50,10 +50,10 @@ defmodule MoleWeb.GameChannel do
   Figure out if they're correct or not and mark that in the gameplay.
   Update the gameplay for the next image.
   """
-  def handle_in("answer", malignant?, socket) do
+  def handle_in("answer", %{"malignant" => malignant?, "time_spent" => time}, socket) do
     malignant = current_image(socket).malignant
     correct? = malignant == malignant?
-    socket = update_gameplay(socket, correct?)
+    socket = update_gameplay(socket, %{correct?: correct?, time_spent: time})
 
     feedback? = Condition.feedback?(socket.assigns.condition) && socket.assigns.set_number == 1
 
@@ -80,7 +80,7 @@ defmodule MoleWeb.GameChannel do
   end
 
   @spec gameplay(GameplayServer.set()) :: gameplay()
-  defp gameplay(set), do: %{playable: set, correct: 0, incorrect: 0, bonus: 0}
+  defp gameplay(set), do: %{playable: set, correct: 0, incorrect: 0, bonus: 0, played: []}
 
   defp current_image(%{assigns: %{gameplay: %{playable: []}}}),
     do: raise("GameChannel tried to get the next image after all ran out!")
@@ -98,11 +98,12 @@ defmodule MoleWeb.GameChannel do
   end
 
   # remove the head of the gameplay list, update correct/incorrect
-  defp update_gameplay(%{assigns: %{gameplay: gameplay}} = socket, correct?) do
-    correctness = if correct?, do: :correct, else: :incorrect
+  defp update_gameplay(%{assigns: %{gameplay: gameplay}} = socket, response) do
+    correctness = if response.correct?, do: :correct, else: :incorrect
     [just_played | to_play] = gameplay.playable
 
-    just_played = Map.put(just_played, :correct, correct?)
+    # add in the correctness and time spent
+    just_played = Map.merge(just_played, response)
 
     new_gameplay =
       gameplay
