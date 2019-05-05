@@ -1,11 +1,17 @@
 h1 Nice work!
 
+// YARD replace with some sort of graphical progress bar or give the total number
+// of sets as well
 = if @sets_left do
-  p = "You have #{@sets_left} sets left. Keep playing or take a break."
+  p = "You have #{@sets_left} sets left."
 
 = if assigns[:feedback] do
   p = "Your new score is #{@current_user.score}!"
 
+// YARD the dots thing
+ul
+  = for score <- @high_scores do
+    li = "#{score.name} #{score.score}"
+
+// YARD make graphical and big
 = link("Keep playing", to: Routes.game_path(@conn, :index))
-br
-= link("Home", to: Routes.page_path(@conn, :index))

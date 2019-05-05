@@ -159,16 +159,23 @@ defmodule Mole.Accounts do
   end
 
   # upsert the highscore based on the user id
-  def create_high_score(%{} = attrs) do
+  def upsert_high_score(%{} = attrs) do
     HighScore
     |> Repo.get_by(user_id: attrs[:user_id])
     |> case do
-      %HighScore{} = hs -> hs
-      nil -> %HighScore{}
+      %HighScore{} = hs ->
+        hs
+        |> HighScore.changeset(attrs)
+        |> Repo.update()
+
+      nil ->
+        %HighScore{}
+        |> HighScore.changeset(attrs)
+        |> Repo.insert()
     end
-    |> HighScore.changeset(attrs)
-    |> Repo.insert()
   end
+
+  def change_high_score(attrs \\ %{}), do: HighScore.changeset(%HighScore{}, attrs)
 
   @doc """
   Remove old high scores when they're replaced by newer ones.

@@ -19,10 +19,57 @@ defmodule MoleWeb.GameController do
     render(conn, "index.html")
   end
 
-  def show(conn, _params) do
-    sets_left = GameplayServer.sets_left(conn.assigns.current_user.id)
+  def show(%{assigns: %{current_user: user}} = conn, _params) do
+    high_scores = Accounts.list_leaderboard()
 
-    render(conn, "show.html", sets_left: sets_left)
+    with 0 <- GameplayServer.sets_left(user.id),
+         false <- Enum.any?(high_scores, &(&1.user_id == user.id)),
+         %{score: barrier_score} <- List.last(high_scores),
+         true <- user.score > barrier_score do
+      # show name entry page
+      redirect(conn, to: Routes.game_path(conn, :enter_name))
+    else
+      # there are sets left
+      n when is_integer(n) and n > 0 ->
+        render(conn, "show.html", sets_left: n, high_scores: high_scores)
+
+      # this user is already in the list of high scores
+      # we don't lead them to the name entry page because they've already entered a name
+      true ->
+        # update their high score
+        Accounts.upsert_high_score(%{user_id: user.id, score: user.score})
+        # re-list the leaderboard, it changed (potentially)
+        high_scores = Accounts.list_leaderboard()
+
+        render(conn, "show.html", sets_left: 0, high_scores: high_scores)
+
+      # list of high scores is empty
+      nil ->
+        # show name entry page
+        redirect(conn, to: Routes.game_path(conn, :enter_name))
+
+      # this user is not a high scorer :'(
+      false ->
+        render(conn, "show.html", sets_left: 0, high_scores: high_scores)
+    end
+  end
+
+  def name_entry(%{assigns: %{current_user: user}} = conn, _params) do
+    changeset = Accounts.change_high_score(%{user_id: user.id, score: user.score})
+
+    render(conn, "enter_name.html", changeset: changeset)
+  end
+
+  def enter_name(%{assigns: %{current_user: user}} = conn, %{"high_score" => %{"name" => name}}) do
+    %{user_id: user.id, score: user.score, name: name}
+    |> Accounts.upsert_high_score()
+    |> case do
+      {:ok, _high_score} ->
+        redirect(conn, to: Routes.game_path(conn, :index))
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        render(conn, "enter_name.html", changeset: changeset)
+    end
   end
 
   # ensure the user is logged in before they access a game

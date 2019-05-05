@@ -34,9 +34,14 @@ defmodule MoleWeb.Router do
     pipe_through(:browser)
 
     get("/", PageController, :index)
+
     get("/play", GameController, :index)
     get("/recap", GameController, :show)
+    get("/name_entry", GameController, :name_entry)
+    post("/name_entry", GameController, :enter_name)
+
     get("/leaderboard", PageController, :leaderboard)
+
     resources("/sessions", SessionController, only: [:new, :create, :delete])
     resources("/admins", AdminController, only: [:index, :create, :edit, :update])
     # custom because :delete requires an id, so it can't be used in a form

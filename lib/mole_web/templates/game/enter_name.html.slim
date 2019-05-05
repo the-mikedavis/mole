@@ -1,0 +1,10 @@
+h2 Enter your high score!
+
+p Congrats! You made it into the top 10.
+
+= form_for @changeset, Routes.game_path(@conn, :enter_name), fn f ->
+  = label f, :name
+  = text_input f, :name, placeholder: "name"
+  = error_tag f, :name
+
+  p = "Score: #{@changeset.changes.score}"
