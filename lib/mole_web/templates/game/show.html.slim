@@ -3,15 +3,33 @@ h1 Nice work!
 // YARD replace with some sort of graphical progress bar or give the total number
 // of sets as well
 = if @sets_left do
-  p = "You have #{@sets_left} sets left."
+  p = "You have #{setorsets(@sets_left)} left."
 
-= if assigns[:feedback] do
-  p = "Your new score is #{@current_user.score}!"
+h3 Leaderboard
+= if @high_scores == [] do
+  p There are no high scores yet...
+- else
+  table
+    thead
+      tr
+        th Place
+        th Name
+        th Score
+    tbody
+      = for {s, index} <- Enum.with_index(@high_scores) do
+        tr
+          td = index + 1
+          td = s.name
+          td = s.score
+      tr
+        td ...
+        td ...
+        td ...
+      tr
+        td -
+        td
+          i you
+        td = @current_user.score
 
-// YARD the dots thing
-ul
-  = for score <- @high_scores do
-    li = "#{score.name} #{score.score}"
 
-// YARD make graphical and big
 = link("Keep playing", to: Routes.game_path(@conn, :index), class: "btn btn-lg")

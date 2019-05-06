@@ -1,5 +1,17 @@
 h1 High Scores
 
-ul
-  = for s <- @scores do
-    li = "#{s.name} #{s.score}"
+= if @scores == [] do
+  p There are no high scores yet...
+- else
+  table
+    thead
+      tr
+        th Place
+        th Name
+        th Score
+    tbody
+      = for {s, index} <- Enum.with_index(@scores) do
+        tr
+          td = index + 1
+          td = s.name
+          td = s.score
