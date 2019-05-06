@@ -172,11 +172,9 @@ defmodule MoleWeb.GameChannel do
        }) do
     with %{survey_progress: 1} = user <- Accounts.get_user!(user_id),
          4 <- set_number,
-         %{postlink: postlink} <- Content.get_survey(user.survey_id),
-         link <- "#{postlink}?user_id=#{user_id}&condition=#{condition}" do
-      {:ok, _user} = Accounts.update_user(user, %{survey_progress: 2})
-
-      link
+         {:ok, _user} <- Accounts.update_user(user, %{survey_progress: 2}),
+         %{postlink: postlink} when not is_nil(postlink) <- Content.get_survey(user.survey_id) do
+      "#{postlink}?user_id=#{user_id}&condition=#{condition}"
     else
       _ -> Routes.game_path(Endpoint, :show)
     end
