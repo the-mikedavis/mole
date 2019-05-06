@@ -1,15 +1,26 @@
 @import _constants.sass
 @import _navigation.sass
 @import _tinder.sass
+@import _mixins
+
+html
+  :background-color $dark_brown
 
 html, body
   :margin 0
   :padding 0
+  :border none
   :height 100%
   :overflow-x hidden
 
-main.container
+//main
   :margin-bottom 40px
+
+body
+  :background-image url(/images/back_tall.png)
+  :background-size cover
+  @include desktop
+    :background-image url(/images/back_wide.png)
 
 .container
   :padding 0 5%
@@ -25,3 +36,23 @@ span a
 
 .container
   :max-width 120.0rem
+
+.btn
+  :font-family $display
+  :color black
+  :background-color $light_brown
+  :border 2px solid $dark_brown
+  &:hover
+    :background-color $dark_brown
+    :border 2px solid $dark_brown
+    :color $light_brown
+  &#main-play
+    :width 100px
+    :margin 0 auto
+    :display block
+
+h1, h2, h3, h4, h5, h6
+  :font-family $display
+
+input[type='text']
+  :background-color white

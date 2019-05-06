@@ -1,40 +1,5 @@
 @import _mixins
 
-#type-tell
-  :display none
-  :font-family $display
-  :background-color #ddd
-  :width 100%
-  :margin 50px 0
-  :text-align center
-  :padding 10px 0
-  :border-radius 20px
-  i.fa-caret-left
-    :margin-right 8px
-  i.fa-caret-right
-    :margin-left 8px
-  span
-    :padding 2.5px 8px
-    :border-radius 10px
-    :color black
-    :transition background-color 0.5s ease-in-out
-    &.right, &.left
-      :background-color #ccc
-    &.right.active
-      :background-color $red
-    &.left.active
-      :background-color $green
-    &.correctness
-      :font-size 1.25em
-      :position relative
-      :top 2px
-      :color #888
-      :transition color 0.5s ease-in-out
-    &#correct.active
-      :color $green
-    &#incorrect.active
-      :color $red
-
 #card, .card
   :object-fit cover
   :width 100%
@@ -48,8 +13,13 @@
   :-moz-user-select none
   :user-select none
   :user-drag none
+  :border 5px solid $dark_brown
+
+.feedback-image
+  :border none
 
 .brief
+  :border 3px solid $dark_brown
   :display inline
   :cursor default
   :margin 20px 5%
@@ -64,43 +34,81 @@
   :color #999
 
 div#help
+  :font-family $text
   :display none
   &.active
-    :display unset
+    :display inline
+    p
+      :margin-left 10px
+      :display inline
 
 div#describe
   :display none
   &.briefing
     :display unset
+    h3
+      :font-family $display
+    p
+      :font-family $text
+    @include desktop
+      p
+        :width 100%
+        :padding-right 50%
 
 button#ready
-  :margin-top 30px
+  :margin 30px auto 0 auto
   :display none
+  :width 100px
   &.briefing
-    :display unset
+    :display block
+
+.feedbackholder
+  :position relative
 
 .feedback
   :font-family $display
   :font-size 20px
-  :width 100%
+  :width 200px
   :text-align center
   :display none
+  :z-index 1000
+  &#correct_normal, &#correct_malignant
+    :background-color #08d152
+  &#incorrect_normal, &#incorrect_malignant
+    :background-color #ce0610
   &.active
-    :display block
+    :display inline
+    :padding 5px 20px
+    :border-radius 20px
+    :color white
+    :position absolute
+    :top 120px
+    :left calc(50% - 100px)
+    :filter drop-shadow(10px 10px 20px rgba(0, 0, 0, 0.5))
+    :opacity 0.9
 
-.feedbackholder
-  :margin-bottom 30px
-  :height 30px
 
 div#holster
-  :background-size 100% 100%
-  :background-repeat no-repeat
-  :background-image url(/images/back_tall.png)
-  :padding 50px 10%
+  :margin-top 60px
+  :padding 0 10%
   &.briefing
-    :padding 45px 7.5%
+    :padding 0 7.5%
+    :margin-top 30px
   @include desktop
-    :padding 50px 15%
+    :padding 0 15%
     &.briefing
-      :padding 100px 15%
-    :background-image url(/images/back_wide.png)
+      :padding 0 15%
+
+div#swipe-icons
+  :position relative
+  :z-index 1000
+  :filter drop-shadow(0px 0px 10px #fff)
+  img
+    :opacity 0
+    :width 100px
+    :position absolute
+    :top 200px
+    &#concerned
+      :right 0
+    &#safe
+      :left 0

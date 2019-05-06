@@ -1,3 +1,3 @@
-img.bottom-ridge src="#{Routes.static_path(@conn, "/images/welcome.png")}"
+img#welcome-jumbo.bottom-ridge src="#{Routes.static_path(@conn, "/images/welcome.png")}"
 
-= link("Ready to play?", to: Routes.game_path(@conn, :index), class: "btn btn-primary btn-block btn-lg")
+= link("Play", to: Routes.game_path(@conn, :index), class: "btn btn-primary btn-lg", id: "main-play")

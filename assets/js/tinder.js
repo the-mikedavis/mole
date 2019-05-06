@@ -19,6 +19,9 @@ function on(el) {
   // where the swipe starts
   let starting_x = null
 
+  let safe_elem = document.getElementById("safe")
+  let concerned_elem = document.getElementById("concerned")
+
   start_time = new Date().getTime()
 
   // record the start of the 'delta' when starting a pan
@@ -31,6 +34,18 @@ function on(el) {
     const delta = evt.center.x - starting_x
     // determine a good rotation amount for the image
     const rotation = delta / (screen.width / TRANSFORM_CUTTER)
+    // positive is malignant (rightwards, concerned)
+    // negative is benign (leftwards, safe)
+    let opacity = Math.abs(delta/250) * 4 / 3
+    opacity = opacity > 1.0 ? 1.0 : opacity
+    console.log(delta/250);
+    if (delta < 0) {
+      safe_elem.style.opacity = opacity
+      concerned_elem.style.opacity = 0
+    } else {
+      safe_elem.style.opacity = 0
+      concerned_elem.style.opacity = opacity
+    }
     // rotate and translate the element for a tinder-like feel
     el.style.transform = `translate(${delta}px, 0) rotate(${rotation}deg)`
   });
@@ -44,6 +59,9 @@ function on(el) {
       document.dispatchEvent(
         new CustomEvent(SWIPE_EVENT, {detail: {malignant: delta > 0, time_spent: time_delta}}))
     }
+
+    safe_elem.style.opacity = 0
+    concerned_elem.style.opacity = 0
 
     // reset the element back to center
     el.style.transform = `translate(0,0) rotate(0deg)`;

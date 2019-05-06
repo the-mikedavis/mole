@@ -12,7 +12,7 @@ html lang="en"
   body
     header
       section class="container"
-        nav.navbar.navbar-expand-lg.navbar-light.bg-light role="navigation"
+        nav.navbar.navbar-expand-lg role="navigation"
           button.navbar-toggler type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"
             span.navbar-toggler-icon
 
@@ -22,8 +22,8 @@ html lang="en"
               li.nav-item = link("Play", to: Routes.game_path(@conn, :index), class: "nav-link")
               li.nav-item = link("Leaderboard", to: Routes.page_path(@conn, :leaderboard), class: "nav-link")
               = if assigns[:admin?] do
-                li.nav-item = link("Admins (admins only)", to: Routes.admin_path(@conn, :index), class: "nav-link")
-                li.nav-item = link("Surveys (admins only)", to: Routes.survey_path(@conn, :index), class: "nav-link")
+                li.nav-item = link("Surveys", to: Routes.survey_path(@conn, :index), class: "nav-link")
+                li.nav-item = link("Admins", to: Routes.admin_path(@conn, :index), class: "nav-link")
                 li.nav-item = link("Change password", to: Routes.admin_path(@conn, :edit, @admin_id), class: "nav-link")
                 li.nav-item = link("Log out", to: Routes.session_path(@conn, :delete, @current_admin), method: "delete", class: "nav-link")
 

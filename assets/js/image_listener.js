@@ -36,10 +36,12 @@ function nofeedback(img, event) {
 }
 
 function feedback(img, event) {
+  /*
   const correct = event.detail.correct
   const el = document.getElementById(correct ? 'correct' : 'incorrect')
 
   constants.activate_element(el)
+  */
 
   tinder.off()
 
@@ -49,11 +51,13 @@ function feedback(img, event) {
   const feedback_txt_id = fbp.substring(8, fbp.length - 4)
   document.getElementById(feedback_txt_id).classList.add('active')
 
+  img.classList.add('feedback-image')
   img.src = fbp
 
   setTimeout(() => {
     tinder.on(img)
     img.src = event.detail.path
+    img.classList.remove('feedback-image')
 
     const feedbacks = document.getElementsByClassName('feedback')
     for (let i = 0; i < feedbacks.length; i++)

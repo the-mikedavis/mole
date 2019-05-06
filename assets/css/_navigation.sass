@@ -1,8 +1,16 @@
+@import _constants
+
 header
+  :background none
+  :border-bottom none
+  :margin-bottom 5rem
   nav
     :width 100%
     ul li.nav-item
       :text-align left
       @media screen and (min-width: 990px)
         :margin 0 20px
-
+      a 
+        :font-family $display
+        :color white
+        :text-decoration none

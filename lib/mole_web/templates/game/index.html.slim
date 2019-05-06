@@ -1,4 +1,4 @@
-div#type-tell
+//div#type-tell
   span.left
     i.fas.fa-caret-left
     text It's Safe
@@ -12,9 +12,13 @@ div#type-tell
     span.fas.fa-times-circle#incorrect.correctness
 
 div#describe.briefing
-  h3 Study these moles carefully
+  h3 = "Case ##{Enum.random(1_000..10_000)}"
   p Swipe right on moles you think are safe, and swipe left on moles that should
     be checked by a dermatologist.
+
+div#swipe-icons
+  img#concerned src=Routes.static_path(@conn, "/images/stamp_concerned.png")
+  img#safe src=Routes.static_path(@conn, "/images/stamp_safe.png")
 
 div.feedbackholder
   p#correct_normal.feedback That's right!
@@ -25,7 +29,7 @@ div.feedbackholder
 div#holster.briefing
   img#card
 
-button#ready.btn.btn-primary.btn-block.briefing READY
+button#ready.btn.btn-primary.briefing READY
 
 span.far.fa-question-circle
 div#help
