@@ -3,6 +3,8 @@ defmodule Mole.Content.SurveyServer do
 
   alias Mole.Content
 
+  @condition_ranges 0..11
+
   @moduledoc """
   The module in charge of holding condition lists for each survey.
   """
@@ -28,19 +30,28 @@ defmodule Mole.Content.SurveyServer do
 
     conditions =
       case conditions -- [condition] do
-        [] -> 0..5
+        [] -> @condition_ranges
         list -> list
       end
 
     {:reply, condition, %{state | survey_name => conditions}}
   end
 
+  def handle_call(:poke, _from, _state) do
+    {:ok, mapping} = init(nil)
+
+    {:reply, :ok, mapping}
+  end
+
+  @doc "update the server to listen for all surveys"
+  def poke, do: GenServer.call(__MODULE__, :poke)
+
   @spec init(any()) :: [%{String.t() => [non_neg_integer()]}]
   def init(_args) do
     starting_map =
       Content.list_surveys()
       |> Enum.map(fn %{slug: name} ->
-        %{name => 0..5}
+        %{name => @condition_ranges}
       end)
 
     {:ok, starting_map}

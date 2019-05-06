@@ -56,7 +56,7 @@ defmodule Mole.MixProject do
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:cowboy, "~> 1.0"},
-      {:phoenix_slime, "~> 0.10"},
+      {:phoenix_slime, "~> 0.12"},
       {:comeonin, "~> 4.1"},
       {:bcrypt_elixir, "~> 1.0"},
       {:httpoison, "~> 1.0"},
@@ -64,6 +64,7 @@ defmodule Mole.MixProject do
       {:observer_cli, "~> 1.3"},
       {:quantum, "~> 2.3"},
       {:timex, "~> 3.0"},
+      {:plug_cowboy, "~> 1.0"},
 
       # test
       {:credo, "~> 0.9", only: [:dev, :test], runtime: false},

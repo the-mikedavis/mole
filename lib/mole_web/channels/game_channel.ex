@@ -55,9 +55,13 @@ defmodule MoleWeb.GameChannel do
     correct? = malignant == malignant?
     socket = update_gameplay(socket, %{correct?: correct?, time_spent: time})
 
-    feedback? = Condition.feedback?(socket.assigns.condition) && socket.assigns.set_number == 1
+    feedback =
+      if socket.assigns.set_number === 1,
+        do: Condition.feedback(socket.assigns.condition),
+        else: :none
 
-    feedback_map = give_feedback(feedback?, correct?, malignant)
+    feedback_map =
+      give_feedback(feedback, correct?, malignant, length(socket.assigns.gameplay.played) - 1)
 
     reply =
       case socket.assigns.gameplay.playable do
@@ -114,17 +118,21 @@ defmodule MoleWeb.GameChannel do
     assign(socket, :gameplay, new_gameplay)
   end
 
-  # give a feedback map for the socket given three predicates:
-  #
-  # 1. the user should get feedback
-  # 2. the user was correct
-  # 3. the image was malignant
-  @spec give_feedback(boolean(), boolean(), boolean()) :: %{}
-  defp give_feedback(false, _, _), do: %{}
+  @spec give_feedback(atom(), boolean(), boolean(), integer()) :: %{}
+  defp give_feedback(:none, _, _, _), do: %{}
 
-  defp give_feedback(true, correct?, malignant?) do
+  defp give_feedback(:standard, correct?, malignant?, _image_number) do
     give_feedback(correct?, malignant?)
     |> Map.put("correct", correct?)
+  end
+
+  defp give_feedback(:motivational, correct?, malignant?, n) when n in 0..3 do
+    give_feedback(:standard, correct?, malignant?, n)
+    |> give_motivation(n)
+  end
+
+  defp give_feedback(:motivational, correct?, malignant?, n) do
+    give_feedback(:standard, correct?, malignant?, n)
   end
 
   @spec give_feedback(boolean(), boolean()) :: %{String.t() => String.t()}
@@ -139,6 +147,21 @@ defmodule MoleWeb.GameChannel do
 
   defp give_feedback(false, false),
     do: %{"feedbackpath" => "/images/incorrect_normal.png"}
+
+  @motivation_texts [
+    "More skin cancers are diagnosed in the US each year than all other cancers combined.",
+    "Melanoma is the most lethal common form of skin cancer, accounting for about 72% of all skin cancer deaths in the US.",
+    "Self-examination is easy and should take no more than 10 minutes – a small investment in what could be a life-saving procedure.",
+    "Monthly thorough skin self-examinations reduce your risk of dying from melanoma. Identify suspicious moles early and alert your doctor!"
+  ]
+  @motivation_paths Enum.map(0..3, fn n -> "/images/motivation_#{n}.png" end)
+
+  @spec give_motivation(map(), 0 | 1 | 2 | 3) :: map()
+  defp give_motivation(feedback_map, image_number) do
+    feedback_map
+    |> Map.put("motivation_text", Enum.at(@motivation_texts, image_number))
+    |> Map.put("motivation_path", Enum.at(@motivation_paths, image_number))
+  end
 
   defp recap_path(%{
          assigns: %{

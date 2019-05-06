@@ -10,7 +10,7 @@ defmodule Mole.Content do
   alias Mole.Repo
 
   alias Mole.Accounts.User
-  alias Mole.Content.{Answer, Condition, Image, Set, Survey}
+  alias Mole.Content.{Answer, Condition, Image, Set, Survey, SurveyServer}
 
   def list_images do
     1..4
@@ -182,9 +182,14 @@ defmodule Mole.Content do
 
   """
   def create_survey(attrs \\ %{}) do
-    %Survey{}
-    |> Survey.changeset(attrs)
-    |> Repo.insert()
+    result =
+      %Survey{}
+      |> Survey.changeset(attrs)
+      |> Repo.insert()
+
+    SurveyServer.poke()
+
+    result
   end
 
   @doc """
@@ -265,7 +270,7 @@ defmodule Mole.Content do
         end)
         |> Map.delete(:answers)
         |> Map.put(:condition, condition)
-        |> Map.put(:feedback, Condition.feedback?(condition))
+        |> Map.put(:feedback, condition |> Condition.feedback() |> to_string())
         |> Map.put(:learning, condition |> Condition.learning() |> to_string())
       end)
 

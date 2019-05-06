@@ -8,12 +8,12 @@ defmodule MoleWeb.Plugs.Feedback do
   def init(opts), do: opts
 
   def call(conn, _opts) do
-    feedback? =
+    feedback =
       case conn.assigns[:current_user] do
-        %User{condition: con} -> Condition.feedback?(con)
-        _ -> true
+        %User{condition: con} -> Condition.feedback(con)
+        _ -> :standard
       end
 
-    assign(conn, :feedback, feedback?)
+    assign(conn, :feedback, feedback)
   end
 end

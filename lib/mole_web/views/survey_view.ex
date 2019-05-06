@@ -6,7 +6,7 @@ defmodule MoleWeb.SurveyView do
   def condition(%{condition: con}), do: Condition.to_string(con)
 
   def force_options do
-    0..5
+    0..11
     |> Enum.map(&Condition.to_string/1)
     |> Enum.with_index()
   end

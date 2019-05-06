@@ -123,9 +123,7 @@ defmodule MoleWeb.GameController do
   end
 
   # build a link that gives the username and condition as query parameters
-  defp link(link, conn) do
-    link <>
-      "?username=" <>
-      conn.assigns.current_user.username <> "&condition=#{conn.assigns.current_user.condition}"
+  defp link(link, %{assigns: %{current_user: user}}) do
+    "#{link}?username=#{user.id}&condition=#{user.condition}"
   end
 end
