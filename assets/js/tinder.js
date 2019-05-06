@@ -38,7 +38,7 @@ function on(el) {
     // negative is benign (leftwards, safe)
     let opacity = Math.abs(delta/250) * 4 / 3
     opacity = opacity > 1.0 ? 1.0 : opacity
-    console.log(delta/250);
+
     if (delta < 0) {
       safe_elem.style.opacity = opacity
       concerned_elem.style.opacity = 0

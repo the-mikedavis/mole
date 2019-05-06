@@ -43,6 +43,10 @@ defmodule MoleWeb do
       import MoleWeb.ErrorHelpers
       import MoleWeb.Gettext
       alias MoleWeb.Router.Helpers, as: Routes
+
+      def css_overrides(_conn), do: ""
+
+      defoverridable css_overrides: 1
     end
   end
 

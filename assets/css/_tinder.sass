@@ -89,15 +89,20 @@ button#ready
 
 
 div#holster
-  :margin-top 60px
+  :margin-top 30px
   :padding 0 10%
   &.briefing
     :padding 0 7.5%
     :margin-top 30px
   @include desktop
+    :margin-top 60px
     :padding 0 15%
     &.briefing
-      :padding 0 15%
+      :padding 0 20%
+    &.motivate
+      :padding 0 0
+      img
+        :width 100%
 
 div#swipe-icons
   :position relative
@@ -107,8 +112,27 @@ div#swipe-icons
     :opacity 0
     :width 100px
     :position absolute
-    :top 200px
+    :top 100px
+    @include desktop
+      :top 200px
     &#concerned
       :right 0
     &#safe
       :left 0
+
+div#motivation
+  :padding 20px 10% 0 10%
+  :display none
+  &.motivate
+    :display inline-block
+  button
+    :display block
+    :width 100px
+    :margin 10px auto
+  p
+    :font-family $text
+
+div.motivate
+  :display inline-block
+  @include desktop
+    :width 50%

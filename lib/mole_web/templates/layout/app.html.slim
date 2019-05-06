@@ -8,26 +8,23 @@ html lang="en"
     script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"
     link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous"
     link rel="stylesheet" href=Routes.static_path(@conn, "/css/app.css")
+    style = @view_module.css_overrides(@conn)
 
   body
     header
       section class="container"
         nav.navbar.navbar-expand-lg role="navigation"
-          button.navbar-toggler type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"
-            span.navbar-toggler-icon
+          ul#navlist
+            li.nav-item.active = link("Home", to: Routes.page_path(@conn, :index), class: "nav-link")
+            li.nav-item = link("Play", to: Routes.game_path(@conn, :index), class: "nav-link")
+            li.nav-item = link("Leaderboard", to: Routes.page_path(@conn, :leaderboard), class: "nav-link")
+            = if assigns[:admin?] do
+              li.nav-item = link("Surveys", to: Routes.survey_path(@conn, :index), class: "nav-link")
+              li.nav-item = link("Admins", to: Routes.admin_path(@conn, :index), class: "nav-link")
+              li.nav-item = link("Change password", to: Routes.admin_path(@conn, :edit, @admin_id), class: "nav-link")
+              li.nav-item = link("Log out", to: Routes.session_path(@conn, :delete, @current_admin), method: "delete", class: "nav-link")
 
-          div.collapse.navbar-collapse#navbarSupportedContent
-            ul.navbar-nav.ml-auto
-              li.nav-item.active = link("Home", to: Routes.page_path(@conn, :index), class: "nav-link")
-              li.nav-item = link("Play", to: Routes.game_path(@conn, :index), class: "nav-link")
-              li.nav-item = link("Leaderboard", to: Routes.page_path(@conn, :leaderboard), class: "nav-link")
-              = if assigns[:admin?] do
-                li.nav-item = link("Surveys", to: Routes.survey_path(@conn, :index), class: "nav-link")
-                li.nav-item = link("Admins", to: Routes.admin_path(@conn, :index), class: "nav-link")
-                li.nav-item = link("Change password", to: Routes.admin_path(@conn, :edit, @admin_id), class: "nav-link")
-                li.nav-item = link("Log out", to: Routes.session_path(@conn, :delete, @current_admin), method: "delete", class: "nav-link")
-
-    main role="main" class="container"
+    main role="main"
       p class="alert alert-info" role="alert" = get_flash(@conn, :info)
       p class="alert alert-danger" role="alert" = get_flash(@conn, :error)
       = render @view_module, @view_template, assigns

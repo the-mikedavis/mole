@@ -13,18 +13,24 @@ html, body
   :height 100%
   :overflow-x hidden
 
-//main
-  :margin-bottom 40px
-
 body
   :background-image url(/images/back_tall.png)
-  :background-size cover
+  :background-size 100%
+  :width 100%
+  :background-repeat no-repeat
+  :background-color $dark_brown
   @include desktop
     :background-image url(/images/back_wide.png)
 
+main
+  :padding 0 10%
+  :overflow-y scroll
+  :height 125vw
+  @include desktop
+    :height 50vw
+
 .container
-  :padding 0 5%
-  :min-height 100%
+  :padding 0 10%
   :overflow hidden
 
 .bottom-ridge
@@ -51,8 +57,24 @@ span a
     :margin 0 auto
     :display block
 
+.btn-center
+  :display block
+  :margin 0 auto
+  :width 100px
+
+@include desktop
+  #welcome-jumbo
+    :padding 0 10%
+
 h1, h2, h3, h4, h5, h6
   :font-family $display
 
-input[type='text']
+input
+  :background-color white !important
+
+select
   :background-color white
+
+#continue
+  :position relative
+  :top 45vw

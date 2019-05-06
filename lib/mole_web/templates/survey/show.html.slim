@@ -11,12 +11,12 @@ ul
     strong Post-play Survey:
     = " #{@survey.postlink}"
 
-h2 Users
+h2 Participants
 
 table
   thead
     tr
-      th Username
+      th ID
       th Correct
       th Incorrect
       th Score
@@ -25,7 +25,7 @@ table
   tbody
     = for user <- @survey.users do
       tr
-        td = user.username
+        td = user.id
         td = user.correct
         td = user.incorrect
         td = user.score

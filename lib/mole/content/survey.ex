@@ -25,6 +25,6 @@ defmodule Mole.Content.Survey do
     |> foreign_key_constraint(:users)
     |> validate_format(:slug, ~r/^[\w]*$/)
     |> validate_required([:slug])
-    |> validate_inclusion(:force, 0..5)
+    |> validate_inclusion(:force, 0..11)
   end
 end

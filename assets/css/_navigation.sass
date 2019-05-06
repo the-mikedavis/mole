@@ -1,16 +1,24 @@
 @import _constants
+@import _mixins
 
 header
   :background none
   :border-bottom none
-  :margin-bottom 5rem
+  :margin-bottom 2rem
+  @include desktop
+    :margin-bottom 5rem
   nav
     :width 100%
-    ul li.nav-item
-      :text-align left
-      @media screen and (min-width: 990px)
-        :margin 0 20px
-      a 
-        :font-family $display
-        :color white
-        :text-decoration none
+    ul#navlist
+      :width 100%
+      :display flex
+      :justify-content space-around
+      li.nav-item
+        :filter drop-shadow(0px 0px 10px #000)
+        :text-align left
+        @media screen and (min-width: 990px)
+          :margin 0 20px
+        a 
+          :font-family $display
+          :color white
+          :text-decoration none
