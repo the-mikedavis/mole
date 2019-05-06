@@ -15,7 +15,9 @@ defmodule MoleWeb.GameController do
   alias Mole.GameplayServer
 
   def index(conn, _params) do
-    render(conn, "index.html")
+    set_number = GameplayServer.set_number(conn.assigns.current_user.id) + 1
+
+    render(conn, "index.html", set_number: set_number)
   end
 
   def show(%{assigns: %{current_user: user}} = conn, _params) do

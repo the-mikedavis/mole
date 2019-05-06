@@ -4,6 +4,7 @@ function ready_up(event) {
   document.getElementById('holster').classList.remove('briefing')
   document.getElementById('describe').classList.remove('briefing')
   document.getElementById('ready').classList.remove('briefing')
+  document.getElementById('progress').classList.add('track')
 
   document.dispatchEvent(event)
 }

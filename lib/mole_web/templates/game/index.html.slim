@@ -1,20 +1,15 @@
-//div#type-tell
-  span.left
-    i.fas.fa-caret-left
-    text It's Safe
-  span &#47
-  span.right
-    text I'm Concerned
-    i.fas.fa-caret-right
-  = if @feedback do
-    span &mdash;
-    span.fas.fa-check-circle#correct.correctness
-    span.fas.fa-times-circle#incorrect.correctness
-
 div#describe.briefing
-  h3 = "Case ##{Enum.random(1_000..10_000)}"
+  h3 = "Set ##{@set_number}"
   p Swipe right on moles you think are safe, and swipe left on moles that should
     be checked by a dermatologist.
+
+div#progress
+  h3
+    | Case #
+    span#case-number = Enum.random(1_000..10_000)
+  p
+    span#remaining-moles 12
+    |  moles remaining.
 
 div#swipe-icons
   img#concerned src=Routes.static_path(@conn, "/images/stamp_concerned.png")

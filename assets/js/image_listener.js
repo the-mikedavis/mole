@@ -37,6 +37,8 @@ function nofeedback(img, event) {
     tinder.on(img)
     img.style.opacity = '1';
     img.src = event.detail.path
+
+    decrement_moles(event);
   }, constants.time_buffer)
 }
 
@@ -60,6 +62,8 @@ function feedback(img, event) {
     const feedbacks = document.getElementsByClassName('feedback')
     for (let i = 0; i < feedbacks.length; i++)
       feedbacks[i].classList.remove('active')
+
+    decrement_moles(event)
   }, constants.time_buffer * 2)
 }
 
@@ -103,7 +107,20 @@ function motivational_feedback(img, event) {
     const feedbacks = document.getElementsByClassName('feedback')
     for (let i = 0; i < feedbacks.length; i++)
       feedbacks[i].classList.remove('active')
+
+    decrement_moles(event)
   }
+}
+
+const moles_remaining_span = document.getElementById('remaining-moles')
+const case_number_span = document.getElementById('case-number')
+function decrement_moles(event) {
+  moles_remaining_span.innerHTML = event.detail.remaining
+  case_number_span.innerHTML = random_case_number()
+}
+
+function random_case_number() {
+  return Math.round(Math.random() * (10000 - 1000)) + 1000
 }
 
 export default listener

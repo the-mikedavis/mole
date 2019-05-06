@@ -25,7 +25,7 @@
   :margin 20px 5%
   :width 40%
   @include desktop
-    :margin 20px 2.5%
+    :margin 10px 2.5%
     :width 20%
 
 .far.fa-question-circle
@@ -54,6 +54,15 @@ div#describe
       p
         :width 100%
         :padding-right 50%
+
+div#progress
+  :display none
+  h3, p
+    :display inline
+  p
+    :margin-left 15px
+  &.track
+    :display unset
 
 button#ready
   :margin 30px auto 0 auto
@@ -95,8 +104,7 @@ div#holster
     :padding 0 7.5%
     :margin-top 30px
   @include desktop
-    :margin-top 60px
-    :padding 0 15%
+    :padding 0 20%
     &.briefing
       :padding 0 20%
     &.motivate

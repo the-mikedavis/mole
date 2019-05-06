@@ -69,6 +69,10 @@ defmodule Mole.GameplayServer do
   @spec sets_left(id()) :: integer()
   def sets_left(id), do: get(id) || 0
 
+  @doc "get the current set number for a user"
+  @spec set_number(id()) :: integer()
+  def set_number(id), do: @sets - sets_left(id)
+
   # Server API
   def start_link(_), do: Agent.start_link(fn -> %{} end, name: __MODULE__)
 

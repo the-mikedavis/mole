@@ -79,6 +79,7 @@ defmodule MoleWeb.GameChannel do
         _list ->
           Map.put(feedback_map, "path", current_image_path(socket))
       end
+      |> Map.put("remaining", length(socket.assigns.gameplay.playable))
 
     {:reply, {:ok, reply}, socket}
   end
