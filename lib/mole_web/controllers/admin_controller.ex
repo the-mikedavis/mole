@@ -2,8 +2,6 @@ defmodule MoleWeb.AdminController do
   use MoleWeb, :controller
   plug(:admin)
 
-  @default_password Application.fetch_env!(:mole, :default_password)
-
   alias MoleWeb.Router.Helpers, as: Routes
   alias Mole.Accounts
 
@@ -14,13 +12,13 @@ defmodule MoleWeb.AdminController do
     render(conn, "index.html", users: users, new_admin: new_admin)
   end
 
-  def create(conn, %{"username" => username}) do
-    case Accounts.create_admin(%{username: username, password: @default_password}) do
+  def create(conn, %{"admin" => %{"username" => username}}) do
+    case Accounts.create_admin(%{username: username, password: default_password()}) do
       {:ok, _admin} ->
         conn
         |> put_flash(
           :info,
-          "Admin #{username} has been created with default password \"#{@default_password}\""
+          "Admin \"#{username}\" has been created with default password \"#{default_password()}\""
         )
         |> redirect(to: Routes.admin_path(conn, :index))
 
@@ -28,7 +26,7 @@ defmodule MoleWeb.AdminController do
         users = Accounts.list_admins()
 
         conn
-        |> put_flash(:error, "Could not create #{username} admin! See changes below")
+        |> put_flash(:error, "Could not create admin \"#{username}\"! See changes below")
         |> render("index.html", users: users, new_admin: changeset)
     end
   end
@@ -56,14 +54,15 @@ defmodule MoleWeb.AdminController do
   end
 
   def delete(conn, %{"username" => username}) do
-    message =
-      case Accounts.remove_admin(username) do
-        :ok -> "Admin access for #{username} has been revoked!"
-        :error -> "Admin access could not be revoked for this user."
-      end
+    username
+    |> Accounts.remove_admin()
+    |> case do
+      :ok ->
+        put_flash(conn, :info, "Admin access for \"#{username}\" has been revoked!")
 
-    conn
-    |> put_flash(:info, message)
+      :error ->
+        put_flash(conn, :error, "Admin access could not be revoked for user \"#{username}\".")
+    end
     |> redirect(to: Routes.admin_path(conn, :index))
   end
 
@@ -80,4 +79,6 @@ defmodule MoleWeb.AdminController do
       |> halt()
     end
   end
+
+  defp default_password, do: Application.fetch_env!(:mole, :default_password)
 end

@@ -14,7 +14,9 @@ defmodule Mole.Accounts.Admin do
   def changeset(user, attrs) do
     user
     |> cast(attrs, ~w(username password)a)
+    |> validate_required(~w(username)a)
     |> unique_constraint(:username)
+    |> validate_length(:username, min: 3, max: 10)
     |> put_pass_hash()
   end
 
