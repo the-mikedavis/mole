@@ -117,7 +117,7 @@ function start_animation_countdown() {
     reset_mag_glass()
     mag_glass.classList.add('animate')
     mag_glass_animation = setInterval(frame, 5)
-  }, 5000)
+  }, 3000)
 }
 
 function reset_mag_glass() {
