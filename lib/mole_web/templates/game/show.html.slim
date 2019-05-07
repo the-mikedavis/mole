@@ -19,15 +19,16 @@ h3 Leaderboard
           td = index + 1
           td = s.name
           td = s.score
-      tr
-        td ...
-        td ...
-        td ...
-      tr
-        td -
-        td
-          i you
-        td = @current_user.score
+      = unless Enum.any?(@high_scores, fn s -> s.user_id == @user_id end) do
+        tr
+          td ...
+          td ...
+          td ...
+        tr
+          td -
+          td
+            i you
+          td = @current_user.score
 
 
 = link("Keep playing", to: Routes.game_path(@conn, :index), class: "btn btn-lg")
