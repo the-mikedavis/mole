@@ -8,7 +8,8 @@ defmodule MoleWeb.GameController do
 
   # order matters here
   plug(:logged_in)
-  plug(:consent)
+  # removed for #42
+  # plug(:consent)
   plug(:pre_survey when action == :index)
   plug(:learn)
 
