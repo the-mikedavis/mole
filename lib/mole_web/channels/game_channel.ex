@@ -127,9 +127,9 @@ defmodule MoleWeb.GameChannel do
     |> Map.put("correct", correct?)
   end
 
-  defp give_feedback(:motivational, correct?, malignant?, n) when n in 0..3 do
+  defp give_feedback(:motivational, correct?, malignant?, n) when n in [0, 3, 6, 9] do
     give_feedback(:standard, correct?, malignant?, n)
-    |> give_motivation(n)
+    |> give_motivation(div(n, 3))
   end
 
   defp give_feedback(:motivational, correct?, malignant?, n) do
