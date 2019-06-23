@@ -92,15 +92,15 @@ defmodule MoleWeb.GameController do
 
   defp encrypt(conn, data), do: Phoenix.Token.sign(conn, MoleWeb.signing_token(), data)
 
-  defp consent(conn, _opts) do
-    if conn.assigns.survey_id && !conn.assigns.consent? do
-      conn
-      |> redirect(to: Routes.consent_path(conn, :index))
-      |> halt()
-    else
-      conn
-    end
-  end
+  # defp consent(conn, _opts) do
+  # if conn.assigns.survey_id && !conn.assigns.consent? do
+  # conn
+  # |> redirect(to: Routes.consent_path(conn, :index))
+  # |> halt()
+  # else
+  # conn
+  # end
+  # end
 
   defp learn(conn, _opts) do
     if conn.assigns[:learned?] do
