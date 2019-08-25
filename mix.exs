@@ -65,6 +65,7 @@ defmodule Mole.MixProject do
       {:quantum, "~> 2.3"},
       {:timex, "~> 3.0"},
       {:plug_cowboy, "~> 1.0"},
+      {:tzdata, "~> 0.5.21"},
 
       # test
       {:credo, "~> 0.9", only: [:dev, :test], runtime: false},
