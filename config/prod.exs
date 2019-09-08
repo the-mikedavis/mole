@@ -6,7 +6,7 @@ config :mole,
   default_password: "${MOLE_DEFAULT_PASSWORD}"
 
 config :mole, Mole.Repo,
-  adapter: Ecto.Adapters.Postgres,
+  adapter: Ecto.Adapters.MySQL,
   username: "${MOLE_DB_USERNAME}",
   password: "${MOLE_DB_PASSWORD}",
   database: "${MOLE_DB_DATABASE}",

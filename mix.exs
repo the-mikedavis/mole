@@ -34,7 +34,8 @@ defmodule Mole.MixProject do
         :runtime_tools,
         :phoenix,
         :cowboy,
-        :phoenix_ecto
+        :phoenix_ecto,
+        :mariaex
       ]
     ]
   end
@@ -51,7 +52,8 @@ defmodule Mole.MixProject do
       {:phoenix, github: "phoenixframework/phoenix", override: true},
       {:phoenix_pubsub, "~> 1.0"},
       {:phoenix_ecto, "~> 3.2"},
-      {:postgrex, "~> 0.13"},
+      {:postgrex, "~> 0.13", only: :test},
+      {:mariaex, ">= 0.0.0", only: [:dev, :prod]},
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
