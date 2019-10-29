@@ -28,8 +28,8 @@ Then add these lines into your `/etc/environment`:
 - [ ] `MOLE_PORT` - the port you wish to run on
   - if you want to use SSL, I recommend setting up a reverse proxy through [nginx](https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/) or [apache](https://httpd.apache.org/docs/2.4/howto/reverse_proxy.html)
 - [ ] `MOLE_HOST` - the hostname of your server
-- [ ] `MOLE_SECRET_KEYBASE` - a random secret string of (about 65) characters
-- [ ] `MOLE_SIGNING_TOKEN` - a random secret string of (about 65) characters
+- [ ] `MOLE_SECRET_KEYBASE` - a random secret string of (about 64) characters
+- [ ] `MOLE_SIGNING_TOKEN` - a random secret string of (about 64) characters
   - any sort of password manager should be able to generate a good random string for this
 - [ ] `MOLE_DB_DATABASE` - the database you created for the application
 - [ ] `MOLE_DB_USERNAME` - the username of the MySQL user with permissions for that database
