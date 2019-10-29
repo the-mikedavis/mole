@@ -24,6 +24,7 @@ tab of this repo on GitHub and download `mole.tag.gz` onto your server.
 First, create the database under a name of your choice.
 Then add these lines into your `/etc/environment`:
 
+- [ ] `REPLACE_OS_VARS=true` tells the erlang VM to look for environment variables
 - [ ] `MOLE_PORT` - the port you wish to run on
   - if you want to use SSL, I recommend setting up a reverse proxy through [nginx](https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/) or [apache](https://httpd.apache.org/docs/2.4/howto/reverse_proxy.html)
 - [ ] `MOLE_HOST` - the hostname of your server
@@ -38,6 +39,7 @@ Then add these lines into your `/etc/environment`:
 #### Example
 
 ```
+REPLACE_OS_VARS=true
 MOLE_PORT=4000
 MOLE_HOST=example.org
 MOLE_SECRET_KEYBASE=SKtholekarcoekhoe
