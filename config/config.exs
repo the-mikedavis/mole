@@ -11,7 +11,8 @@ config :mole,
   signing_token: "aEv4XpOMzHrn/EWs/yYqMEiRG4D7SgSUt08mQyasbyUp6kNkJOAcTY9hhVcJmi7w",
   default_admins: ["the-mikedavis", "soyoonk", "nickc", "zhuangq"],
   default_password: "pleasechangethis",
-  leaderboard_limit: 10
+  leaderboard_limit: 10,
+  feedback_time_msec: "2000"
 
 config :mole, MoleWeb.Endpoint,
   url: [host: "localhost"],

@@ -3,7 +3,8 @@ use Mix.Config
 config :mole,
   min_amount: 1000,
   signing_token: "${MOLE_SIGNING_TOKEN}",
-  default_password: "${MOLE_DEFAULT_PASSWORD}"
+  default_password: "${MOLE_DEFAULT_PASSWORD}",
+  feedback_time_msec: "${MOLE_FEEDBACK_TIME_MSEC}"
 
 config :mole, Mole.Repo,
   adapter: Ecto.Adapters.MySQL,

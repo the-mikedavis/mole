@@ -35,6 +35,8 @@ Then add these lines into your `/etc/environment`:
 - [ ] `MOLE_DB_USERNAME` - the username of the MySQL user with permissions for that database
 - [ ] `MOLE_DB_PASSWORD` - the password of the user who has permissions for that database
 - [ ] `MOLE_DEFAULT_PASSWORD` - the default password for new admin users
+- [ ] `MOLE_FEEDBACK_TIME_MSEC` - the number of milliseconds for which to show feedback
+  - defaults to `1000` (1 second)
 
 #### Example
 
