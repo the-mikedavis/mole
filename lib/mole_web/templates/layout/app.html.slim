@@ -28,4 +28,6 @@ html lang="en"
       p class="alert alert-info" role="alert" = get_flash(@conn, :info)
       p class="alert alert-danger" role="alert" = get_flash(@conn, :error)
       = render @view_module, @view_template, assigns
+    javascript:
+      window.feedback_time_msec = #{raw(feedback_time_msec())};
     script type="text/javascript" src=Routes.static_path(@conn, "/js/app.js")
