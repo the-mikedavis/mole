@@ -87,8 +87,8 @@ defmodule Mole.ContentTest do
   describe "path building" do
     setup do
       [
-        static: "/images/moles/X.jpeg",
-        download: "priv/static/images/X.jpeg"
+        static: "/images/moles/X.png",
+        download: "priv/static/images/X.png"
       ]
     end
 
