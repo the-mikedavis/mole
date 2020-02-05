@@ -49,6 +49,13 @@ function feedback(img, event) {
 
   // highlight the feedback text
   const feedback_txt_id = fbp.substring(8, fbp.length - 4)
+
+  console.log(feedback_txt_id)
+  console.log(event)
+  if (feedback_txt_id == "incorrect_malignant" && event.detail.explanation) {
+    document.getElementById(feedback_txt_id).innerText = event.detail.explanation
+  }
+
   document.getElementById(feedback_txt_id).classList.add('active')
 
   img.classList.add('feedback-image')

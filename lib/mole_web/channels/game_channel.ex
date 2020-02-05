@@ -51,7 +51,8 @@ defmodule MoleWeb.GameChannel do
   Update the gameplay for the next image.
   """
   def handle_in("answer", %{"malignant" => malignant?, "time_spent" => time}, socket) do
-    malignant = current_image(socket).malignant
+    current_image = current_image(socket)
+    malignant = current_image.malignant
     correct? = malignant == malignant?
     socket = update_gameplay(socket, %{correct?: correct?, time_spent: time})
 
@@ -62,6 +63,7 @@ defmodule MoleWeb.GameChannel do
 
     feedback_map =
       give_feedback(feedback, correct?, malignant, length(socket.assigns.gameplay.played) - 1)
+      |> give_explanation(correct?, malignant, current_image)
 
     reply =
       case socket.assigns.gameplay.playable do
@@ -83,6 +85,14 @@ defmodule MoleWeb.GameChannel do
 
     {:reply, {:ok, reply}, socket}
   end
+
+  defp give_explanation(feedback, false = _is_correct, true = _is_malignant, current_image) do
+    explanation = explanation_for(current_image.origin_id)
+
+    Map.put(feedback, "explanation", explanation)
+  end
+
+  defp give_explanation(feedback, _is_correct, _is_malignant, _), do: feedback
 
   @spec gameplay(GameplayServer.set()) :: gameplay()
   defp gameplay(set), do: %{playable: set, correct: 0, incorrect: 0, bonus: 0, played: []}
@@ -180,4 +190,32 @@ defmodule MoleWeb.GameChannel do
       _ -> Routes.game_path(Endpoint, :show)
     end
   end
+
+  defp explanation_for("Melanoma P"), do: "Oh no! It's pretty asymmetric and has multiple colors?"
+  defp explanation_for("Melanoma C"), do: "Watch out for multiple colors and asymmetry!"
+  defp explanation_for("Melanoma Db"), do: "Whoops, those borders sure are irregular!"
+
+  defp explanation_for("Melanoma N"),
+    do: "This one looks pretty big in diameter and has strange borders!"
+
+  defp explanation_for("Melanoma AA"), do: "Look out for multiple colors and uneven borders?"
+
+  defp explanation_for("Melanoma Cb"),
+    do: "Oh no! These borders are irregular borders and it's asymmetric!"
+
+  defp explanation_for("Melanoma B2"),
+    do: "Watch out for big moles! This one also has an asymmetry!"
+
+  defp explanation_for("Melanoma Kb"), do: "Whomp whomp! These borders sure are irregular!"
+
+  defp explanation_for("Melanoma Sb"),
+    do: "Whoops! This one is asymmetric and a bit too colorful!"
+
+  defp explanation_for("Melanoma Hc"), do: "Watch out for irregular borders and asymmetry!"
+
+  defp explanation_for("Melanoma Ab"),
+    do: "Look out for multiple colors and asymmetry on this mole!"
+
+  defp explanation_for("Melanoma FFb"),
+    do: "Oh no! This one is asymmetric and has multiple colors!"
 end
