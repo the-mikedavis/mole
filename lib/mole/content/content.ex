@@ -244,7 +244,7 @@ defmodule Mole.Content do
     |> Repo.one()
   end
 
-  @static_headers [:moniker, :feedback, :learning, :condition]
+  @static_headers [:username, :feedback, :learning, :condition]
 
   def write_survey(id) do
     filename =
