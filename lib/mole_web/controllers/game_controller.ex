@@ -80,7 +80,9 @@ defmodule MoleWeb.GameController do
     if conn.assigns[:current_user] do
       conn
     else
-      {:ok, user} = Accounts.create_user()
+      moniker = get_session(conn, :moniker)
+
+      {:ok, user} = Accounts.create_user(%{moniker: moniker})
 
       conn
       |> put_session(:user_id_token, encrypt(conn, user.id))

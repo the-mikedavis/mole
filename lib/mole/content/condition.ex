@@ -42,7 +42,7 @@ defmodule Mole.Content.Condition do
   def learning(condition) when condition in 0..2, do: :abcd
   def learning(condition) when condition in 3..5, do: :duckling
   def learning(condition) when condition in 6..8, do: :none
-  def learning(condition) when condition in 6..8, do: :both
+  def learning(condition) when condition in 9..11, do: :both
 
   @doc "Give a user friendly string for the doctors."
   @spec to_string(nil | integer() | tuple()) :: String.t()

@@ -244,7 +244,7 @@ defmodule Mole.Content do
     |> Repo.one()
   end
 
-  @static_headers [:username, :feedback, :learning, :condition]
+  @static_headers [:moniker, :feedback, :learning, :condition]
 
   def write_survey(id) do
     filename =
@@ -263,7 +263,7 @@ defmodule Mole.Content do
     users =
       from(u in User, select: u, where: [survey_id: ^id], preload: [:answers])
       |> Repo.all()
-      |> Enum.map(&Map.take(&1, [:answers, :username, :condition]))
+      |> Enum.map(&Map.take(&1, [:answers, :moniker, :condition]))
       |> Enum.map(fn %{answers: answers, condition: condition} = user ->
         Enum.reduce(answers, user, fn %{image_id: iid, correct: cor?}, acc ->
           Map.put(acc, images[iid], cor?)

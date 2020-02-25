@@ -67,7 +67,7 @@ defmodule MoleWeb.SurveyController do
     |> redirect(to: Routes.survey_path(conn, :index))
   end
 
-  def join(conn, %{"slug" => slug}) do
+  def join(conn, %{"slug" => slug} = params) do
     case Content.get_survey_by_slug(slug) do
       nil ->
         conn
@@ -76,6 +76,7 @@ defmodule MoleWeb.SurveyController do
 
       id ->
         conn
+        |> put_session(:moniker, Map.get(params, "moniker"))
         |> Plugs.Survey.put_survey(id)
         |> put_flash(:info, "You have joined survey \"#{slug}\".")
         |> redirect(to: Routes.game_path(conn, :index))

@@ -12,6 +12,7 @@ defmodule Mole.Accounts.User do
     field(:survey_progress, :integer)
     belongs_to(:survey, Survey)
     has_many(:answers, Answer)
+    field(:moniker, :string)
 
     timestamps()
   end
@@ -24,7 +25,8 @@ defmodule Mole.Accounts.User do
       :score,
       :survey_id,
       :condition,
-      :survey_progress
+      :survey_progress,
+      :moniker
     ])
     |> foreign_key_constraint(:survey_id)
     |> validate_number(:correct, greater_than: -1)

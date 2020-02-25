@@ -29,7 +29,7 @@ defmodule Mole.Content.SurveyServer do
     condition = Enum.random(conditions)
 
     conditions =
-      case conditions -- [condition] do
+      case Enum.to_list(conditions) -- [condition] do
         [] -> @condition_ranges
         list -> list
       end
@@ -50,8 +50,8 @@ defmodule Mole.Content.SurveyServer do
   def init(_args) do
     starting_map =
       Content.list_surveys()
-      |> Enum.map(fn %{slug: name} ->
-        %{name => @condition_ranges}
+      |> Enum.reduce(%{}, fn %{slug: name}, acc ->
+        Map.put(acc, name, @condition_ranges)
       end)
 
     {:ok, starting_map}

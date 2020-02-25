@@ -29,10 +29,18 @@ config :logger, :console, format: "[$level] $message\n"
 config :phoenix, :stacktrace_depth, 20
 config :phoenix, :plug_init_mode, :runtime
 
+# config :mole, Mole.Repo,
+#   adapter: Ecto.Adapters.MySQL,
+#   username: "root",
+#   password: "password",
+#   database: "mole_dev",
+#   hostname: "localhost",
+#   pool_size: 10
+
 config :mole, Mole.Repo,
-  adapter: Ecto.Adapters.MySQL,
-  username: "root",
-  password: "password",
+  adapter: Ecto.Adapters.Postgres,
+  username: "postgres",
+  password: "postgres",
   database: "mole_dev",
   hostname: "localhost",
   pool_size: 10
