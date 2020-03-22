@@ -78,7 +78,6 @@ defmodule MoleWeb.SurveyController do
         conn
         |> put_session(:moniker, Map.get(params, "username"))
         |> Plugs.Survey.put_survey(id)
-        |> put_flash(:info, "You have joined survey \"#{slug}\".")
         |> redirect(to: Routes.game_path(conn, :index))
     end
   end
