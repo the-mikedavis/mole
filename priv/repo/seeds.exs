@@ -29,7 +29,7 @@ moles = [
   %{origin_id: "Melanoma N", type: "size", malignant: true, set_id: 2},
   # Test 5
   %{origin_id: "1V5A2450", type: "benign", malignant: false, set_id: 2},
-  %{origin_id: "1V5A2509", type: "benign", malignant: false, set_id: 2},
+  %{origin_id: "1V5A25091", type: "benign", malignant: false, set_id: 2},
   %{origin_id: "1V5A23703", type: "benign", malignant: false, set_id: 2},
   %{origin_id: "Melanoma AA", type: "color", malignant: true, set_id: 2},
   # Test 6
