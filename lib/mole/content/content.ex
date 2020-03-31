@@ -244,7 +244,7 @@ defmodule Mole.Content do
     |> Repo.one()
   end
 
-  @static_headers [:moniker, :feedback, :learning, :condition]
+  @static_headers ~w(moniker feedback learning condition in_time out_time)a
 
   def write_survey(id) do
     filename =
@@ -264,21 +264,36 @@ defmodule Mole.Content do
       from(u in User, select: u, where: [survey_id: ^id], preload: [:answers])
       |> Repo.all()
       |> Enum.map(&Map.take(&1, [:answers, :moniker, :condition]))
-      |> Enum.map(fn %{answers: answers, condition: condition} = user ->
-        Enum.reduce(answers, user, fn %{image_id: iid, correct: cor?}, acc ->
-          Map.put(acc, images[iid], cor?)
-        end)
-        |> Map.delete(:answers)
-        |> Map.put(:condition, condition)
-        |> Map.put(:feedback, condition |> Condition.feedback() |> to_string())
-        |> Map.put(:learning, condition |> Condition.learning() |> to_string())
-      end)
+      |> Enum.map(&map_user_values(&1, images))
 
     users
     |> CSV.encode(headers: @static_headers ++ Map.values(images))
     |> Enum.each(&IO.write(file, &1))
 
     filename
+  end
+
+  defp map_user_values(%{answers: answers, condition: condition} = user, images) do
+    in_time = get_time_from_answers(answers, :inserted_at)
+    out_time = get_time_from_answers(answers, :updated_at)
+
+    Enum.reduce(answers, user, fn %{image_id: iid, correct: cor?}, acc ->
+      Map.put(acc, images[iid], cor?)
+    end)
+    |> Map.delete(:answers)
+    |> Map.put(:condition, condition)
+    |> Map.put(:feedback, condition |> Condition.feedback() |> to_string())
+    |> Map.put(:learning, condition |> Condition.learning() |> to_string())
+    |> Map.put(:in_time, in_time)
+    |> Map.put(:out_time, out_time)
+  end
+
+  defp get_time_from_answers([], _key), do: nil
+
+  defp get_time_from_answers([answer | _], key) do
+    answer
+    |> Map.from_struct()
+    |> Map.fetch!(key)
   end
 
   @doc """
