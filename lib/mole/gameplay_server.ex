@@ -39,7 +39,10 @@ defmodule Mole.GameplayServer do
       set_number
       |> Content.get_images_by_set()
       |> Enum.map(&Map.take(&1, [:origin_id, :id, :malignant]))
-      |> Enum.shuffle()
+      |> Enum.sort_by(& &1.id)
+      |> Enum.chunk_every(4)
+      |> Enum.map(&Enum.shuffle/1)
+      |> List.flatten()
 
     {set_number, set}
   end

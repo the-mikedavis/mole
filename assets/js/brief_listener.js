@@ -13,24 +13,22 @@ function listener(event) {
   var imageArray = event.detail.paths
   var first = imageArray[0]
 
-  shuffleArray(imageArray)
+  for (let i = 0; i < imageArray.length / 4; i++) {
+    var div = document.createElement('div')
+    div.className = i == 1 ? "subject middle" : "subject"
 
-  for (let src of imageArray) {
-    var i = document.createElement('img')
-    i.className = "card brief"
-    i.src = src
-    container_el.appendChild(i)
+    for (let j = 0; j < imageArray.length / 3; j++) {
+      var img = document.createElement('img')
+      img.className = "card brief"
+      img.src = imageArray[4 * i + j]
+      div.appendChild(img)
+    }
+
+    container_el.appendChild(div)
   }
 
   document.getElementById('ready').onclick = () => {
     ready_up(new CustomEvent(IMAGE_EVENT, {detail: {path: first}}))
-  }
-}
-
-function shuffleArray(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
   }
 }
 
