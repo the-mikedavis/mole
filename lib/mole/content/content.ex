@@ -274,8 +274,7 @@ defmodule Mole.Content do
   end
 
   defp map_user_values(%{answers: answers, condition: condition} = user, images) do
-    in_time = get_time_from_answers(answers, :inserted_at)
-    out_time = get_time_from_answers(answers, :updated_at)
+    {in_time, out_time} = get_times_from_answers(answers)
 
     Enum.reduce(answers, user, fn %{image_id: iid, correct: cor?}, acc ->
       Map.put(acc, images[iid], cor?)
@@ -288,12 +287,13 @@ defmodule Mole.Content do
     |> Map.put(:out_time, out_time)
   end
 
-  defp get_time_from_answers([], _key), do: nil
+  defp get_times_from_answers(answers) do
+    sorted_times =
+      answers
+      |> Enum.map(& &1.inserted_at)
+      |> Enum.sort(&(NaiveDateTime.compare(&1, &2) != :gt))
 
-  defp get_time_from_answers([answer | _], key) do
-    answer
-    |> Map.from_struct()
-    |> Map.fetch!(key)
+    {List.first(sorted_times), List.last(sorted_times)}
   end
 
   @doc """
