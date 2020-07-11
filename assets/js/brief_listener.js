@@ -14,17 +14,17 @@ function listener(event) {
   var first = imageArray[0]
 
   for (let i = 0; i < imageArray.length / 4; i++) {
-    var div = document.createElement('div')
-    div.className = i == 1 ? "subject middle" : "subject"
+    var p = document.createElement('p')
+    p.className = "subjectname"
+    p.innerText = "Subject #" + (i + 1)
+    container_el.appendChild(p)
 
     for (let j = 0; j < imageArray.length / 3; j++) {
       var img = document.createElement('img')
       img.className = "card brief"
       img.src = imageArray[4 * i + j]
-      div.appendChild(img)
+      container_el.appendChild(img)
     }
-
-    container_el.appendChild(div)
   }
 
   document.getElementById('ready').onclick = () => {

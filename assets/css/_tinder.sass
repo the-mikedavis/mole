@@ -2,9 +2,7 @@
 
 #card, .card
   :object-fit cover
-  :width 100%
   :background-color #ccc
-  //:border-radius 5px
   :background transparent
   :transition opacity 0.25s
   :opacity 1
@@ -23,10 +21,8 @@
   :display inline
   :cursor default
   :margin 20px 5%
-  :width 40%
   @include desktop
     :margin 10px 2.5%
-    :width 20%
 
 .far.fa-question-circle
   :margin-top 30px
@@ -106,6 +102,10 @@ div#holster
   &.briefing
     :padding 0 7.5%
     :margin-top 30px
+    :display grid
+    :grid-template-columns 6vw 1fr 1fr 1fr 1fr
+    :grid-template-rows auto auto auto
+    :grid-column-gap 10px
   @include desktop
     :padding 0 20%
     &.briefing
@@ -160,3 +160,8 @@ img#mag-glass
 div.subject.middle
   :border-top 1px solid black
   :border-bottom 1px solid black
+
+p.subjectname
+  :text-align center
+  :padding 5vw 0
+  :font-family $display
