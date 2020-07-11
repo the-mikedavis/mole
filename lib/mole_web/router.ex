@@ -61,7 +61,7 @@ defmodule MoleWeb.Router do
 
       assign(conn, :user_token, token)
     else
-      conn
+      assign(conn, :user_token, nil)
     end
   end
 end

@@ -21,7 +21,7 @@ function listener(event) {
     }
 
     const i = document.createElement('img')
-    i.className = "card"
+    i.className = "card ingame"
     i.src = event.detail.path
     container_el.appendChild(i)
     tinder.on(i)
