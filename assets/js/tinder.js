@@ -45,17 +45,17 @@ function on(el) {
     const delta = evt.center.x - starting_x
     // determine a good rotation amount for the image
     const rotation = delta / (screen.width / TRANSFORM_CUTTER)
-    // positive is malignant (rightwards, concerned)
-    // negative is benign (leftwards, safe)
+    // negative is malignant (leftwards, concerned)
+    // positive is benign (rightwards, safe)
     let opacity = Math.abs(delta/250) * 4 / 3
     opacity = opacity > 1.0 ? 1.0 : opacity
 
     if (delta < 0) {
-      safe_elem.style.opacity = opacity
-      concerned_elem.style.opacity = 0
-    } else {
       safe_elem.style.opacity = 0
       concerned_elem.style.opacity = opacity
+    } else {
+      safe_elem.style.opacity = opacity
+      concerned_elem.style.opacity = 0
     }
     // rotate and translate the element for a tinder-like feel
     el.style.transform = `translate(${delta}px, 0) rotate(${rotation}deg)`
@@ -70,7 +70,7 @@ function on(el) {
     if (Math.abs(delta) > TRIGGER_WIDTH) {
       let time_delta = new Date().getTime() - start_time
       document.dispatchEvent(
-        new CustomEvent(SWIPE_EVENT, {detail: {malignant: delta > 0, time_spent: time_delta}}))
+        new CustomEvent(SWIPE_EVENT, {detail: {malignant: delta < 0, time_spent: time_delta}}))
     }
 
     safe_elem.style.opacity = 0
